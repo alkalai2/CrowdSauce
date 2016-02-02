@@ -6,6 +6,7 @@ Jonathan Alkalai - alkalai2 - 8186312102
 [CrowdSauce Github Page](https://github.com/alkalai2/CrowdSauce)
 
 [Git Branching in a nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
+
 [Git Commit/Merge/Push Cheatsheet](http://ndpsoftware.com/git-cheatsheet.html)
 
 see git branch history : `git log --oneline --decorate --graph --all`
