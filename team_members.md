@@ -1,4 +1,4 @@
-Jonathan Alkalai - alkalai2 - 8186312102
+Jonathan Alkalai - alkalai2
 
 
 ##### helpful links
