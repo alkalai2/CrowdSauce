@@ -13,3 +13,6 @@ John O'Keefe - jcokeef2
 see git branch history : `git log --oneline --decorate --graph --all`
 
 [Editing Markdown (.md) Files](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links)
+
+# Team Members
+ccmarte2 - Charlie Martell
