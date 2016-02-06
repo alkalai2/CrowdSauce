@@ -1,4 +1,3 @@
-Vishnu Indukuri  - vinduku2
 Jonathan Alkalai - alkalai2
 
 
