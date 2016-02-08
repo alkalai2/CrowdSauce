@@ -1,12 +1,20 @@
 # Team Members
 ccmarte2 - Charlie Martell
+
 Vishnu Indukuri  - vinduku2
+
 Jonathan Alkalai - alkalai2
+
 John O'Keefe - jcokeef2
+
 Charles Anderson - cmndrsn2
+
 Sheena Panthaplackel - panthap2
+
 Harry Jian - jian3
+
 Luke Puchner-Hardman - puchner2
+
 Li Jen Tu - lijentu2
 
 ##### Helpful links
