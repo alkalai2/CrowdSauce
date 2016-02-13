@@ -65,6 +65,7 @@
 2016-02-13T04:07:16.213131000 216.948286s notice: All client connections closed.
 2016-02-13T04:07:16.213135000 216.948290s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 2016-02-13T04:07:16.214986000 216.950140s notice: Storage engine shut down.
+<<<<<<< HEAD
 2016-02-13T12:45:29.682631000 0.362807s notice: Running rethinkdb 2.2.4 (CLANG 7.0.2 (clang-700.1.81))...
 2016-02-13T12:45:29.686566000 0.366739s notice: Running on Darwin 15.0.0 x86_64
 2016-02-13T12:45:29.686614000 0.366786s notice: Loading data from directory /Users/charliemartell/repos/crowdsauce/backend/rethinkdb_data
@@ -117,3 +118,5 @@
 2016-02-13T13:39:20.545621000 1892.024049s notice: Someone asked for the nonwhitelisted file "/addUser".  If this should be accessible, add it to the static web assets.
 2016-02-13T13:39:24.773850000 1896.252405s notice: Someone asked for the nonwhitelisted file "/asdf".  If this should be accessible, add it to the static web assets.
 2016-02-13T13:41:16.633179000 2008.115249s notice: Someone asked for the nonwhitelisted file "/addUser".  If this should be accessible, add it to the static web assets.
+=======
+>>>>>>> master

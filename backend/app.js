@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // ============================== Setup code ==================================
 // Setup boilerplate code for server
 var fileStreamRotator = require('file-stream-rotator');
@@ -6,10 +7,20 @@ var async = require('async');
 var express = require('express');
 var rethink = require('rethinkdb');
 var morgan = require('morgan');
+=======
+// Setup boilerplate code for server
+// Async needed for realtime responses, think AJAX
+var async = require('async');
+// Express handles incoming requests
+var express = require('express');
+// RethinkDB handles data storage
+var rethinkdb = require('rethinkdb');
+>>>>>>> master
 
 // Config file containing server and port information
 var config = require(__dirname + '/config.js');
 
+<<<<<<< HEAD
 // Run Express server to handle requests
 var app = express();
 
@@ -142,4 +153,8 @@ async.waterfall([
 });
 
 
+=======
+
+// TODO: Setup everything else
+>>>>>>> master
 
