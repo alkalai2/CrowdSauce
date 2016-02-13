@@ -1,0 +1,14 @@
+{
+  "name": "CrowdSauce",
+  "devDependencies": {
+    "standard": "^3.0.0"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "standard": {
+    "ignore": [
+      "/backend/node_modules/"
+    ]
+  }
+}
