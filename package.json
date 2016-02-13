@@ -1,0 +1,5 @@
+"standard": {
+  "ignore": [
+    "/backend/node_modules/"
+  ]
+}
