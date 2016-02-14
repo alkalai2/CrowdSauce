@@ -120,17 +120,21 @@ async.waterfall([
       callback(err, connection)
     })
   },
-  function createTable (connection, callback) {
-    // Create the table if needed.
-    rethink.tableList().contains('users').do(function (containsTable) {
-      return rethink.branch(
-        containsTable,
-        {created: 0},
-        rethink.tableCreate('users')
-      )
-    }).run(connection, function (err) {
-      callback(err, connection)
-    })
+  function createTables (connection, callback) {
+    var schema = JSON.parse(fs.readFileSync('schema.json', 'utf8'))
+    for (var index in schema.tables) {
+      var tableName = schema.tables[index].tableName
+      // Create the table if needed.
+      rethink.tableList().contains(tableName).do(function (containsTable) {
+        return rethink.branch(
+          containsTable,
+          {created: 0},
+          rethink.tableCreate(tableName)
+        )
+      }).run(connection, function (err) {
+        callback(err, connection)
+      })
+    }
   }
 ], function (err, connection) {
   if (err) {
