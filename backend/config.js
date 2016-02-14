@@ -7,6 +7,6 @@ module.exports = {
     db: 'rethinkdb_crowdsauce'
   },
   express: {
-     port: 3000
+    port: 3000
   }
-};
+}

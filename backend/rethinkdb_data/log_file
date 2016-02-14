@@ -120,3 +120,16 @@
 2016-02-13T13:41:16.633179000 2008.115249s notice: Someone asked for the nonwhitelisted file "/addUser".  If this should be accessible, add it to the static web assets.
 =======
 >>>>>>> master
+2016-02-14T14:22:50.791052000 0.003768s notice: Running rethinkdb 2.2.4 (CLANG 7.0.2 (clang-700.1.81))...
+2016-02-14T14:22:50.795439000 0.008151s notice: Running on Darwin 15.0.0 x86_64
+2016-02-14T14:22:50.795473000 0.008184s notice: Loading data from directory /Users/charliemartell/repos/crowdsauce/backend/rethinkdb_data
+2016-02-14T14:22:50.838625000 0.051337s info: Automatically using cache size of 3835 MB
+2016-02-14T14:22:50.839005000 0.051717s notice: Listening for intracluster connections on port 29015
+2016-02-14T14:22:50.854702000 0.067414s notice: Listening for client driver connections on port 28015
+2016-02-14T14:22:50.854844000 0.067556s notice: Listening for administrative HTTP connections on port 8080
+2016-02-14T14:22:50.854846000 0.067558s notice: Listening on addresses: 127.0.0.1, ::1
+2016-02-14T14:22:50.854847000 0.067558s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-02-14T14:22:50.854895000 0.067607s notice: Server ready, "Charlies_MacBook_Pro_local_1r0" a9f13888-afee-4605-a73b-b6b24a35d6fe
+2016-02-14T14:22:52.585957000 1.798669s info: Table ed23ae86-1fb0-418c-be97-5aa4fd11807e: Starting a new Raft election for term 2.
+2016-02-14T14:22:52.606580000 1.819291s info: Table ed23ae86-1fb0-418c-be97-5aa4fd11807e: This server is Raft leader for term 2. Latest log index is 3.
+2016-02-14T14:26:02.162757000 191.382737s error: Failed to parse one or more lines from the log file, the contents of the `logs` system table will be incomplete. The following parse error occurred: cannot parse log message (2) while parsing "<<<<<<< HEAD"
