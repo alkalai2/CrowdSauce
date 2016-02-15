@@ -29,7 +29,7 @@ var accessLogStream = fileStreamRotator.getStream({
 })
 
 // setup the logger
-// app.use(morgan('combined', {stream: accessLogStream}))
+app.use(morgan('combined', {stream: accessLogStream}))
 
 // ============================== REST Routes =================================
 // REST routes for
@@ -38,10 +38,10 @@ app.route('/addUser')
   .post(addUserFromFacebook)
 
 // Something bad happened
-//app.use(handle404)
+app.use(handle404)
 
 // Generic error handling middleware.
-//app.use(handleError)
+app.use(handleError)
 
 
 
