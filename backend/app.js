@@ -65,6 +65,7 @@ function startExpress (connection) {
   app._rdpConn = connection
   app.listen(config.express.port)
   console.log('Listening on port' + config.express.port)
+  exports = module.exports = app
 }
 
 /*
