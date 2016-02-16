@@ -1,7 +1,7 @@
 var server = require('server')
 	assert = require('assert')
 	request = require('request')
-	//app = require('../app');
+	app = require('../app');
 
 describe('Basic Server Tests', function() {
 
