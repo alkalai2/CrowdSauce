@@ -1,0 +1,3 @@
+::ffff:127.0.0.1 - - [17/Feb/2016:01:05:32 +0000] "GET / HTTP/1.1" 200 3386 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.77.4 (KHTML, like Gecko) Version/7.0.5 Safari/537.77.4"
+::1 - - [17/Feb/2016:01:05:48 +0000] "GET /favicon.ico HTTP/1.1" 404 24 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.77.4 (KHTML, like Gecko) Version/7.0.5 Safari/537.77.4"
+::ffff:127.0.0.1 - - [17/Feb/2016:01:05:49 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.77.4 (KHTML, like Gecko) Version/7.0.5 Safari/537.77.4"
