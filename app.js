@@ -31,6 +31,15 @@ var accessLogStream = fileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
+
+// ============================== Page Routing =================================
+/*
+ * Entry point to app - looks for index.html as landing page 
+ */
+app.get('/',function(req,res){
+  res.sendFile(path.join(__dirname+'/public/'));
+});
+
 // ============================== REST Routes =================================
 // REST routes for
 app.route('/addUser')
