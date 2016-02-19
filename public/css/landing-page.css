@@ -5,3 +5,23 @@
   text-align: center;
 }
 
+#welcome-header {
+	text-align: left;
+	color: white;
+	font-size: 48px;
+}
+
+#fbLoginBtn {
+	font-size: 24px;
+}
+
+body {
+     margin: 0;
+     background: url('http://i.imgur.com/O0CbWN8.png');
+     background-color: gray;
+     background-size: 1012px 670px;
+     background-repeat:no-repeat;
+     display: compact;
+     font: 13px/18px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
