@@ -35,6 +35,8 @@
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
+      // This line can show what response fb gives us back
+      // alert(JSON.stringify(response))
     });
   }
 

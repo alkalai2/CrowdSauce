@@ -9,19 +9,22 @@ var AccountHandler = function () {
 }
 
 function handleCreateAccountRequest (req, res) {
-  console.log('handleCreateAccountRequest called with' + req.body)
+  console.log('handleCreateAccountRequest called with ' + JSON.stringify(req.route))
+// TODO: We should just pass req into AccountModel Constructor
+// Then use that to just then say rethinkdb.users.add(account.username)
 }
 
 function handleGetAccountRequest (req, res) {
-  console.log('handleGetAccountRequest called with' + req.body)
+  console.log('handleGetAccountRequest called on ' + req.originalUrl)
+  console.log('handleGetAccountRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleUpdateAccountRequest (req, res) {
-  console.log('handleUpdateAccountRequest called with' + req.body)
+  console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleDeleteAccountRequest (req, res) {
-  console.log('handleDeleteAccountRequest called with' + req.body)
+  console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
 }
 
 module.exports = AccountHandler

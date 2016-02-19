@@ -8,19 +8,20 @@ var PostHandler = function () {
 }
 
 function handleCreatePostRequest (req, res) {
-  console.log('handleCreatePostRequest called with' + req.body)
+  console.log('handleCreatePostRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleGetPostRequest (req, res) {
-  console.log('handleGetPostRequest called with' + req.body)
+  console.log('handleGetPostRequest called with ' + req.originalUrl)
+  console.log('handleGetPostRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleUpdatePostRequest (req, res) {
-  console.log('handleUpdatePostRequest called with' + req.body)
+  console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleDeletePostRequest (req, res) {
-  console.log('handleDeletePostRequest called with' + req.body)
+  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
 }
 
 module.exports = PostHandler
