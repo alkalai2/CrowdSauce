@@ -1,13 +1,18 @@
 
 .starter-template {
-  margin-top: 3em;
-  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.panel {
+  margin-top: 5em;
+  margin-left: 1em;
+  margin-right: 30em;
+  /*padding: 10rem 10rem;*/
   text-align: center;
 }
 
 #welcome-header {
 	text-align: left;
-	color: white;
 	font-size: 48px;
 }
 
@@ -15,7 +20,16 @@
 	font-size: 24px;
 }
 
-body {
+body { 
+  background: url('http://i.imgur.com/O0CbWN8.png') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+
+/*body {
      margin: 0;
      background: url('http://i.imgur.com/O0CbWN8.png');
      background-color: gray;
@@ -23,5 +37,5 @@ body {
      background-repeat:no-repeat;
      display: compact;
      font: 13px/18px "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+}*/
 
