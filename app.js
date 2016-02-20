@@ -102,7 +102,7 @@ async.waterfall([
         return rethink.branch(
           containsTable,
           {created: 0},
-          rethink.tableCreate(tableName)
+          rethink.tableCreate(tableName, {primaryKey: schema.tables[index].primaryKey})
         )
       }).run(connection, function (err) {
         callback(err, connection)

@@ -28,9 +28,19 @@
  * * userID is the ID of the person using the app.
 */
 // This is tentative but seems like a good way to serialize users
-var mongoose = require('mongoose')
+var path = require('path')
+var config = require('../config.js')
+var thinky = require('thinky')(config.rethinkdb);
+var r = thinky.r;
+var type = thinky.type;
 
 // This should model the schema we want in our RethinkDB
+var Account = thinky.createModel("users", {
+    userId: type.string(),
+}); 
+
+
+/*// This should model the schema we want in our RethinkDB
 var accountSchema = mongoose.Schema({
   username: {type: String, required: true, index: {unique: true}},
   password: {type: String, required: true},
@@ -49,6 +59,6 @@ accountSchema.methods.getFullName = function () {
   return (this.firstName + ' ' + this.lastName)
 }
 
-var Account = mongoose.model('Account', accountSchema)
+var Account = mongoose.model('Account', accountSchema)*/
 
 module.exports = Account
