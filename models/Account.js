@@ -37,28 +37,6 @@ var type = thinky.type;
 // This should model the schema we want in our RethinkDB
 var Account = thinky.createModel("users", {
     userId: type.string(),
-}); 
-
-
-/*// This should model the schema we want in our RethinkDB
-var accountSchema = mongoose.Schema({
-  username: {type: String, required: true, index: {unique: true}},
-  password: {type: String, required: true},
-  email: {type: String, required: true},
-  firstName: {type: String, required: true},
-  lastName: {type: String, required: true},
-  creationDate: {type: Date, 'default': Date.now},
-  lastLogin: {type: Date, 'default': null},
-  isActive: {type: Boolean, 'default': true},
-  canLogin: {type: Boolean, 'default': true},
-  facebookUserId: {type: String, 'default': null}
-})
-
-// Returns full string of user
-accountSchema.methods.getFullName = function () {
-  return (this.firstName + ' ' + this.lastName)
-}
-
-var Account = mongoose.model('Account', accountSchema)*/
+}, {init: false}); 
 
 module.exports = Account

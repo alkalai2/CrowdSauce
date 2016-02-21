@@ -8,15 +8,22 @@ var AccountHandler = function () {
   this.deleteAccount = handleDeleteAccountRequest
 }
 
+// called when a user logs in, add userId to DB if not present
+// create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
   console.log('handleCreateAccountRequest called with ' + JSON.stringify(req.route))
   var userId = req.params.userId
+  
+  // create Account object
   var account = new Account({userId: userId})
+
+  // use Thinky to save Account data
   account.save().then(function(result) {
-        res.send(200, JSON.stringify(result))
-    }).error(function(error){
-    	res.send(500, {error:error.message})
-    })
+    res.send(200, JSON.stringify(result))
+  }).error(function(error){
+    // something went wrong
+    res.send(500, {error:error.message})
+  })
 
 // TODO: We should just pass req into AccountModel Constructor
 // Then use that to just then say rethinkdb.users.add(account.username)

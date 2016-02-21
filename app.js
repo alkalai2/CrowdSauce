@@ -10,12 +10,17 @@ var async = require('async')
 var express = require('express')
 var rethink = require('rethinkdb')
 var morgan = require('morgan')
+var bodyParser = require('body-parser')
+
 
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
 
 // Run Express server to handle requests
 var app = express()
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json());
+
 
 // Morgan used for logging
 // https://github.com/expressjs/morgan

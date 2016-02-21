@@ -7,26 +7,33 @@ var PostHandler = function () {
   this.deletePost = handleDeletePostRequest
 }
 
+// called when a user is creating a new post
+// use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
-  console.log('handleCreatePostRequest called with ' + JSON.stringify(req.route))
-  console.log("Request body: " + req.body)
-  var userId = req.params.userId
-  var post = new Post(
-  	{userId: userId,
-  	 ingredients: req.body.ingredients,
-  	 directions: req.body.directions ,
-     recipeLink: req.body.recipeLink,
-     imageLinks: req.body.imageLinks,
-     tags: req.body.tags,
-     notes: req.body.notes,
-     rating: req.body.rating
-  })
+  console.log(' handleCreatePostRequest called with ' + JSON.stringify(req.route))
+  console.log(' handleCreatePostRequest request body : ' + JSON.stringify(req.body))
 
-  post.save().then(function(result) {
-        res.send(200, JSON.stringify(result))
-    }).error(function(error){
-    	res.send(500, {error:error.message})
+  // create Post object
+  var post = new Post(
+  	{
+      userId: req.params.userId,
+      ingredients: req.body.ingredients,
+      directions: req.body.directions ,
+      recipeLink: req.body.recipeLink,
+      imageLinks: req.body.imageLinks,
+      tags: req.body.tags,
+      notes: req.body.notes,
+      rating: req.body.rating
     })
+
+  // try to store in DB
+  post.save().then(function(result) {
+      res.status(200).send(JSON.stringify(result))
+      //res.send(200, JSON.stringify(result))
+  }).error(function(error){
+    res.status(500).send({error:error.message})
+    // res.send(500, {error:error.message})
+  })
 
 }
 
