@@ -43,9 +43,11 @@ app.use(morgan('combined', {stream: accessLogStream}))
 
 
 // REST routes for
+/*
 app.route('/addUser')
   .get(addUserFromFacebook) // Get is currently just to test endpoint
   .post(addUserFromFacebook)
+  */
 
 app.use(express.static('public'))
 
