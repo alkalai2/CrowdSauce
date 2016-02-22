@@ -1,6 +1,9 @@
 // ============================== Setup code ==================================
 // Setup boilerplate code for server
 var path = require('path')
+var routes = require('./Routes')
+var AccountHandler = require('./handlers/AccountHandler')
+var PostHandler = require('./handlers/PostHandler')
 var fileStreamRotator = require('file-stream-rotator')
 var fs = require('fs')
 var async = require('async')
@@ -9,11 +12,17 @@ var rethink = require('rethinkdb')
 var morgan = require('morgan')
 var react_bootstrap = require('react-bootstrap')
 var jQuery = require('jquery')
+var bodyParser = require('body-parser')
+
+
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
 
 // Run Express server to handle requests
 var app = express()
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json());
+
 
 // Morgan used for logging
 // https://github.com/expressjs/morgan
@@ -32,7 +41,7 @@ var accessLogStream = fileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
-// ============================== Page Routes =================================
+
 // REST routes for
 app.route('/addUser')
   .get(addUserFromFacebook) // Get is currently just to test endpoint
@@ -59,19 +68,27 @@ app.get('/about', function(req, res){
 // Something bad happened
 app.use(handle404)
 
+// ============================== Handlers ====================================
+var handlers = {
+  account: new AccountHandler(),
+  post: new PostHandler()
+}
+// ============================== Page Routing ================================
+/*
+ * Entry point to app - looks for index.html as landing page
+ */
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, '/public/'))
+})
+
+
 // Generic error handling middleware.
 app.use(handleError)
 
-
-
 // access files in public folder
-app.use(express.static('public'));
+app.use(express.static('public'))
 
 // ============================== Functions ===================================
-/** Page-not-found **/
-function handle404 (req, res, next) {
-  res.status(404).end('not found')
-}
 
 /** Send back a 500 page and log the error to the console. **/
 function handleError (err, req, res, next) {
@@ -81,45 +98,11 @@ function handleError (err, req, res, next) {
 
 /** Store db connection and listen on port in configs **/
 function startExpress (connection) {
+  routes.setup(app, handlers)
   app._rdpConn = connection
   app.listen(config.express.port)
   console.log('Listening on port' + config.express.port)
   exports = module.exports = app
-}
-
-/*
- * The response object that's provided to your callback contains a number of fields:
- *
- * {
- *     status: 'connected',
- *     authResponse: {
- *         accessToken: '...',
- *         expiresIn:'...',
- *         signedRequest:'...',
- *         userID:'...
- *     }
- * }
- * status specifies the login status of the person using the app. The status
- *   can be one of the following:
- *
- * * connected. The person is logged into Facebook, and has logged into your app.
- * * not_authorized. The person is logged into Facebook, but has not logged
- *     into your app.
- * * unknown. The person is not logged into Facebook, so you don't know if
- *     they've logged into your app. Or FB.logout() was called before and therefore,
- *     it cannot connect to Facebook.
- * * authResponse is included if the status is connected and is made up of the following:
- * * accessToken. Contains an access token for the person using the app.
- * * expiresIn. Indicates the UNIX time when the token expires and needs to be renewed.
- * * signedRequest. A signed parameter that contains information about the person
- *     using the app.
- * * userID is the ID of the person using the app.
-*/
-
-/** Adds a user with json response from facebook **/
-function addUserFromFacebook (req, res, next) {
-  // TODO: Figure out what is returned in response from facebook upon login.
-  console.log('Add user endpoint called')
 }
 
 // ============================== Start Server ================================
@@ -154,7 +137,7 @@ async.waterfall([
         return rethink.branch(
           containsTable,
           {created: 0},
-          rethink.tableCreate(tableName)
+          rethink.tableCreate(tableName, {primaryKey: schema.tables[index].primaryKey})
         )
       }).run(connection, function (err) {
         callback(err, connection)
@@ -170,5 +153,3 @@ async.waterfall([
 
   startExpress(connection)
 })
-
-// TODO: Setup everything else
