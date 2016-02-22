@@ -31,6 +31,7 @@ function handleCreatePostRequest (req, res) {
       res.status(200).send(JSON.stringify(result))
       //res.send(200, JSON.stringify(result))
   }).error(function(error){
+    console.log(error.message)
     res.status(500).send({error:error.message})
     // res.send(500, {error:error.message})
   })
