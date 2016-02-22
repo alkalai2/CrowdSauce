@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Facebook Login JavaScript Example</title>
-<meta charset="UTF-8">
+
+  <title>CrowdSauce</title>
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="js/login.js"></script>
+  <link href="css/landing-page.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
 </head>
 <body>
-<script>
+
+  <script>
 
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -50,13 +62,52 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-</script>
+  </script>
 
-<!-- This is the Login Button displayed on the page. -->
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-
-<div id="status">
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+  <div id="status">
 </div>
+-->
+<nav class="navbar navbar-inverse navbar-fixed-top" role=navigation>
+  <a class="navbar-brand" href="#">CrowdSauce</a>
+  <ul class="nav navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/about">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/postrecipe">Post Recipe</a>
+    </li>
+  </ul>
+</nav>
 
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h1 id="welcome-header">Welcome to CrowdSauce</h1>
+  </div>
+  
+
+
+  <div class="panel-body">
+    <div class="starter-template">
+      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="fbLoginBtn">
+    </fb:login-button>
+  </div>
+</div>
+<!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"> </script>
+  </body>
+  </html>
 </body>
 </html>

@@ -10,6 +10,8 @@ var async = require('async')
 var express = require('express')
 var rethink = require('rethinkdb')
 var morgan = require('morgan')
+var react_bootstrap = require('react-bootstrap')
+var jQuery = require('jquery')
 var bodyParser = require('body-parser')
 
 
@@ -39,6 +41,33 @@ var accessLogStream = fileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
+
+// REST routes for
+app.route('/addUser')
+  .get(addUserFromFacebook) // Get is currently just to test endpoint
+  .post(addUserFromFacebook)
+
+app.use(express.static('public'))
+
+app.get('/', function(req, res){
+    res.sendFile(path.join(__dirname + '/public/index.html'));
+  })
+
+app.get('/login', function(req, res){
+    res.sendFile(path.join(__dirname + '/public/views/login.html'));
+  })
+
+app.get('/postrecipe', function(req, res){
+    res.sendFile(path.join(__dirname + '/public/views/postrecipe.html'));
+  })
+
+app.get('/about', function(req, res){
+    res.sendFile(path.join(__dirname + '/public/views/about.html'));
+  })
+
+// Something bad happened
+app.use(handle404)
+
 // ============================== Handlers ====================================
 var handlers = {
   account: new AccountHandler(),
@@ -51,6 +80,7 @@ var handlers = {
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '/public/'))
 })
+
 
 // Generic error handling middleware.
 app.use(handleError)
