@@ -175,7 +175,6 @@ var RecipeLinkForm = React.createClass({
 });
 
 ReactDOM.render(<PostRecipe />, content);
-=======
 		
 var RecipeCustomForm = React.createClass({
       getInitialState: function() {

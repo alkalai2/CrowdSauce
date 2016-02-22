@@ -68,7 +68,7 @@ app.get('/about', function(req, res){
   })
 
 // Something bad happened
-app.use(handle404)
+// app.use(handle404)
 
 // ============================== Handlers ====================================
 var handlers = {
