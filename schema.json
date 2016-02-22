@@ -2,8 +2,9 @@
     "tables": [
         {
             "tableName": "posts",
+            "primaryKey": "postId",
             "columns": [
-                "postID",
+                "postId",
                 "directions",
                 "recipeLink",
                 "imageLinks",
@@ -16,31 +17,35 @@
         },
         {
             "tableName": "users",
+            "primaryKey": "userId",
             "columns": [
-                "userID",
+                "userId",
                 "firstName",
                 "lastName"
             ]
         },
         {
             "tableName": "userPostHistory",
+            "primaryKey": "userId",
             "columns": [
-                "userID",
-                "postIDs"
+                "userId",
+                "postIds"
             ]
         },
         {
             "tableName": "userLikeHistory",
+            "primaryKey": "userId",
             "columns": [
-                "userID",
-                "postIDs"
+                "userId",
+                "postIds"
             ]
         },
         {
             "tableName": "tagsIndex",
+            "primaryKey": "tagName",
             "columns": [
                 "tagName",
-                "postIDs"
+                "postIds"
             ]
         }
     ]
