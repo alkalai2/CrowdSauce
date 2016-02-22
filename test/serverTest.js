@@ -1,11 +1,10 @@
-var server = require('server')
-	assert = require('assert')
-	request = require('request')
-	app = require('../app');
+var assert = require('assert')
+    request = require('request')
+    app = require('../app');
 
 describe('Basic Server Tests', function() {
 
-    it('site url should return 200', function (done) {
+  it('site url should return 200', function (done) {
 
       var crowdsauce_url = "http://localhost:3000"
 
@@ -25,7 +24,7 @@ describe('Basic Server Tests', function() {
         done()
       })
     });
-    it('post page url should return 200', function (done) {
+  it('post page url should return 200', function (done) {
 
       var crowdsauce_url = "http://localhost:3000/postrecipe.html"
 
@@ -34,5 +33,5 @@ describe('Basic Server Tests', function() {
         assert.equal(200, res.statusCode, "response was not a 200")
         done()
       })
-    });
+  });
 });

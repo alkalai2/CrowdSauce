@@ -20,6 +20,7 @@
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
     "react-dom": "^0.14.7",
+    "request": "^2.69.0",
     "rethinkdb": "^2.2.1",
     "thinky": "^2.2.4"
   }
