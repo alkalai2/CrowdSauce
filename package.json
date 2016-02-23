@@ -19,6 +19,7 @@
     "body-parser": "^1.15.0",
     "file-stream-rotator": "0.0.6",
     "jquery": "^2.2.0",
+    "mocha": "^2.4.5",
     "morgan": "^1.7.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
