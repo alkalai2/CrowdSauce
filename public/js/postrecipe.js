@@ -170,7 +170,8 @@ var RecipeLinkForm = React.createClass({
     handleSubmit: function(){
     var link = this.state.link.trim();
     var data = { 
-      recipeLink: link
+      recipeLink: link,
+      directions: this.state.description.trim(),
     }
       jQuery.ajax({
           url: 'http://localhost:3000/api/posts/12345',
