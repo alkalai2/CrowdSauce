@@ -5,10 +5,14 @@ function statusChangeCallback(response) {
     FB.api('/me', function(response2) {
       // This function is used to obtain information about the user.
       document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response2.name + '!';
+      $('#fbLoginBtn').hide();
+      $('#fbLogoutBtn').show();
     });
   } else {
     // User is not logged in, should display login page.
     document.getElementById('status').innerHTML = "You are not logged in";
+    $('#fbLogoutBtn').hide();
+    $('#fbLoginBtn').show();
   }
 }
 // This function is called when someone finishes with the Login Button.
@@ -16,6 +20,11 @@ function checkLoginState() {
   FB.getLoginStatus(function(response) {
     statusChangeCallback(response);
   });
+}
+function fbLogout() {
+  FB.logout(function(response) {
+    statusChangeCallback(response)
+  })
 }
 window.fbAsyncInit = function() {
   FB.init({

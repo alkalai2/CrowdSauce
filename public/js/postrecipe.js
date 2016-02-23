@@ -3,7 +3,6 @@ Tab = ReactBootstrap.Tab,
 Input = ReactBootstrap.Input,
 ButtonInput = ReactBootstrap.ButtonInput
 
-
 var PostRecipe = React.createClass({
 
     getInitialState: function(){
@@ -84,8 +83,9 @@ handleSubmit: function(){
     var data = { 
       ingredients: items.trim(),
       directions: this.state.directions.trim(),
-      imageLinks: this.state.imgsrc.trim()
-    }
+      imageLinks: this.state.imgsrc.trim(),
+      userId: fbUserID
+    };
     console.log("data : " + data.toString())
       jQuery.ajax({
           url: 'http://localhost:3000/api/posts/12345',
@@ -153,75 +153,75 @@ handleSubmit: function(){
 
 var RecipeLinkForm = React.createClass({
 
-    getInitialState: function(){
-        return {title:'', link:'', description:''};
-    },
+  getInitialState: function() {
+    return {title:'', link:'', description:''};
+  },
 
 
-    handleTitleChange: function(e){
-        this.setState({title: e.target.value});
-    },
-    handleLinkChange: function(e){
-        this.setState({link: e.target.value});
-    },
-    handleDescChange: function(e){
-        this.setState({description: e.target.value});
-    },
-    handleSubmit: function(){
+  handleTitleChange: function(e) {
+    this.setState({title: e.target.value});
+  },
+  handleLinkChange: function(e) {
+    this.setState({link: e.target.value});
+  },
+  handleDescChange: function(e) {
+    this.setState({description: e.target.value});
+  },
+  handleSubmit: function() {
     var link = this.state.link.trim();
     var data = { 
       recipeLink: link
-    }
-      jQuery.ajax({
-          url: 'http://localhost:3000/api/posts/12345',
-          dataType: 'json',
-          type: 'POST',
-          data: data,
-          success: function(data) {
-            console.log("Successfully added recipe to db")
-        }.bind(this),
-        error: function(xhr, status, err) {
-            console.error('http://localhost:3000/api/posts/12345', status, err.toString());
-        }.bind(this)
+    };
+    jQuery.ajax({
+      url: 'http://localhost:3000/api/posts/12345',
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        console.log("Successfully added recipe to db")
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error('http://localhost:3000/api/posts/12345', status, err.toString());
+      }.bind(this)
     });
   },
 
 
-    render: function(){
-        return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-            <Input
-            type="text"
-            label="Title"
-            placeholder="Mom's Spaghetti"
-            labelClassName="col-xs-2" 
-            wrapperClassName="col-xs-10"
-            bsStyle={this.state.title.length > 0 ? 'success' : 'error'}
-            value={this.state.title}
-            onChange={this.handleTitleChange}
-            />
-            <Input
-            type="text"
-            label="Link"
-            placeholder="http://allrecipes.com/..."
-            labelClassName="col-xs-2" 
-            wrapperClassName="col-xs-10"
-            bsStyle={this.state.link.length > 0 ? 'success' : 'error'}
-            value={this.state.link}
-            onChange={this.handleLinkChange}
-            />
-            <Input
-            type="textarea"
-            label="Add a Description"
-            labelClassName="col-xs-2" 
-            wrapperClassName="col-xs-10"
-            value={this.state.description}
-            onChange={this.handleDescChange}
-            />
-            <ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large" />
-            </form>
-            );
-}
+  render: function(){
+    return (
+      <form className="form-horizontal" onSubmit={this.handleSubmit}>
+      <Input
+        type="text"
+        label="Title"
+        placeholder="Mom's Spaghetti"
+        labelClassName="col-xs-2"
+        wrapperClassName="col-xs-10"
+        bsStyle={this.state.title.length > 0 ? 'success' : 'error'}
+        value={this.state.title}
+        onChange={this.handleTitleChange}
+      />
+      <Input
+        type="text"
+        label="Link"
+        placeholder="http://allrecipes.com/..."
+        labelClassName="col-xs-2"
+        wrapperClassName="col-xs-10"
+        bsStyle={this.state.link.length > 0 ? 'success' : 'error'}
+        value={this.state.link}
+        onChange={this.handleLinkChange}
+      />
+      <Input
+        type="textarea"
+        label="Add a Description"
+        labelClassName="col-xs-2"
+        wrapperClassName="col-xs-10"
+        value={this.state.description}
+        onChange={this.handleDescChange}
+      />
+      <ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large" />
+      </form>
+    );
+  }
 });
 
 
