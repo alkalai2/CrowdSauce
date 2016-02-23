@@ -167,11 +167,29 @@ var RecipeLinkForm = React.createClass({
     handleDescChange: function(e){
         this.setState({description: e.target.value});
     },
+    handleSubmit: function(){
+    var link = this.state.link.trim();
+    var data = { 
+      recipeLink: link
+    }
+      jQuery.ajax({
+          url: 'http://localhost:3000/api/posts/12345',
+          dataType: 'json',
+          type: 'POST',
+          data: data,
+          success: function(data) {
+            console.log("Successfully added recipe to db")
+        }.bind(this),
+        error: function(xhr, status, err) {
+            console.error('http://localhost:3000/api/posts/12345', status, err.toString());
+        }.bind(this)
+    });
+  },
 
 
     render: function(){
         return (
-            <form className="form-horizontal">
+            <form className="form-horizontal" onSubmit={this.handleSubmit}>
             <Input
             type="text"
             label="Title"
