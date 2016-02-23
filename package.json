@@ -4,11 +4,14 @@
     "standard": "^3.0.0"
   },
   "scripts": {
-    "test": "standard"
+    "test": "npm run style || npm run mocha",
+    "style": "standard",
+    "mocha": "mocha test/*.js"
   },
   "standard": {
     "ignore": [
-      "/node_modules/"
+      "/node_modules/",
+      "/public/js/libs/"
     ]
   },
   "dependencies": {
@@ -22,6 +25,7 @@
     "react-dom": "^0.14.7",
     "request": "^2.69.0",
     "rethinkdb": "^2.2.1",
+    "standard": "^6.0.7",
     "thinky": "^2.2.4"
   }
 }
