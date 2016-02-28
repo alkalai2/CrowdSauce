@@ -66,7 +66,6 @@ function handleGetPostRequest (req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      console.log(key, val)
       r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(req.query[q])).run(// { key: val } ).run(
           connection, function (err, cursor) {
             if (err) throw err
