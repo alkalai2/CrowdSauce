@@ -16,7 +16,7 @@ var Post = thinky.createModel('posts', {
   tags: type.array().default([]),
   notes: type.string().default(''),
   rating: type.number().default(0)
-}, {init: false}
+}
 )
 
 module.exports = Post

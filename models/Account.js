@@ -37,6 +37,7 @@ var type = thinky.type;
 // This should model the schema we want in our RethinkDB
 var Account = thinky.createModel("users", {
     userId: type.string(),
-}, {init: false}); 
+  // Note we shouldnt use explicit primary keys, use thinky's belongsTo hasMany etc to handle relations.
+});
 
 module.exports = Account

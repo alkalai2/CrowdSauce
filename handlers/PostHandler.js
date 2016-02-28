@@ -61,13 +61,31 @@ function handleCreatePostRequest (req, res) {
 }
 
 function handleGetPostRequest (req, res) {
-  r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
-      if (err) throw err;
-      cursor.toArray(function(err, result) {
+  // Check if there is a query string passed in, slightly primitive implementation right now
+  var queried = false
+  for (var q in req.query) {
+    if (req.query.hasOwnProperty(q)) {
+      queried = true
+      console.log(key, val)
+      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(req.query[q])).run(// { key: val } ).run(
+          connection, function (err, cursor) {
+            if (err) throw err
+            cursor.toArray(function (err, result) {
+              if (err) throw err
+              res.send(200, JSON.stringify(result, null, 2))
+          })
+      })
+    }
+  }
+  if(!queried){
+    r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
           if (err) throw err;
           res.send(200,JSON.stringify(result, null, 2))
-      })
-  })
+        })
+    })
+  }
 }
 
 function handleUpdatePostRequest (req, res) {

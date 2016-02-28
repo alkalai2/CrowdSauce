@@ -58,13 +58,6 @@ var accessLogStream = fileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
-// REST routes for
-/*
-app.route('/addUser')
-  .get(addUserFromFacebook) // Get is currently just to test endpoint
-  .post(addUserFromFacebook)
-  */
-
 app.use(express.static('public'))
 
 app.get('/', function (req, res) {
@@ -144,22 +137,6 @@ async.waterfall([
     }).run(connection, function (err) {
       callback(err, connection)
     })
-  },
-  function createTables (connection, callback) {
-    var schema = JSON.parse(fs.readFileSync('schema.json', 'utf8'))
-    for (var index in schema.tables) {
-      var tableName = schema.tables[index].tableName
-      // Create the table if needed.
-      rethink.tableList().contains(tableName).do(function (containsTable) {
-        return rethink.branch(
-          containsTable,
-          {created: 0},
-          rethink.tableCreate(tableName, {primaryKey: schema.tables[index].primaryKey})
-        )
-      }).run(connection, function (err) {
-        callback(err, connection)
-      })
-    }
   }
 ], function (err, connection) {
   if (err) {

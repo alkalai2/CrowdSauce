@@ -1,5 +1,6 @@
 // Note prefix all with /api/
 function setup (app, handlers) {
+
   // Add userId to list of users upon login
   app.post('/api/accounts/', handlers.account.createAccount)
   app.get('/api/accounts/', handlers.account.getAccount)
