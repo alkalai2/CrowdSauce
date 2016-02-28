@@ -60,5 +60,9 @@ function handleGetAccountRequest (req, res) {
 
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
+}
+function handleDeleteAccountRequest (req, res) {
+  console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
+}
 
 module.exports = AccountHandler

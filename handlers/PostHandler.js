@@ -87,6 +87,10 @@ function handleGetPostRequest (req, res) {
   }
 }
 
+function handleUpdatePostRequest (req, res) {
+  console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
+}
+
 function handleDeletePostRequest (req, res) {
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
 }
