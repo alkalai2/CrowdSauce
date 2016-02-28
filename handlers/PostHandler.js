@@ -19,26 +19,11 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
-  if (!fbAppAccessToken) {
-    console.error('Could not create post because there is no facebook app access token.')
-    return
-  }
-  var invalid_access = false
-  FB.api('/debug_token?', 'get', {
-    input_token: req.body.accessToken,
-    access_token: fbAppAccessToken
-  }, function (response) {
-    if (!response.data.is_valid) {
-      console.log('Invalid access attempted')
-      invalid_access = true
-    }
-  })
-  if (invalid_access) return
 
   // create Post object
   var post = new Post(
     {
-      userId: req.body.userId,
+      userId: req.query.userId,
       ingredients: req.body.ingredients,
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
