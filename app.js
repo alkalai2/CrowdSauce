@@ -1,7 +1,7 @@
 // ============================== Setup code ==================================
 // Setup boilerplate code for server
 var path = require('path')
-var routes = require('./Routes')
+var routes = require('./routes')
 var AccountHandler = require('./handlers/AccountHandler')
 var PostHandler = require('./handlers/PostHandler')
 var fileStreamRotator = require('file-stream-rotator')
@@ -10,28 +10,25 @@ var async = require('async')
 var express = require('express')
 var rethink = require('rethinkdb')
 var morgan = require('morgan')
-var react_bootstrap = require('react-bootstrap')
-var jQuery = require('jquery')
 var bodyParser = require('body-parser')
 var FB = require('fb')
-var util = require('util')
-
+var swagger = require('swagger-node-express')
 
 // Obtain facebook app access token
-try {
-  FB.api('/oauth/access_token?', 'get', {
-    client_id: '563086800536760',
-    client_secret: fs.readFileSync('app_secret.txt', 'utf-8'),
-    grant_type: 'client_credentials'
-  }, function (response) {
-    fbAppAccessToken = response.access_token;
-  });
-} catch (e) {
-  console.error("Could not obtain facebook app access token! This is probably because app_secret.txt is missing. " +
-    "Please create it and fill it with the App Secret found at " +
-    "https://developers.facebook.com/apps/563086800536760/dashboard/")
-  fbAppAccessToken = false
-}
+//try {
+//  FB.api('/oauth/access_token?', 'get', {
+//    client_id: '563086800536760',
+//    client_secret: fs.readFileSync('app_secret.txt', 'utf-8'),
+//    grant_type: 'client_credentials'
+//  }, function (response) {
+//    fbAppAccessToken = response.access_token
+//  })
+//} catch (e) {
+//  console.error('Could not obtain facebook app access token! This is probably because app_secret.txt is missing. ' +
+//    'Please create it and fill it with the App Secret found at ' +
+//    'https://developers.facebook.com/apps/563086800536760/dashboard/')
+//  fbAppAccessToken = false
+//}
 
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
@@ -39,8 +36,10 @@ var config = require(path.join(__dirname, '/config.js'))
 // Run Express server to handle requests
 var app = express()
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
+// Couple application to the Swagger module
+swagger.setAppHandler(app)
 
 // Morgan used for logging
 // https://github.com/expressjs/morgan
@@ -59,7 +58,6 @@ var accessLogStream = fileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
-
 // REST routes for
 /*
 app.route('/addUser')
@@ -69,21 +67,21 @@ app.route('/addUser')
 
 app.use(express.static('public'))
 
-app.get('/', function(req, res){
-    res.sendFile(path.join(__dirname + '/public/index.html'));
-  })
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname + '/public/index.html'))
+})
 
-app.get('/login', function(req, res){
-    res.sendFile(path.join(__dirname + '/public/views/login.html'));
-  })
+app.get('/login', function (req, res) {
+  res.sendFile(path.join(__dirname + '/public/views/login.html'))
+})
 
-app.get('/postrecipe', function(req, res){
-    res.sendFile(path.join(__dirname + '/public/views/postrecipe.html'));
-  })
+app.get('/postrecipe', function (req, res) {
+  res.sendFile(path.join(__dirname + '/public/views/postrecipe.html'))
+})
 
-app.get('/about', function(req, res){
-    res.sendFile(path.join(__dirname + '/public/views/about.html'));
-  })
+app.get('/about', function (req, res) {
+  res.sendFile(path.join(__dirname + '/public/views/about.html'))
+})
 
 // Something bad happened
 // app.use(handle404)
@@ -100,7 +98,6 @@ var handlers = {
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '/public/'))
 })
-
 
 // Generic error handling middleware.
 app.use(handleError)

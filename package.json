@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "swagger-node-express": "~2.0",
     "body-parser": "^1.15.0",
     "file-stream-rotator": "0.0.6",
     "jquery": "^2.2.0",

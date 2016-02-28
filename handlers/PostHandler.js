@@ -8,8 +8,6 @@ var PostHandler = function () {
   this.deletePost = handleDeletePostRequest
 }
 
-
-
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
@@ -17,16 +15,16 @@ function handleCreatePostRequest (req, res) {
   console.log(' handleCreatePostRequest request body : ' + JSON.stringify(req.body))
 
   if (!fbAppAccessToken) {
-    console.error("Could not create post because there is no facebook app access token.")
+    console.error('Could not create post because there is no facebook app access token.')
     return
   }
   var invalid_access = false
   FB.api('/debug_token?', 'get', {
     input_token: req.body.accessToken,
     access_token: fbAppAccessToken
-  }, function(response) {
+  }, function (response) {
     if (!response.data.is_valid) {
-      console.log("Invalid access attempted")
+      console.log('Invalid access attempted')
       invalid_access = true
     }
   })
@@ -34,10 +32,10 @@ function handleCreatePostRequest (req, res) {
 
   // create Post object
   var post = new Post(
-  	{
-      userId: req.params.userId,
+    {
+      userId: req.body.userId,
       ingredients: req.body.ingredients,
-      directions: req.body.directions ,
+      directions: req.body.directions,
       recipeLink: req.body.recipeLink,
       imageLinks: req.body.imageLinks,
       tags: req.body.tags,
@@ -46,13 +44,13 @@ function handleCreatePostRequest (req, res) {
     })
 
   // try to store in DB
-  post.save().then(function(result) {
-      res.status(200).send(JSON.stringify(result))
-      //res.send(200, JSON.stringify(result))
-  }).error(function(error){
+  post.save().then(function (result) {
+    res.status(200).send(JSON.stringify(result))
+  // res.send(200, JSON.stringify(result))
+  }).error(function (error) {
     console.log(error.message)
-    res.status(500).send({error:error.message})
-    // res.send(500, {error:error.message})
+    res.status(500).send({error: error.message})
+  // res.send(500, {error:error.message})
   })
 
 }
