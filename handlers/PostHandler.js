@@ -1,5 +1,7 @@
 var Post = require('../models/Post')
 var FB = require('fb')
+var config = require('../config.js')
+var r = require('rethinkdb')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -8,12 +10,15 @@ var PostHandler = function () {
   this.deletePost = handleDeletePostRequest
 }
 
+var connection = null;
+r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
+    if (err) throw err;
+    connection = conn
+})
+
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
-  console.log(' handleCreatePostRequest called with ' + JSON.stringify(req.route))
-  console.log(' handleCreatePostRequest request body : ' + JSON.stringify(req.body))
-
   if (!fbAppAccessToken) {
     console.error('Could not create post because there is no facebook app access token.')
     return
@@ -56,8 +61,13 @@ function handleCreatePostRequest (req, res) {
 }
 
 function handleGetPostRequest (req, res) {
-  console.log('handleGetPostRequest called with ' + req.originalUrl)
-  console.log('handleGetPostRequest called with ' + JSON.stringify(req.route))
+  r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
+      if (err) throw err;
+      cursor.toArray(function(err, result) {
+          if (err) throw err;
+          res.send(200,JSON.stringify(result, null, 2))
+      })
+  })
 }
 
 function handleUpdatePostRequest (req, res) {

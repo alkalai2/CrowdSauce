@@ -15,20 +15,20 @@ var FB = require('fb')
 var swagger = require('swagger-node-express')
 
 // Obtain facebook app access token
-//try {
-//  FB.api('/oauth/access_token?', 'get', {
-//    client_id: '563086800536760',
-//    client_secret: fs.readFileSync('app_secret.txt', 'utf-8'),
-//    grant_type: 'client_credentials'
-//  }, function (response) {
-//    fbAppAccessToken = response.access_token
-//  })
-//} catch (e) {
-//  console.error('Could not obtain facebook app access token! This is probably because app_secret.txt is missing. ' +
-//    'Please create it and fill it with the App Secret found at ' +
-//    'https://developers.facebook.com/apps/563086800536760/dashboard/')
-//  fbAppAccessToken = false
-//}
+try {
+  FB.api('/oauth/access_token?', 'get', {
+    client_id: '563086800536760',
+    client_secret: fs.readFileSync('app_secret.txt', 'utf-8'),
+    grant_type: 'client_credentials'
+  }, function (response) {
+    fbAppAccessToken = response.access_token
+  })
+} catch (e) {
+  console.error('Could not obtain facebook app access token! This is probably because app_secret.txt is missing. ' +
+    'Please create it and fill it with the App Secret found at ' +
+    'https://developers.facebook.com/apps/563086800536760/dashboard/')
+  fbAppAccessToken = false
+}
 
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
