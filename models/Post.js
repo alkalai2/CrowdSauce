@@ -7,7 +7,7 @@ var type = thinky.type
 
 // This should model the schema we want in our RethinkDB
 var Post = thinky.createModel('posts', {
-  userId: type.string().default(0),
+  userId: type.number().default(0),
   ingredients: type.string().default(''),
   directions: type.string().default(''),
   recipeLink: type.string().default(''),

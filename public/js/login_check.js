@@ -10,7 +10,7 @@ window.fbAsyncInit = function () {
       window.location.replace('login');
     }
     fbUserID = response.authResponse.userID;
-    console.log(fbUserID);
+    fbAccessToken = response.authResponse.accessToken;
   });
 };
 // Load the SDK asynchronously

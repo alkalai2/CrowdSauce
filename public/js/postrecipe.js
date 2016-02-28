@@ -87,7 +87,7 @@ var RecipeCustomForm = React.createClass({
       imageLinks: this.state.imgsrc.trim(),
       userId: fbUserID
     };
-    var url = 'http://localhost:3000/api/posts/' + fbUserID;
+    var url = 'http://localhost:3000/api/posts/';
     console.log("data : " + data.toString());
     jQuery.ajax({
       url: url,
@@ -174,9 +174,10 @@ var RecipeLinkForm = React.createClass({
     var link = this.state.link.trim();
     var data = {
       accessToken: fbAccessToken,
-      recipeLink: link
+      recipeLink: link,
+      userId: fbUserID
     };
-    var url = 'http://localhost:3000/api/posts/' + fbUserID;
+    var url = 'http://localhost:3000/api/posts/';
     jQuery.ajax({
       url: url,
       dataType: 'json',
