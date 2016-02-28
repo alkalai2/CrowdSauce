@@ -1,4 +1,5 @@
 log/*
+rethinkdb_data/*
 
 # we shouldn't commit the App Secret to a public repo,
 # just head to https://developers.facebook.com/apps/563086800536760/
