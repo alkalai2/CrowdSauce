@@ -2,6 +2,7 @@ var FB = require('fb')
 
 // Note prefix all with /api/
 function setup (app, handlers) {
+// Dont do this.
 //  app.all('/api/posts/', function (req, res, next) {
 //    if (req.body.accessToken === undefined) {
 //      res.sendStatus(401)

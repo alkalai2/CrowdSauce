@@ -37,8 +37,7 @@ function handleGetAccountRequest (req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      console.log(key, val)
-      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(req.query[q])).run(// { key: val } ).run(
+      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(req.query[q])).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
@@ -61,10 +60,5 @@ function handleGetAccountRequest (req, res) {
 
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
-}
-
-function handleDeleteAccountRequest (req, res) {
-  console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
-}
 
 module.exports = AccountHandler

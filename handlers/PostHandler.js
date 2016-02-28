@@ -19,6 +19,21 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
+  if (!fbAppAccessToken) {
+    console.error('Could not create post because there is no facebook app access token.')
+    return
+  }
+  var invalid_access = false
+  FB.api('/debug_token?', 'get', {
+    input_token: req.body.accessToken,
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (!response.data.is_valid) {
+      console.log('Invalid access attempted')
+      invalid_access = true
+    }
+  })
+  if (invalid_access) return
 
   // create Post object
   var post = new Post(
@@ -51,8 +66,7 @@ function handleGetPostRequest (req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      console.log(key, val)
-      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(req.query[q])).run(// { key: val } ).run(
+      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(req.query[q])).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
@@ -71,10 +85,6 @@ function handleGetPostRequest (req, res) {
         })
     })
   }
-}
-
-function handleUpdatePostRequest (req, res) {
-  console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
 }
 
 function handleDeletePostRequest (req, res) {
