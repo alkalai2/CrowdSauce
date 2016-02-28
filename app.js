@@ -68,7 +68,6 @@ function init() {
    .get(addUserFromFacebook) // Get is currently just to test endpoint
    .post(addUserFromFacebook)
    */
-
   app.use(express.static('public'))
 
   app.get('/', function (req, res) {
@@ -126,51 +125,35 @@ function init() {
     exports = module.exports = app
   }
 
-  // ============================== Start Server ================================
-  /*
-   * Connect to rethinkdb, create the needed tables/indexes and then start express.
-   * Create tables/indexes then start express
-   * Partial Code taken from RethinkDB + Express guide
-   * https://rethinkdb.com/docs/examples/node-todo/
-   */
-  async.waterfall([
-    function connect(callback) {
-      rethink.connect(config.rethinkdb, callback)
-    },
-    function createDatabase(connection, callback) {
-      // Create the database if needed.
-      rethink.dbList().contains(config.rethinkdb.db).do(function (containsDb) {
-        return rethink.branch(
-          containsDb,
-          {created: 0},
-          rethink.dbCreate(config.rethinkdb.db)
-        )
-      }).run(connection, function (err) {
-        callback(err, connection)
-      })
-    },
-    function createTables(connection, callback) {
-      var schema = JSON.parse(fs.readFileSync('schema.json', 'utf8'))
-      for (var index in schema.tables) {
-        var tableName = schema.tables[index].tableName
-        // Create the table if needed.
-        rethink.tableList().contains(tableName).do(function (containsTable) {
-          return rethink.branch(
-            containsTable,
-            {created: 0},
-            rethink.tableCreate(tableName, {primaryKey: schema.tables[index].primaryKey})
-          )
-        }).run(connection, function (err) {
-          callback(err, connection)
-        })
-      }
-    }
-  ], function (err, connection) {
-    if (err) {
-      console.error(err)
-      process.exit(1)
-      return
-    }
+// ============================== Start Server ================================
+/*
+ * Connect to rethinkdb, create the needed tables/indexes and then start express.
+ * Create tables/indexes then start express
+ * Partial Code taken from RethinkDB + Express guide
+ * https://rethinkdb.com/docs/examples/node-todo/
+ */
+async.waterfall([
+  function connect (callback) {
+    rethink.connect(config.rethinkdb, callback)
+  },
+  function createDatabase (connection, callback) {
+    // Create the database if needed.
+    rethink.dbList().contains(config.rethinkdb.db).do(function (containsDb) {
+      return rethink.branch(
+        containsDb,
+        {created: 0},
+        rethink.dbCreate(config.rethinkdb.db)
+      )
+    }).run(connection, function (err) {
+      callback(err, connection)
+    })
+  }
+], function (err, connection) {
+  if (err) {
+    console.error(err)
+    process.exit(1)
+    return
+  }
 
     startExpress(connection)
   })
