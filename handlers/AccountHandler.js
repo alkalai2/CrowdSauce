@@ -19,8 +19,6 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
-  console.log('handleCreateAccountRequest called with ' + JSON.stringify(req.route))
-
   // create Account object
   var account = new Account({userId: req.body.userId})
 
@@ -34,23 +32,35 @@ function handleCreateAccountRequest (req, res) {
 }
 
 function handleGetAccountRequest (req, res) {
-  console.log('handleGetAccountRequest called on ' + req.originalUrl)
-  console.log('handleGetAccountRequest called with ' + JSON.stringify(req.route))
-
-
-  r.db(config.rethinkdb.db).table('users').run(connection, function(err, cursor) {
-      if (err) throw err;
-      cursor.toArray(function(err, result) {
+  // Check if there is a query string passed in, slightly primitive implementation right now
+  var queried = false
+  for (var q in req.query) {
+    if (req.query.hasOwnProperty(q)) {
+      queried = true
+      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(req.query[q])).run(
+          connection, function (err, cursor) {
+            if (err) throw err
+            cursor.toArray(function (err, result) {
+              if (err) throw err
+              res.send(200, JSON.stringify(result, null, 2))
+          })
+      })
+    }
+  }
+  if(!queried){
+    r.db(config.rethinkdb.db).table('users').run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
           if (err) throw err;
           res.send(200,JSON.stringify(result, null, 2))
-      })
-  })
+        })
+    })
+  }
 }
 
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
-
 function handleDeleteAccountRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
 }
