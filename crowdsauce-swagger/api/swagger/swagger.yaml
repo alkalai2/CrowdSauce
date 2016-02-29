@@ -18,12 +18,26 @@ consumes:
 produces:
   - application/json
 paths:
+  /api/accounts/:
+    x-swagger-router-controller: hello_world
+    post:
+      description: Create new account
+      operationId: create account
+      parameters:
+        - name: body
+          in: body
+          description: Account data
+          required: true
+          type: string
+          schema:
+            $ref: "#/definitions/Account"
+      
   /api/posts:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
     post:
       description: Create a new post
-      operationId: post posts
+      operationId: create post
       parameters:
         - name: userId
           in: query
@@ -72,7 +86,7 @@ paths:
           description: Error
     put:
       description: Update a post
-      operationId: update posts
+      operationId: update post
       parameters:
         - name: userId
           in: query
@@ -98,7 +112,7 @@ paths:
           description: Error
     delete:
       description: Delete a post
-      operationId: delete posts
+      operationId: delete post
       parameters:
         - name: userId
           in: query
@@ -119,6 +133,12 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Account:
+    required:
+      - userId
+    properties:
+      userId:
+        type: number
   Post:
     properties:
       ingredients:
@@ -135,21 +155,3 @@ definitions:
         type: string
       rating:
         type: number
-  GetPostRequest:
-    required:
-      - accessToken
-    properties:
-      accessToken:
-        type: string
-  HelloWorldResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
-  ErrorResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string

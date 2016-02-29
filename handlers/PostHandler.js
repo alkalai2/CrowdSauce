@@ -5,9 +5,10 @@ var r = require('rethinkdb')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
-  this.getPost = handleGetPostRequest
+  this.getPost    = handleGetPostRequest
   this.updatePost = handleUpdatePostRequest
   this.deletePost = handleDeletePostRequest
+  this.getFeed    = handleGetFeedRequest
 }
 
 var connection = null;
@@ -78,6 +79,30 @@ function handleUpdatePostRequest (req, res) {
 
 function handleDeletePostRequest (req, res) {
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
+}
+
+function handleGetFeedRequest (req, res) {
+  num_posts = req.body.num_posts
+  FB.api('/' + req.query.userId + '/friends', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (!response || response.error) {
+      throw response.error
+    }
+    friends = []
+    for (i = 0; i < response.data.length; i++) {
+      friends.push(response.data[i].id)
+    }
+    r.db(config.rethinkdb.db).table('posts').filter(function(post) {
+      return r.expr(friends).contains(post('userId'))
+    }).orderBy(r.desc('timePosted')).limit(10).run(connection, function (err, cursor) {
+      if (err) throw err
+      cursor.toArray(function(err, result) {
+        if (err) throw err;
+        res.status(200).send(JSON.stringify(result, null, 2))
+      })
+    })
+  })
 }
 
 module.exports = PostHandler
