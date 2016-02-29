@@ -12,7 +12,7 @@ function setup (app, handlers) {
   // Add a new post for given userId
   app.post('/api/posts/', handlers.post.createPost)
   app.get('/api/posts/', handlers.post.getPost)
-  app.get('/api/posts/feed', handlers.post.getFeed)
+  app.get('/api/posts/feed/', handlers.post.getFeed)
   app.put('/api/posts/', handlers.post.updatePost)
   app.delete('/api/posts/', handlers.post.deletePost)
 }
