@@ -1,3 +1,9 @@
+/*
+ * React class to render a complete Post 
+ * uses a JSON spec to populate Post components
+ * also relies on public/css/posts.css for formatting 
+ */
+
 var Input = ReactBootstrap.Input,
     Panel = ReactBootstrap.Panel,
     Table = ReactBootstrap.Table,
@@ -5,6 +11,8 @@ var Input = ReactBootstrap.Input,
     Image = ReactBootstrap.Image,
     Tooltip = ReactBootstrap.Tooltip,  
     OverlayTrigger = ReactBootstrap.OverlayTrigger
+
+
 
 
 // Example data to simulate what we will get from API
@@ -15,7 +23,7 @@ var data = {
   "title" : "Spicy Chicken Enchiladas",
   "ingredients": ["ingredient 1",  "ingredient 2",  "ingredient 3"],
   "directions" : ["mix two eggs", "fry bacon", "toast bread"], 
-  "recipeLink" : "google.com",
+  "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
   "imageLink" : "http://i.imgur.com/SyZyVmN.jpg", 
   "tags" : ["chicken", "dinner", "spicy", "orange"],
   "notes": "This was everything I wanted. Nice texture to the chicken with the high stove heat, and the added spices really gave it a nice kick. I would recommend using cayenne to taste for those that like it less hot! Delicious! Okay!",
@@ -38,7 +46,6 @@ var Ingredients = React.createClass({
                  return <tr><td>{i}</td> </tr>
               })}
             </tbody>
-
           </Table>
         );
     },
@@ -63,6 +70,36 @@ var Directions = React.createClass({
           </Table>
         );
     },
+});
+
+// combines Ingredients + Directions
+var CustomRecipe = React.createClass({
+  render: function() {
+    return (
+      <PanelGroup defaultActiveKey="2" accordion>
+        <Panel header="See Recipe" eventKey="1">
+          <Ingredients items={this.props.ingredients}/>
+          <Directions items={this.props.directions}/>
+        </Panel>
+      </PanelGroup>
+    );
+  }
+});
+
+var RecipeLink = React.createClass({
+  navigateToPage: function() {
+    var win = window.open(this.props.url, '_blank');
+    win.focus();
+  },
+
+  render: function() {
+    return (
+
+      <Panel className="recipe-link">
+        <a onClick={this.navigateToPage}>{this.props.url}</a>
+      </Panel>
+    );
+  }
 });
 
 var ImageThumbnail = React.createClass({
@@ -143,12 +180,9 @@ var Post = React.createClass({
             {this.props.data.notes}
           </blockquote>
         </div>
-        <PanelGroup defaultActiveKey="2" accordion>
-          <Panel header="Get Recipe" eventKey="1">
-            <Ingredients items={this.props.data.ingredients}/>
-            <Directions items={this.props.data.directions}/>
-          </Panel>
-        </PanelGroup>
+        <CustomRecipe 
+          ingredients={this.props.data.ingredients}
+          directions={this.props.data.directions}/>
         <div className = "post-footer">
           <Tags className = "tagset" items={this.props.data.tags}/>
           <FavoriteStar />
@@ -158,7 +192,9 @@ var Post = React.createClass({
   },
 });
 
-ReactDOM.render(<Post data = {data}/>, feed);
+
+// add rendered post to element with id = 'posts'
+ReactDOM.render(<Post data = {data}/>, posts);
 
 
 
