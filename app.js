@@ -87,6 +87,10 @@ function init() {
     res.sendFile(path.join(__dirname + '/public/views/about.html'))
   })
 
+  app.get('/feed', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/feed.html'))
+  })
+
   // Something bad happened
   // app.use(handle404)
 
