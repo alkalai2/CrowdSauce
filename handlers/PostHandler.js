@@ -74,11 +74,34 @@ function handleGetPostRequest (req, res) {
 }
 
 function handleUpdatePostRequest (req, res) {
+  //Specify the postId of the post that needs to be updated in url query.
+  //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
   console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
+  if (req.query.hasOwnProperty("postId")){
+    r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query.postId}).update(req.body).run(
+           connection, function(err, cursor){
+            if (err) throw err
+          }).then(function(result) {
+             res.json({
+                 result: result
+             })
+         })
+  }
+  else{
+    res.send(200,"Need to specify postId in query")
+  }
 }
 
 function handleDeletePostRequest (req, res) {
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
+  r.db(config.rethinkdb.db).table('posts').filter(req.body).delete().run(
+         connection, function(err, cursor){
+          if (err) throw err
+        }).then(function(result) {
+           res.json({
+               result: result
+           })
+       })
 }
 
 function handleGetFeedRequest (req, res) {

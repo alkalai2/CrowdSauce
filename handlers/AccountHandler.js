@@ -59,10 +59,20 @@ function handleGetAccountRequest (req, res) {
 }
 
 function handleUpdateAccountRequest (req, res) {
+  //Meaningless while userId is the only field because userId cannot be updated
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
 function handleDeleteAccountRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
-}
+
+  r.db(config.rethinkdb.db).table('users').filter(req.query.userId).delete().run(
+         connection, function(err, cursor){
+          if (err) throw err
+        }).then(function(result) {
+           res.json({
+               result: result
+           })
+       })
+  }
 
 module.exports = AccountHandler
