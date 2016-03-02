@@ -1,0 +1,157 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: CrowdSauce
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /api/accounts/:
+    x-swagger-router-controller: hello_world
+    post:
+      description: Create new account
+      operationId: create account
+      parameters:
+        - name: body
+          in: body
+          description: Account data
+          required: true
+          type: string
+          schema:
+            $ref: "#/definitions/Account"
+      
+  /api/posts:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    post:
+      description: Create a new post
+      operationId: create post
+      parameters:
+        - name: userId
+          in: query
+          description: The facebook userId of the user
+          required: true
+          type: string
+        - name: accessToken
+          in: header
+          description: The facebook access token of the user
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Post data
+          required: true
+          type: string
+          schema:
+            $ref: "#/definitions/Post"
+      responses:
+        "200":
+          description: Success
+        default:
+          description: Error
+    get:
+      description: Returns a list of all the posts of a given user
+      operationId: get posts
+      parameters:
+        - name: userId
+          in: query
+          description: The facebook userId of the user
+          required: true
+          type: string
+        - name: accessToken
+          in: header
+          description: The facebook access token of the user
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Post"
+        default:
+          description: Error
+    put:
+      description: Update a post
+      operationId: update post
+      parameters:
+        - name: userId
+          in: query
+          description: The facebook userId of the user
+          required: true
+          type: string
+        - name: accessToken
+          in: header
+          description: The facebook access token of the user
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Post data
+          required: true
+          type: string
+          schema:
+            $ref: "#/definitions/Post"
+      responses:
+        "200":
+          description: Success
+        default:
+          description: Error
+    delete:
+      description: Delete a post
+      operationId: delete post
+      parameters:
+        - name: userId
+          in: query
+          description: The facebook userId of the user
+          required: true
+          type: string
+        - name: postId
+          in: query
+          description: The id of the post to delete
+          required: true
+          type: number
+        - name: accessToken
+          in: header
+          description: The facebook access token of the user
+          required: true
+          type: string
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  Account:
+    required:
+      - userId
+    properties:
+      userId:
+        type: number
+  Post:
+    properties:
+      ingredients:
+        type: string
+      directions:
+        type: string
+      recipeLink:
+        type: string
+      imageLinks:
+        type: string
+      tags:
+        type: list
+      notes:
+        type: string
+      rating:
+        type: number

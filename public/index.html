@@ -39,10 +39,9 @@
   
   <div class="panel-body">
     <div class="starter-template">
-      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="fbLoginBtn">
-    </fb:login-button>
-      <div id="status">
-	    </div>
+      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="fbLoginBtn"></fb:login-button>
+      <button type="button" id="fbLogoutBtn" onclick="fbLogout()">Logout</button>
+      <div id="status"></div>
   </div>
 </div>
 <!-- /.container -->

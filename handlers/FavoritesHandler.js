@@ -1,13 +1,13 @@
 // Well need the model of account
-var Account = require('../models/Account')
+var Favorites = require('../models/Favorites')
 var config = require('../config.js')
 var r = require('rethinkdb')
 
-var AccountHandler = function () {
-  this.createAccount = handleCreateAccountRequest
-  this.getAccount = handleGetAccountRequest
-  this.updateAccount = handleUpdateAccountRequest
-  this.deleteAccount = handleDeleteAccountRequest
+var FavoritesHandler = function () {
+  this.createFavorites = handleCreateFavoritesRequest
+  this.getFavorites = handleGetFavoritesRequest
+  this.updateFavorites = handleUpdateFavoritesRequest
+  this.deleteFavorites = handleDeleteFavoritesRequest
 }
 
 var connection = null;
@@ -18,12 +18,12 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
-function handleCreateAccountRequest (req, res) {
+function handleCreateFavoritesRequest (req, res) {
   // create Account object
-  var account = new Account({userId: req.body.userId})
+  var favorites = new Favorites({userId: req.body.userId, postIds: req.body.postIds})
 
-  // use Thinky to save Account data
-  account.save().then(function (result) {
+  // use Thinky to save Favorites data
+  favorites.save().then(function (result) {
     res.send(200, JSON.stringify(result))
   }).error(function (error) {
     // something went wrong
@@ -31,13 +31,13 @@ function handleCreateAccountRequest (req, res) {
   })
 }
 
-function handleGetAccountRequest (req, res) {
+function handleGetFavoritesRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(req.query[q])).run(
+      r.db(config.rethinkdb.db).table('favorites').filter(r.row(q).eq(req.query[q])).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
@@ -58,11 +58,13 @@ function handleGetAccountRequest (req, res) {
   }
 }
 
-function handleUpdateAccountRequest (req, res) {
+function handleUpdateFavoritesRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
-function handleDeleteAccountRequest (req, res) {
+function handleDeleteFavoritesRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
+  
 }
 
-module.exports = AccountHandler
+
+module.exports = FavoritesHandler
