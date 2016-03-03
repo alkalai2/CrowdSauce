@@ -60,9 +60,27 @@ function handleGetFavoritesRequest (req, res) {
 
 function handleUpdateFavoritesRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
+  if (req.query.hasOwnProperty("userId")){  r.db(config.rethinkdb.db).table("favorites").filter({"userId": req.query.userId}).update(req.body).run(
+           connection, function(err, cursor){
+            if (err) throw err
+          }).then(function(result) {
+             res.json({
+                 result: result
+             })
+         })
+     }
+
 }
 function handleDeleteFavoritesRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
+    r.db(config.rethinkdb.db).table('favorites').filter(req.body).delete().run(
+         connection, function(err, cursor){
+          if (err) throw err
+        }).then(function(result) {
+           res.json({
+               result: result
+           })
+       })
   
 }
 
