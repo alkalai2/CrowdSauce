@@ -20,7 +20,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
   // create Account object
-  var account = new Account({userId: req.body.userId})
+  var account = new Account({userId: req.headers.userid})
 
   // use Thinky to save Account data
   account.save().then(function (result) {
@@ -65,7 +65,7 @@ function handleUpdateAccountRequest (req, res) {
 function handleDeleteAccountRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
 
-  r.db(config.rethinkdb.db).table('users').filter(req.query.userId).delete().run(
+  r.db(config.rethinkdb.db).table('users').filter(req.headers.userid).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         }).then(function(result) {
