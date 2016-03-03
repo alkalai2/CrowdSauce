@@ -24,13 +24,44 @@ paths:
       description: Create new account
       operationId: create account
       parameters:
-        - name: body
-          in: body
-          description: Account data
+        - name: userid
+          in: header
+          description: UserID for the account to create
+          required: true
+          type: number
+        - name: accesstoken
+          in: header
+          description: The facebook access token of the user
           required: true
           type: string
-          schema:
-            $ref: "#/definitions/Account"
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized
+        default:
+          description: Error
+    delete:
+      description: Delete account
+      operationId: delete account
+      parameters:
+        - name: userid
+          in: header
+          description: UserID for the account to delete
+          required: true
+          type: number
+        - name: accesstoken
+          in: header
+          description: The facebook access token of the user
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized
+        default:
+          description: Error
       
   /api/posts:
     # binds a127 app logic to a route
@@ -39,12 +70,12 @@ paths:
       description: Create a new post
       operationId: create post
       parameters:
-        - name: userId
-          in: query
+        - name: userid
+          in: header
           description: The facebook userId of the user
           required: true
-          type: string
-        - name: accessToken
+          type: number
+        - name: accesstoken
           in: header
           description: The facebook access token of the user
           required: true
@@ -53,24 +84,25 @@ paths:
           in: body
           description: Post data
           required: true
-          type: string
           schema:
             $ref: "#/definitions/Post"
       responses:
         "200":
           description: Success
+        "401":
+          description: Unauthorized
         default:
           description: Error
     get:
       description: Returns a list of all the posts of a given user
       operationId: get posts
       parameters:
-        - name: userId
-          in: query
+        - name: userid
+          in: header
           description: The facebook userId of the user
           required: true
-          type: string
-        - name: accessToken
+          type: number
+        - name: accesstoken
           in: header
           description: The facebook access token of the user
           required: true
@@ -82,63 +114,103 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Post"
+        "401":
+          description: Unauthorized
         default:
           description: Error
     put:
       description: Update a post
       operationId: update post
       parameters:
-        - name: userId
-          in: query
+        - name: userid
+          in: header
           description: The facebook userId of the user
           required: true
-          type: string
-        - name: accessToken
+          type: number
+        - name: accesstoken
           in: header
           description: The facebook access token of the user
+          required: true
+          type: string
+        - name: postid
+          in: query
+          description: The post to update
           required: true
           type: string
         - name: body
           in: body
           description: Post data
           required: true
-          type: string
           schema:
             $ref: "#/definitions/Post"
       responses:
         "200":
           description: Success
+        "401":
+          description: Unauthorized
         default:
           description: Error
     delete:
-      description: Delete a post
+      description: Delete posts
       operationId: delete post
       parameters:
-        - name: userId
-          in: query
+        - name: userid
+          in: header
           description: The facebook userId of the user
           required: true
           type: string
-        - name: postId
-          in: query
-          description: The id of the post to delete
-          required: true
-          type: number
-        - name: accessToken
+        - name: accesstoken
           in: header
           description: The facebook access token of the user
           required: true
           type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Post"
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized
+        default:
+          description: Error
+  /api/posts/feed:
+    get:
+      description: Get the list of the most recent posts from the given user's friends
+      operationId: get feed
+      parameters:
+      - name: userid
+        in: header
+        description: The facebook userId of the user
+        required: true
+        type: string
+      - name: accesstoken
+        in: header
+        description: The facebook access token of the user
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/Feed"
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Post"
+        "401":
+          description: Unauthorized
+        default:
+          description: Error
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  Account:
-    required:
-      - userId
-    properties:
-      userId:
-        type: number
   Post:
     properties:
       ingredients:
@@ -150,8 +222,14 @@ definitions:
       imageLinks:
         type: string
       tags:
-        type: list
+        type: array
+        items:
+          type: string
       notes:
         type: string
       rating:
+        type: number
+  Feed:
+    properties:
+      numposts:
         type: number
