@@ -161,50 +161,52 @@ var FavoriteStar = React.createClass ({
   }
 });
 
+
+
 var Comment = React.createClass({
 	  componentDidMount : function() {
 	
 	  
-	window.fbAsyncInit = function() {
-	FB.init({
-		appId      : '563086800536760',
-		cookie     : true,  // enable cookies to allow the server to access the session
-		xfbml      : true,  // parse social plugins on this page
-		version    : 'v2.5'
-	});
-	
-	}.bind(this);
-	// Load the SDK asynchronously
-	(function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id)) return;
-	js = d.createElement(s); js.id = id;
-	js.src = "//connect.facebook.net/en_US/sdk.js";
-	fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-	
-	$(document).on(
-    'fbload', 
-	 function(){
-		FB.XFBML.parse();
-		alert("load sdk");
-	});
-    },
-	
-	componentDidUpdate : function() {
-    FB.XFBML.parse();
-	alert("parsed");
-	},
-	
-	render : function() {
-		return (
-		<div>
-		<div className="fb-comments" data-href="http://localhost:3000/index2.html" data-numposts="5">
-		</div>
-		</div>
-		);
-		
-	},
+  	window.fbAsyncInit = function() {
+  	FB.init({
+  		appId      : '563086800536760',
+  		cookie     : true,  // enable cookies to allow the server to access the session
+  		xfbml      : true,  // parse social plugins on this page
+  		version    : 'v2.5'
+  	});
+  	
+  	}.bind(this);
+  	// Load the SDK asynchronously
+  	(function(d, s, id) {
+  	var js, fjs = d.getElementsByTagName(s)[0];
+  	if (d.getElementById(id)) return;
+  	js = d.createElement(s); js.id = id;
+  	js.src = "//connect.facebook.net/en_US/sdk.js";
+  	fjs.parentNode.insertBefore(js, fjs);
+  	}(document, 'script', 'facebook-jssdk'));
+  	
+  	$(document).on(
+      'fbload', 
+  	 function(){
+  		FB.XFBML.parse();
+  		alert("load sdk");
+  	});
+      },
+  	
+  	componentDidUpdate : function() {
+      FB.XFBML.parse();
+  	alert("parsed");
+  	},
+  	
+  	render : function() {
+  		return (
+  		<div>
+  		<div className="fb-comments" data-href="http://localhost:3000/index2.html" data-numposts="5">
+  		</div>
+  		</div>
+  		);
+  		
+  	},
 	
 });
 
@@ -214,33 +216,36 @@ var Post = React.createClass({
 
   render : function() {
     return (
-      <Panel>
-        <div> 
-          <b>Jonathan3</b> posted a new recipe
-          <RatingStars rating={this.props.data.rating}/>
-          <hr></hr>   
-          <h3 className = "post-title">
-            {this.props.data.title}
-          </h3>
-        </div>
-        <ImageThumbnail src={this.props.data.imageLink}/>
-        <div>
-          <blockquote className = "recipe-notes">
-            {this.props.data.notes}
-          </blockquote>
-        </div>
-        <CustomRecipe 
-          ingredients={this.props.data.ingredients}
-          directions={this.props.data.directions}/>
-		<div>
-		</div>
-        <div className = "post-footer">
-          <Tags className = "tagset" items={this.props.data.tags}/>
-          <FavoriteStar />
-		  <Comment />
-		  		
-        </div>
-      </Panel>
+      <div className="post-full">
+        <Panel className="post-panel">
+          <div> 
+            <b>Jonathan</b> posted a new recipe
+            <RatingStars rating={this.props.data.rating}/>
+            <hr></hr>   
+            <h3 className = "post-title">
+              {this.props.data.title}
+            </h3>
+          </div>
+          <ImageThumbnail src={this.props.data.imageLink}/>
+          <div>
+            <blockquote className = "recipe-notes">
+              {this.props.data.notes}
+            </blockquote>
+          </div>
+          <CustomRecipe 
+            ingredients={this.props.data.ingredients}
+            directions={this.props.data.directions}/>
+
+          <div className = "post-footer">
+            <div>
+              <Tags className = "tagset" items={this.props.data.tags}/>
+              <FavoriteStar />
+            </div>
+            <Comment />
+          </div>
+        </Panel>
+        
+      </div>
     );
   },
 });

@@ -14,6 +14,11 @@
 .post-title {
 }
 
+.post-panel {
+	/* same width as fb comments*/
+	width: 570px;
+}
+
 .recipe-notes {
 	font-size: small;
 }
