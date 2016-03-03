@@ -1,4 +1,3 @@
-// This is tentative but seems like a good way to serialize Posts
 var path = require('path')
 var config = require('../config.js')
 var thinky = require('thinky')(config.rethinkdb)
