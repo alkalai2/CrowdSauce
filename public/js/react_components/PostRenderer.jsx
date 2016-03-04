@@ -1,3 +1,8 @@
+
+/**
+ * @jsx React.DOM
+ */
+
 /*
  * React class to render a complete Post 
  * uses a JSON spec to populate Post components
@@ -17,19 +22,19 @@ var Input = ReactBootstrap.Input,
 
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
-var data = {
+// var data = {
 
-  "userId" : 123456, 
-  "title" : "Spicy Chicken Enchiladas",
-  "ingredients": ["ingredient 1",  "ingredient 2",  "ingredient 3"],
-  "directions" : ["mix two eggs", "fry bacon", "toast bread"], 
-  "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
-  "imageLink" : "http://i.imgur.com/SyZyVmN.jpg", 
-  "tags" : ["chicken", "dinner", "spicy", "orange"],
-  "notes": "This was everything I wanted. Nice texture to the chicken with the high stove heat, and the added spices really gave it a nice kick. I would recommend using cayenne to taste for those that like it less hot! Delicious! Okay!",
-  "rating": 4,
-  "timestamp": "Feb 24, 2016"
-}
+//   "userId" : 123456, 
+//   "title" : "Spicy Chicken Enchiladas",
+//   "ingredients": ["ingredient 1",  "ingredient 2",  "ingredient 3"],
+//   "directions" : ["mix two eggs", "fry bacon", "toast bread"], 
+//   "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
+//   "imageLink" : "http://i.imgur.com/SyZyVmN.jpg", 
+//   "tags" : ["chicken", "dinner", "spicy", "orange"],
+//   "notes": "This was everything I wanted. Nice texture to the chicken with the high stove heat, and the added spices really gave it a nice kick. I would recommend using cayenne to taste for those that like it less hot! Delicious! Okay!",
+//   "rating": 4,
+//   "timestamp": "Feb 24, 2016"
+// }
 
 var Ingredients = React.createClass({
     render: function() {
@@ -162,57 +167,7 @@ var FavoriteStar = React.createClass ({
 });
 
 
-
-var Comment = React.createClass({
-	  componentDidMount : function() {
-	
-	  
-  	window.fbAsyncInit = function() {
-  	FB.init({
-  		appId      : '563086800536760',
-  		cookie     : true,  // enable cookies to allow the server to access the session
-  		xfbml      : true,  // parse social plugins on this page
-  		version    : 'v2.5'
-  	});
-  	
-  	}.bind(this);
-  	// Load the SDK asynchronously
-  	(function(d, s, id) {
-  	var js, fjs = d.getElementsByTagName(s)[0];
-  	if (d.getElementById(id)) return;
-  	js = d.createElement(s); js.id = id;
-  	js.src = "//connect.facebook.net/en_US/sdk.js";
-  	fjs.parentNode.insertBefore(js, fjs);
-  	}(document, 'script', 'facebook-jssdk'));
-  	
-  	$(document).on(
-      'fbload', 
-  	 function(){
-  		FB.XFBML.parse();
-  		alert("load sdk");
-  	});
-      },
-  	
-  	componentDidUpdate : function() {
-      FB.XFBML.parse();
-  	alert("parsed");
-  	},
-  	
-  	render : function() {
-  		return (
-  		<div>
-  		<div className="fb-comments" data-href="http://localhost:3000/index2.html" data-numposts="5">
-  		</div>
-  		</div>
-  		);
-  		
-  	},
-	
-});
-
 var Post = React.createClass({
-
-  
 
   render : function() {
     return (
@@ -241,7 +196,7 @@ var Post = React.createClass({
               <Tags className = "tagset" items={this.props.data.tags}/>
               <FavoriteStar />
             </div>
-            <Comment />
+            <Comment comment_id={this.props.data.userId}/>
           </div>
         </Panel>
         
@@ -250,9 +205,8 @@ var Post = React.createClass({
   },
 });
 
-
 // add rendered post to element with id = 'posts'
-ReactDOM.render(<Post data = {data}/>, posts);
+//ReactDOM.render(<Post data = {data}/>, posts);
 
 
 
