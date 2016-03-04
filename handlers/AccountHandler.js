@@ -58,6 +58,7 @@ function handleGetAccountRequest (req, res) {
   }
 }
 
+
 function handleUpdateAccountRequest (req, res) {
   //Meaningless while userId is the only field because userId cannot be updated
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
@@ -65,7 +66,7 @@ function handleUpdateAccountRequest (req, res) {
 function handleDeleteAccountRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
 
-  r.db(config.rethinkdb.db).table('users').filter(req.headers.userid).delete().run(
+  r.db(config.rethinkdb.db).table('users').filter(req.headers.userId).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         }).then(function(result) {
@@ -73,6 +74,11 @@ function handleDeleteAccountRequest (req, res) {
                result: result
            })
        })
+
+  r.db(config.rethinkdb.db).table('favorites').filter({"userId": req.headers.userId}).delete().run(
+         connection, function(err, cursor){
+          if (err) throw err
+        })
   }
 
 module.exports = AccountHandler

@@ -93,8 +93,9 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
+
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
-  r.db(config.rethinkdb.db).table('posts').filter(req.body).delete().run(
+  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query['postId']}).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         }).then(function(result) {
@@ -102,6 +103,11 @@ function handleDeletePostRequest (req, res) {
                result: result
            })
        })
+
+  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.query['postId']}).delete().run(
+         connection, function(err, cursor){
+          if (err) throw err
+        })
 }
 
 function handleGetFeedRequest (req, res) {

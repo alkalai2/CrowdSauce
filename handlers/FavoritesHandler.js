@@ -1,11 +1,14 @@
 // Well need the model of account
 var Favorites = require('../models/Favorites')
+var Account = require('../models/Account')
+var Post = require('../models/Post')
 var config = require('../config.js')
 var r = require('rethinkdb')
 
 var FavoritesHandler = function () {
   this.createFavorites = handleCreateFavoritesRequest
-  this.getFavorites = handleGetFavoritesRequest
+  this.getUserFavorites = handleGetUserFavoritesRequest
+  this.getPostFavorites = handleGetPostFavoritesRequest
   this.updateFavorites = handleUpdateFavoritesRequest
   this.deleteFavorites = handleDeleteFavoritesRequest
 }
@@ -20,12 +23,32 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // create Account object, add data to DB using thinky
 function handleCreateFavoritesRequest (req, res) {
   // create Account object
-  var favorites = new Favorites({userId: req.body.userId, postIds: req.body.postIds})
+  var favorites = new Favorites({userId: req.body.userId, postId: req.body.postId})
 
   // use Thinky to save Favorites data
   favorites.save().then(function (result) {
     res.send(200, JSON.stringify(result))
   }).error(function (error) {
+    // something went wrong
+    res.send(500, {error: error.message})
+  })
+}
+
+function handleGetUserFavoritesRequest(req,res){
+    //Pass in userId in URL query
+    Account.get(req.query["userId"]).getJoin({favorites: true}).run().then(function(account) {
+      res.send(200, JSON.stringify(account.favorites, null, 2))
+    }).error(function (error) {
+    // something went wrong
+    res.send(500, {error: error.message})
+  })
+}
+
+function handleGetPostFavoritesRequest(req,res){
+    //Pass in postId in URL query
+    Post.get(req.query["postId"]).getJoin({favorites: true}).run().then(function(post) {
+      res.send(200, JSON.stringify(post.favorites, null, 2))
+    }).error(function (error) {
     // something went wrong
     res.send(500, {error: error.message})
   })

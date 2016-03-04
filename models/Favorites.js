@@ -7,7 +7,7 @@ var type = thinky.type;
 // This should model the schema we want in our RethinkDB
 var Favorites = thinky.createModel("favorites", {
     userId: type.string(),
-    postIds: type.array()
-}, {pk: "userId"} );
+    postId: type.string()
+});
 
 module.exports = Favorites
