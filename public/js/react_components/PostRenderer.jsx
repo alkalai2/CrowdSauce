@@ -157,11 +157,14 @@ var FavoriteStar = React.createClass ({
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
 
     return (
-      <OverlayTrigger placement="top" overlay={tooltip}>
+      <div className="favorite-div">
+      <OverlayTrigger placement="top" overlay={tooltip} delay={.3} trigger={['hover']}>
       <img src={image_src} 
         className="favorite-heart" 
         onClick = {this.handleClick}/>
       </OverlayTrigger>
+      </div>
+
     );
   }
 });
