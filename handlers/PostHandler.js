@@ -2,6 +2,7 @@ var Post = require('../models/Post')
 var FB = require('fb')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var auth = require('../auth.js')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -20,7 +21,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
-  if (!req.headers.userid) return
+  if (!auth.assertHasUser(req)) return
 
   // create Post object
   var post = new Post(
@@ -73,6 +74,7 @@ function handleGetPostRequest (req, res) {
 }
 
 function handleUpdatePostRequest (req, res) {
+
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
   console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
@@ -109,7 +111,7 @@ function handleDeletePostRequest (req, res) {
 }
 
 function handleGetFeedRequest (req, res) {
-  if (!req.headers.userid) return
+  if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken

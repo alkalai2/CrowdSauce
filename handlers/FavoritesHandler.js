@@ -4,6 +4,7 @@ var Account = require('../models/Account')
 var Post = require('../models/Post')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var auth = require('../auth.js')
 
 var FavoritesHandler = function () {
   this.createFavorites = handleCreateFavoritesRequest
@@ -22,6 +23,8 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
 function handleCreateFavoritesRequest (req, res) {
+  if (!auth.assertHasUser(req)) return
+
   // create Account object
   var favorites = new Favorites({userId: req.headers.userid, postId: req.body.postId})
 
@@ -34,19 +37,21 @@ function handleCreateFavoritesRequest (req, res) {
   })
 }
 
-function handleGetUserFavoritesRequest(req,res){
-    //Pass in userId in URL query
-    Account.get(req.headers.userid).getJoin({favorites: true}).run().then(function(account) {
-      res.send(200, JSON.stringify(account.favorites, null, 2))
-    }).error(function (error) {
+function handleGetUserFavoritesRequest(req,res) {
+  if (!auth.assertHasUser(req)) return
+
+  //Pass in userId in URL query
+  Account.get(req.headers.userid).getJoin({favorites: true}).run().then(function(account) {
+    res.send(200, JSON.stringify(account.favorites, null, 2))
+  }).error(function (error) {
     // something went wrong
     res.send(500, {error: error.message})
   })
 }
 
-function handleGetPostFavoritesRequest(req,res){
-    //Pass in postId in URL query
-    Post.get(req.query["postId"]).getJoin({favorites: true}).run().then(function(post) {
+function handleGetPostFavoritesRequest(req,res) {
+  //Pass in postId in URL query
+  Post.get(req.query["postId"]).getJoin({favorites: true}).run().then(function(post) {
       res.send(200, JSON.stringify(post.favorites, null, 2))
     }).error(function (error) {
     // something went wrong

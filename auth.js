@@ -1,7 +1,7 @@
 var FB = require('fb')
 
 function isAuthenticated(req, res, next) {
-  if (req.headers.secret == fbAppSecret) {
+  if (DEBUG) {
     next()
     return
   } else if (req.headers.accesstoken === undefined) {
@@ -32,4 +32,13 @@ function isAuthenticated(req, res, next) {
   })
 }
 
+function assertHasUser(req) {
+  if (!req.headers.userid) {
+    console.log("UserId required (in headers) for this request")
+    return false
+  }
+  return true
+}
+
 exports.isAuthenticated = isAuthenticated
+exports.assertHasUser = assertHasUser
