@@ -84,7 +84,6 @@ function init() {
     licenseUrl: "GNU.com"
   })
 
-
   // ============================== Handlers ====================================
   var handlers = {
     account: new AccountHandler(),
@@ -102,10 +101,6 @@ function init() {
     res.sendFile(__dirname + '/swagger/index.html');
   })
 
-  app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/index.html'))
-  })
-
   app.get('/login', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/login.html'))
   })
@@ -120,22 +115,6 @@ function init() {
 
   app.get('/feed', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/feed.html'))
-  })
-
-  // Something bad happened
-  // app.use(handle404)
-
-  // ============================== Handlers ====================================
-  var handlers = {
-    account: new AccountHandler(),
-    post: new PostHandler()
-  }
-  // ============================== Page Routing ================================
-  /*
-   * Entry point to app - looks for index.html as landing page
-   */
-  app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/'))
   })
 
   // Generic error handling middleware.
