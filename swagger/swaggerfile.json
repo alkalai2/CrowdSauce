@@ -4,7 +4,7 @@
     "title": "CrowdSauce"
   }, 
   "paths": {
-    "/api/posts/feed": {
+    "/api/posts/feed/": {
       "get": {
         "operationId": "get feed",
         "tags": [ "posts" ],
@@ -51,7 +51,7 @@
         "description": "Get the list of the most recent posts from the given user's friends"
       }
     }, 
-    "/api/posts": {
+    "/api/posts/": {
       "put": {
         "operationId": "update post",
         "tags": [ "posts" ],
@@ -231,7 +231,7 @@
       "x-swagger-router-controller": "hello_world",
       "delete": {
         "operationId": "delete account",
-        "tags": [ "posts" ],
+        "tags": [ "accounts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
