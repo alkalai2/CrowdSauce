@@ -19,10 +19,11 @@ var util = require('util')
 var config = require(path.join(__dirname, '/config.js'))
 
 // Obtain facebook app access token
+fbAppSecret = fs.readFileSync('app_secret.txt', 'utf-8')
 try {
   FB.api('/oauth/access_token?', 'get', {
     client_id: '563086800536760',
-    client_secret: fs.readFileSync('app_secret.txt', 'utf-8'),
+    client_secret: fbAppSecret,
     grant_type: 'client_credentials'
   }, function (response) {
     fbAppAccessToken = response.access_token
@@ -84,6 +85,10 @@ function init() {
 
   app.get('/about', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/about.html'))
+  })
+
+  app.get('/feed', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/feed.html'))
   })
 
   // Something bad happened

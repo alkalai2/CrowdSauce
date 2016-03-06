@@ -1,0 +1,113 @@
+body{
+background: #ECECEC;
+}
+.form-horizontal {
+	border-style: solid;
+}
+
+.tag {
+	margin-right: 5px;
+}
+
+.tagset {
+	float: right;
+}
+
+.post-title {
+	text-align:left;
+}
+#posts {
+
+}
+.post-panel {
+	/* same width as fb comments*/
+	width: 570px;
+	margin: 20px auto;
+
+}
+
+.recipe-notes {
+	font-size: small;
+}
+.recipeImage {
+	height: 300px;
+	width: 300px;
+	margin-bottom: 15px;
+	margin-top: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block; 
+}
+
+.rating-stars {
+	display: inline;
+	float: right;
+}
+
+.rating-star {
+	height: 20px;
+	width: 20px;
+	border:2px solid #427FFF;
+	border-radius:50%;
+	background:#427FFF;
+}
+
+.favorite-div {
+	display: inline;
+	float:right;
+	height: 30px;
+	width:30px;
+
+}
+.favorite-heart {
+	display: inline;
+	height: 25px;
+	width: 25px;
+}
+
+.recipe-link {
+	background-color: #f5f5f5;
+	color: inherit;
+}
+
+.post_fab{
+  position:fixed;
+  bottom: 2em;
+  right: 2em;
+  width:60px;
+  height:60px;
+  border-radius:100%;
+  background:#F44336;
+  border:none;
+  outline:none;
+  color:#FFF;
+  font-size:36px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2), 0 3px 6px rgba(0,0,0,0.28);
+  transition:.3s;  
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  text-align:center;
+  text-decoration: none;
+}
+
+.post_fab:hover {
+
+  background-color:#F35E43;
+  color:white;
+  text-decoration: none;
+  transform:translate(0px, -3px);
+
+}
+.post_fab:focus {
+  text-decoration: none !important;
+  background-color:#D83621;
+  transform:scale(1.1);
+  transform:rotate(45deg);
+  -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.10), 1px 1px 3px rgba(0,0,0,0.16);
+}
+
+.feed-title{
+	text-align: center;
+
+}
