@@ -2,6 +2,7 @@
 var Account = require('../models/Account')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var auth = require('../auth.js')
 
 var AccountHandler = function () {
   this.createAccount = handleCreateAccountRequest
@@ -19,6 +20,8 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
+  if (!auth.assertHasUser(req)) return
+
   // create Account object
   var account = new Account({userId: req.headers.userid})
 
@@ -64,21 +67,23 @@ function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
 function handleDeleteAccountRequest (req, res) {
-  console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
+  if (!auth.assertHasUser(req)) return
 
   r.db(config.rethinkdb.db).table('users').filter(req.headers.userid).delete().run(
-         connection, function(err, cursor){
-          if (err) throw err
-        }).then(function(result) {
-           res.json({
-               result: result
-           })
-       })
+    connection, function(err, cursor) {
+      if (err) throw err
+    }
+  ).then(function(result) {
+    res.json({
+      result: result
+    })
+  })
 
   r.db(config.rethinkdb.db).table('favorites').filter({"userId": req.headers.userid}).delete().run(
-         connection, function(err, cursor){
-          if (err) throw err
-        })
-  }
+    connection, function(err, cursor) {
+      if (err) throw err
+    }
+  )
+}
 
 module.exports = AccountHandler

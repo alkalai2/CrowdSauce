@@ -16,6 +16,11 @@ var FB = require('fb')
 var swagger = require('swagger-node-express')
 var util = require('util')
 
+DEBUG = false
+process.argv.forEach(function (val, index, array) {
+  if (val == "debug") DEBUG = true
+});
+
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
 
