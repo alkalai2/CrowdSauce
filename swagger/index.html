@@ -51,6 +51,11 @@
         url: url,
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        apisSorter: "alpha", // can also be a function
+        operationsSorter : function (a, b) {
+          var order = { 'get': '0', 'post': '1', 'put': '2', 'delete': '3' }
+          return order[a.method].localeCompare(order[b.method])
+        },
         onComplete: function(swaggerApi, swaggerUi){
           if(typeof initOAuth == "function") {
             initOAuth({
