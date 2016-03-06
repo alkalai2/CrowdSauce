@@ -451,7 +451,7 @@
     "application/json"
   ], 
   "basePath": "/", 
-  "host": "localhost:10010", 
+  "host": "localhost:3000",
   "definitions": {
     "Post": {
       "properties": {
