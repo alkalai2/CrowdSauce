@@ -38,11 +38,9 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
-  // res.send(200, JSON.stringify(result))
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
-  // res.send(500, {error:error.message})
   })
 
 }
@@ -94,7 +92,6 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
   r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query['postId']}).delete().run(
          connection, function(err, cursor){
