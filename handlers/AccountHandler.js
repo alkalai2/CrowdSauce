@@ -66,7 +66,7 @@ function handleUpdateAccountRequest (req, res) {
 function handleDeleteAccountRequest (req, res) {
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
 
-  r.db(config.rethinkdb.db).table('users').filter(req.headers.userId).delete().run(
+  r.db(config.rethinkdb.db).table('users').filter(req.headers.userid).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         }).then(function(result) {
@@ -75,7 +75,7 @@ function handleDeleteAccountRequest (req, res) {
            })
        })
 
-  r.db(config.rethinkdb.db).table('favorites').filter({"userId": req.headers.userId}).delete().run(
+  r.db(config.rethinkdb.db).table('favorites').filter({"userId": req.headers.userid}).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         })

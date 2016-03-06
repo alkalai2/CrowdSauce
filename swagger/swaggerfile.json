@@ -53,18 +53,12 @@
     }, 
     "/api/posts": {
       "put": {
-        "operationId": "update post", 
+        "operationId": "update post",
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success"
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
         "parameters": [
           {
             "required": true, 
@@ -98,21 +92,15 @@
           }
         ], 
         "description": "Update a post"
-      }, 
+      },
       "x-swagger-router-controller": "hello_world", 
       "post": {
-        "operationId": "create post", 
+        "operationId": "create post",
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success"
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
         "parameters": [
           {
             "required": true, 
@@ -143,9 +131,7 @@
       "get": {
         "operationId": "get posts", 
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
+          "default": {"description": "Error"},
           "200": {
             "description": "Success", 
             "schema": {
@@ -155,9 +141,7 @@
               "type": "array"
             }
           }, 
-          "401": {
-            "description": "Unauthorized"
-          }
+          "401": {"description": "Unauthorized"}
         }, 
         "parameters": [
           {
@@ -178,18 +162,12 @@
         "description": "Returns a list of all the posts of a given user"
       }, 
       "delete": {
-        "operationId": "delete post", 
+        "operationId": "delete post",
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success"
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
         "parameters": [
           {
             "required": true, 
@@ -222,18 +200,12 @@
     }, 
     "/api/accounts/": {
       "post": {
-        "operationId": "create account", 
+        "operationId": "create account",
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success"
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
         "parameters": [
           {
             "required": true, 
@@ -252,20 +224,14 @@
         ], 
         "description": "Create new account"
       }, 
-      "x-swagger-router-controller": "hello_world", 
+      "x-swagger-router-controller": "hello_world",
       "delete": {
-        "operationId": "delete account", 
+        "operationId": "delete account",
         "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success"
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
         "parameters": [
           {
             "required": true, 
@@ -283,6 +249,187 @@
           }
         ], 
         "description": "Delete account"
+      }
+    },
+    "/api/favorites/": {
+      "post": {
+        "operationId": "add a favorite",
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "number",
+            "description": "UserID of user doing the favoriting",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The facebook access token of the user",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "description": "Contains the post to favorite",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Favorite"
+            }
+          }
+        ],
+        "description": "Favorite a post"
+      },
+      "delete": {
+        "operationId": "delete favorite",
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "number",
+            "description": "UserID for user doing the unfavoriting",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The facebook access token of the user",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "description": "Contains the post to unfavorite",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Favorite"
+            }
+          }
+        ],
+        "description": "Unfavorite a post"
+      },
+      "put": {
+        "operationId": "change favorite",
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "number",
+            "description": "UserID for user",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The facebook access token of the user",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "description": "Contains the post to update",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Favorite"
+            }
+          }
+        ],
+        "description": "Not sure what this is for"
+      }
+    },
+    "/api/favorites/user/": {
+      "get": {
+        "operationId": "get user favorites",
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {
+            "description": "Success",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/FavoriteReturn"
+              },
+              "type": "array"
+            }
+          },
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "number",
+            "description": "UserID for user",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The facebook access token of the user",
+            "in": "header",
+            "name": "accesstoken"
+          }
+        ],
+        "description": "Get all favorites for a given user"
+      }
+    },
+    "/api/favorites/post/": {
+      "get": {
+        "operationId": "get post favorites",
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {
+            "description": "Success",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/FavoriteReturn"
+              },
+              "type": "array"
+            }
+          },
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "number",
+            "description": "UserID for user",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The facebook access token of the user",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The post to get a favorites for",
+            "in": "query",
+            "name": "postId"
+          }
+        ],
+        "description": "Get all posts for a given user"
       }
     }
   }, 
@@ -328,6 +475,23 @@
         }, 
         "recipeLink": {
           "type": "string"
+        }
+      }
+    },
+    "Favorite": {
+      "properties": {
+        "postId": {
+          "type": "string"
+        }
+      }
+    },
+    "FavoriteReturn": {
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "number"
         }
       }
     }

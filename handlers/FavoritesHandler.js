@@ -23,7 +23,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // create Account object, add data to DB using thinky
 function handleCreateFavoritesRequest (req, res) {
   // create Account object
-  var favorites = new Favorites({userId: req.body.userId, postId: req.body.postId})
+  var favorites = new Favorites({userId: req.headers.userid, postId: req.body.postId})
 
   // use Thinky to save Favorites data
   favorites.save().then(function (result) {
@@ -36,7 +36,7 @@ function handleCreateFavoritesRequest (req, res) {
 
 function handleGetUserFavoritesRequest(req,res){
     //Pass in userId in URL query
-    Account.get(req.query["userId"]).getJoin({favorites: true}).run().then(function(account) {
+    Account.get(req.headers.userid).getJoin({favorites: true}).run().then(function(account) {
       res.send(200, JSON.stringify(account.favorites, null, 2))
     }).error(function (error) {
     // something went wrong
@@ -83,7 +83,7 @@ function handleGetFavoritesRequest (req, res) {
 
 function handleUpdateFavoritesRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
-  if (req.query.hasOwnProperty("userId")){  r.db(config.rethinkdb.db).table("favorites").filter({"userId": req.query.userId}).update(req.body).run(
+  if (req.query.hasOwnProperty("userId")){  r.db(config.rethinkdb.db).table("favorites").filter({"userId": req.headers.userid}).update(req.body).run(
            connection, function(err, cursor){
             if (err) throw err
           }).then(function(result) {
