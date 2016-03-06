@@ -1,8 +1,10 @@
 var FB = require('fb')
 
 function isAuthenticated(req, res, next) {
-  if (req.headers.secret == fbAppSecret) next()
-  if (req.headers.accesstoken === undefined) {
+  if (DEBUG) {
+    next()
+    return
+  } else if (req.headers.accesstoken === undefined) {
     console.log("No access token provided")
     res.sendStatus(401)
     return
@@ -14,13 +16,15 @@ function isAuthenticated(req, res, next) {
     input_token: req.headers.accesstoken,
     access_token: fbAppAccessToken
   }, function (response) {
-    if (response.error) console.log(error)
-    if (!response.data.is_valid) {
-      console.log('Invalid access attempted (' + req.headers.accessToken + ')')
+    if (response.error) {
+      console.log(error)
       res.sendStatus(401)
-    } else if (response.data.user_id != req.query.userId) {
+    } else if (!response.data.is_valid) {
+      console.log('Invalid access attempted (' + req.headers.accesstoken + ')')
+      res.sendStatus(401)
+    } else if (response.data.user_id != req.headers.userid) {
       console.log("Access token's userId does not match given userId (" +
-        response.data.user_id + " vs " + req.query.userId + ")")
+        response.data.user_id + " vs " + req.headers.userid + ")")
       res.sendStatus(401)
     } else {
       next()
@@ -28,4 +32,13 @@ function isAuthenticated(req, res, next) {
   })
 }
 
+function assertHasUser(req) {
+  if (!req.headers.userid) {
+    console.log("UserId required (in headers) for this request")
+    return false
+  }
+  return true
+}
+
 exports.isAuthenticated = isAuthenticated
+exports.assertHasUser = assertHasUser

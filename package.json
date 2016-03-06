@@ -41,5 +41,7 @@
     "standard": "^6.0.7",
     "swagger-node-express": "~2.0",
     "thinky": "^2.2.4"
+    "fb": "1.0.2",
+    "minimist": "*"
   }
 }

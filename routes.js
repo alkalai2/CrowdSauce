@@ -15,6 +15,12 @@ function setup (app, handlers) {
   app.get('/api/posts/feed/', handlers.post.getFeed)
   app.put('/api/posts/', handlers.post.updatePost)
   app.delete('/api/posts/', handlers.post.deletePost)
+
+  app.post('/api/favorites/', handlers.favorites.createFavorites)
+  app.get('/api/favorites/user/', handlers.favorites.getUserFavorites)
+  app.get('/api/favorites/post/', handlers.favorites.getPostFavorites)
+  app.put('/api/favorites/', handlers.favorites.updateFavorites)
+  app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
 }
 
 exports.setup = setup

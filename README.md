@@ -1,13 +1,25 @@
+# Dependencies:
+1. Node.js - what its all built on
+2. npm - Node package manager
+3. rethinkdb - the backend databsae
+4. All the node packages, run ```$ npm install``` in the project directory.
+
 # Getting Started
 
-This RESTful API requires:
-* Node.js
-* Express
-* RethinkDB
-* async (for node)
+To get started with CrowdSauce:
 
-To install these packages:
-#### TODO
+1. Clone the repo
 
-To run the backend server:
-node app.js
+```bash
+$ git clone https://github.com/alkalai2/CrowdSauce.git ~/crowdsauce
+```
+2. Run the RethinkDB daemon
+```bash
+$ cd ~/crowdsauce && rethinkdb
+```
+3. In a new terminal emulator process, run the node app
+```bash
+$ cd ~/crowdsauce && node app
+```
+4. Navigate browser to localhost on ports 8080 or 3000 to see the database homepage or the application homepage respectively/
+

@@ -4,6 +4,7 @@ var path = require('path')
 var routes = require('./routes')
 var AccountHandler = require('./handlers/AccountHandler')
 var PostHandler = require('./handlers/PostHandler')
+var FavoritesHandler = require('./handlers/FavoritesHandler')
 var fileStreamRotator = require('file-stream-rotator')
 var fs = require('fs')
 var async = require('async')
@@ -15,11 +16,16 @@ var FB = require('fb')
 var swagger = require('swagger-node-express')
 var util = require('util')
 
+DEBUG = false
+process.argv.forEach(function (val, index, array) {
+  if (val == "debug") DEBUG = true
+});
+
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
 
 // Obtain facebook app access token
-fbAppSecret = fs.readFileSync('app_secret.txt', 'utf-8')
+fbAppSecret = fs.readFileSync('app_secret.txt', 'utf-8').trim()
 try {
   FB.api('/oauth/access_token?', 'get', {
     client_id: '563086800536760',
@@ -40,6 +46,7 @@ try {
 function init() {
   // Run Express server to handle requests
   var app = express()
+
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
 
@@ -63,13 +70,37 @@ function init() {
   // setup the logger
   app.use(morgan('combined', {stream: accessLogStream}))
 
-  // REST routes for
-  /*
-   app.route('/addUser')
-   .get(addUserFromFacebook) // Get is currently just to test endpoint
-   .post(addUserFromFacebook)
-   */
   app.use(express.static('public'))
+  // Dist used for swagger files
+  app.use(express.static('swagger'));
+
+
+  swagger.setApiInfo({
+    title: "CrowdSauce API",
+    description: "API serving crowdasuce users",
+    termsOfServiceUrl: "N/A",
+    contact: "devs@crowdsauce.com",
+    license: "GNU",
+    licenseUrl: "GNU.com"
+  })
+
+
+  // ============================== Handlers ====================================
+  var handlers = {
+    account: new AccountHandler(),
+    post: new PostHandler(),
+    favorites: new FavoritesHandler()
+  }
+  // ============================== Page Routing ================================
+  /*
+   * Entry point to app - looks for index.html as landing page
+   */
+  app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '/public/'))
+  })
+  app.get('/swagger', function (req, res) {
+    res.sendFile(__dirname + '/swagger/index.html');
+  })
 
   app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'))
