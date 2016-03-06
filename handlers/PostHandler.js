@@ -20,6 +20,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
+  if (!req.headers.userid) return
 
   // create Post object
   var post = new Post(
@@ -111,7 +112,8 @@ function handleDeletePostRequest (req, res) {
 }
 
 function handleGetFeedRequest (req, res) {
-  num_posts = req.body.numposts
+  if (!req.headers.userid) return
+  num_posts = +req.headers.numposts || 10
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -120,10 +122,11 @@ function handleGetFeedRequest (req, res) {
     }
     friends = []
     for (i = 0; i < response.data.length; i++) {
-      friends.push(response.data[i].id)
+      friends.push(+response.data[i].id)
     }
+    friends = r(friends)
     r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-      return r.expr(friends).contains(post('userId'))
+      return friends.contains(post('userId'))
     }).orderBy(r.desc('timePosted')).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
       cursor.toArray(function(err, result) {
