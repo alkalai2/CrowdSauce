@@ -464,16 +464,22 @@
           }, 
           "type": "array"
         }, 
-        "imageLinks": {
+        "directions": {
+          "items": {
+            "type": "string"
+          }, 
+          "type": "array"
+        }, 
+        "ingredients": {
+          "items": {
+            "type": "string"
+          }, 
+          "type": "array"
+        }, 
+        "imageLink": {
           "type": "string"
         }, 
         "notes": {
-          "type": "string"
-        }, 
-        "ingredients": {
-          "type": "string"
-        }, 
-        "directions": {
           "type": "string"
         }, 
         "recipeLink": {
