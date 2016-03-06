@@ -18,7 +18,7 @@
     "express": "4.9.1",
     "async": "^1.5.2",
     "swagger-node-express": "~2.0",
-    "body-parser": "^1.15.0",
+    "body-parser": "^1.9.0",
     "file-stream-rotator": "0.0.6",
     "jquery": "^2.2.0",
     "mocha": "^2.4.5",
@@ -30,6 +30,7 @@
     "rethinkdb": "^2.2.1",
     "standard": "^6.0.7",
     "thinky": "^2.2.4",
-    "fb": "1.0.2"
+    "fb": "1.0.2",
+    "minimist": "*"
   }
 }
