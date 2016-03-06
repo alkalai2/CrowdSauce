@@ -105,7 +105,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "The facebook userId of the user", 
             "in": "header", 
             "name": "userid"
@@ -213,7 +213,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "UserID for the account to create", 
             "in": "header", 
             "name": "userid"
@@ -240,7 +240,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "UserID for the account to delete", 
             "in": "header", 
             "name": "userid"
@@ -268,7 +268,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID of user doing the favoriting",
             "in": "header",
             "name": "userid"
@@ -303,7 +303,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user doing the unfavoriting",
             "in": "header",
             "name": "userid"
@@ -338,7 +338,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user",
             "in": "header",
             "name": "userid"
@@ -383,7 +383,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user",
             "in": "header",
             "name": "userid"
@@ -419,7 +419,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user",
             "in": "header",
             "name": "userid"
@@ -451,7 +451,7 @@
     "application/json"
   ], 
   "basePath": "/", 
-  "host": "localhost:10010", 
+  "host": "localhost:3000",
   "definitions": {
     "Post": {
       "properties": {
@@ -494,7 +494,7 @@
           "type": "string"
         },
         "userId": {
-          "type": "number"
+          "type": "integer"
         }
       }
     }
