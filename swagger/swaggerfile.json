@@ -1,0 +1,340 @@
+{
+  "info": {
+    "version": "0.0.1", 
+    "title": "CrowdSauce"
+  }, 
+  "paths": {
+    "/api/posts/feed": {
+      "get": {
+        "operationId": "get feed", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success", 
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Post"
+              }, 
+              "type": "array"
+            }
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }, 
+          {
+            "required": true, 
+            "in": "body", 
+            "name": "body", 
+            "schema": {
+              "$ref": "#/definitions/Feed"
+            }
+          }
+        ], 
+        "description": "Get the list of the most recent posts from the given user's friends"
+      }
+    }, 
+    "/api/posts": {
+      "put": {
+        "operationId": "update post", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The post to update", 
+            "in": "query", 
+            "name": "postid"
+          }, 
+          {
+            "required": true, 
+            "in": "body", 
+            "description": "Post data", 
+            "name": "body", 
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ], 
+        "description": "Update a post"
+      }, 
+      "x-swagger-router-controller": "hello_world", 
+      "post": {
+        "operationId": "create post", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }, 
+          {
+            "required": true, 
+            "in": "body", 
+            "description": "Post data", 
+            "name": "body", 
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ], 
+        "description": "Create a new post"
+      }, 
+      "get": {
+        "operationId": "get posts", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success", 
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Post"
+              }, 
+              "type": "array"
+            }
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }
+        ], 
+        "description": "Returns a list of all the posts of a given user"
+      }, 
+      "delete": {
+        "operationId": "delete post", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }, 
+          {
+            "required": true, 
+            "in": "body", 
+            "name": "body", 
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ], 
+        "description": "Delete posts"
+      }
+    }, 
+    "/swagger": {
+      "x-swagger-pipe": "swagger_raw"
+    }, 
+    "/api/accounts/": {
+      "post": {
+        "operationId": "create account", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "UserID for the account to create", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }
+        ], 
+        "description": "Create new account"
+      }, 
+      "x-swagger-router-controller": "hello_world", 
+      "delete": {
+        "operationId": "delete account", 
+        "responses": {
+          "default": {
+            "description": "Error"
+          }, 
+          "200": {
+            "description": "Success"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "UserID for the account to delete", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }
+        ], 
+        "description": "Delete account"
+      }
+    }
+  }, 
+  "schemes": [
+    "http", 
+    "https"
+  ], 
+  "produces": [
+    "application/json"
+  ], 
+  "basePath": "/", 
+  "host": "localhost:10010", 
+  "definitions": {
+    "Feed": {
+      "properties": {
+        "numposts": {
+          "type": "number"
+        }
+      }
+    }, 
+    "Post": {
+      "properties": {
+        "rating": {
+          "type": "number"
+        }, 
+        "tags": {
+          "items": {
+            "type": "string"
+          }, 
+          "type": "array"
+        }, 
+        "imageLinks": {
+          "type": "string"
+        }, 
+        "notes": {
+          "type": "string"
+        }, 
+        "ingredients": {
+          "type": "string"
+        }, 
+        "directions": {
+          "type": "string"
+        }, 
+        "recipeLink": {
+          "type": "string"
+        }
+      }
+    }
+  }, 
+  "swagger": "2.0", 
+  "consumes": [
+    "application/json"
+  ]
+}
+

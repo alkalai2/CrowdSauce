@@ -41,6 +41,7 @@ try {
 function init() {
   // Run Express server to handle requests
   var app = express()
+
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
 
@@ -64,13 +65,37 @@ function init() {
   // setup the logger
   app.use(morgan('combined', {stream: accessLogStream}))
 
-  // REST routes for
-  /*
-   app.route('/addUser')
-   .get(addUserFromFacebook) // Get is currently just to test endpoint
-   .post(addUserFromFacebook)
-   */
   app.use(express.static('public'))
+  // Dist used for swagger files
+  app.use(express.static('swagger'));
+
+
+  swagger.setApiInfo({
+    title: "CrowdSauce API",
+    description: "API serving crowdasuce users",
+    termsOfServiceUrl: "N/A",
+    contact: "devs@crowdsauce.com",
+    license: "GNU",
+    licenseUrl: "GNU.com"
+  })
+
+
+  // ============================== Handlers ====================================
+  var handlers = {
+    account: new AccountHandler(),
+    post: new PostHandler(),
+    favorites: new FavoritesHandler()
+  }
+  // ============================== Page Routing ================================
+  /*
+   * Entry point to app - looks for index.html as landing page
+   */
+  app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '/public/'))
+  })
+  app.get('/swagger', function (req, res) {
+    res.sendFile(__dirname + '/swagger/index.html');
+  })
 
   app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'))
@@ -86,23 +111,6 @@ function init() {
 
   app.get('/about', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/about.html'))
-  })
-
-  // Something bad happened
-  // app.use(handle404)
-
-  // ============================== Handlers ====================================
-  var handlers = {
-    account: new AccountHandler(),
-    post: new PostHandler(),
-    favorites: new FavoritesHandler()
-  }
-  // ============================== Page Routing ================================
-  /*
-   * Entry point to app - looks for index.html as landing page
-   */
-  app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/'))
   })
 
   // Generic error handling middleware.
