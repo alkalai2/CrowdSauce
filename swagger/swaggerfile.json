@@ -6,7 +6,8 @@
   "paths": {
     "/api/posts/feed": {
       "get": {
-        "operationId": "get feed", 
+        "operationId": "get feed",
+        "tags": [ "posts" ],
         "responses": {
           "default": {
             "description": "Error"
@@ -53,6 +54,7 @@
     "/api/posts": {
       "put": {
         "operationId": "update post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -92,9 +94,9 @@
         ], 
         "description": "Update a post"
       },
-      "x-swagger-router-controller": "hello_world", 
       "post": {
         "operationId": "create post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -128,7 +130,8 @@
         "description": "Create a new post"
       }, 
       "get": {
-        "operationId": "get posts", 
+        "operationId": "get posts",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
@@ -162,6 +165,7 @@
       }, 
       "delete": {
         "operationId": "delete post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -200,6 +204,7 @@
     "/api/accounts/": {
       "post": {
         "operationId": "create account",
+        "tags": [ "accounts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -226,6 +231,7 @@
       "x-swagger-router-controller": "hello_world",
       "delete": {
         "operationId": "delete account",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -253,6 +259,7 @@
     "/api/favorites/": {
       "post": {
         "operationId": "add a favorite",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -287,6 +294,7 @@
       },
       "delete": {
         "operationId": "delete favorite",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -321,6 +329,7 @@
       },
       "put": {
         "operationId": "change favorite",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -357,6 +366,7 @@
     "/api/favorites/user/": {
       "get": {
         "operationId": "get user favorites",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
@@ -392,6 +402,7 @@
     "/api/favorites/post/": {
       "get": {
         "operationId": "get post favorites",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
