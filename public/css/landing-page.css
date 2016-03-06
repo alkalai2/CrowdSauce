@@ -1,41 +1,42 @@
 
+html, body{
+  height:100%;
+  width:100%;
+  overflow: hidden;
+}
+
 .starter-template {
   text-align: center;
 }
 
 .panel {
-  margin-top: 5em;
-  margin-left: 1em;
-  margin-right: 30em;
-  /*padding: 10rem 10rem;*/
+  margin:0 auto;
+  margin-top:5em;
+  width:50%;
   text-align: center;
 }
 
 #welcome-header {
-	text-align: left;
-	font-size: 48px;
+  text-align: left;
+  font-size: 48px;
 }
 
 #fbLoginBtn {
-	font-size: 24px;
 }
 
-body { 
+.background {
+  height:100%;
+  width:100%;
+  position:absolute;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   background: url('http://i.imgur.com/O0CbWN8.png') no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  z-index: -1;
+  opacity:.3;
 }
-
-
-/*body {
-     margin: 0;
-     background: url('http://i.imgur.com/O0CbWN8.png');
-     background-color: gray;
-     background-size: 1012px 670px;
-     background-repeat:no-repeat;
-     display: compact;
-     font: 13px/18px "Helvetica Neue", Helvetica, Arial, sans-serif;
-}*/
 

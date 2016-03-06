@@ -7,6 +7,8 @@ function statusChangeCallback(response) {
       document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response2.name + '!';
       $('#fbLoginBtn').hide();
       $('#fbLogoutBtn').show();
+      window.location.replace('/feed');
+
     });
   } else {
     // User is not logged in, should display login page.
