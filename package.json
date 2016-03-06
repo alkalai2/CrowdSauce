@@ -8,7 +8,6 @@
   },
   "scripts": {
     "start": "grunt && npm run fire_node",
-
     "fire_node": "node app.js",
     "test": "npm run style || npm run mocha",
     "style": "standard",
@@ -31,7 +30,11 @@
     "morgan": "^1.7.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
+    "react-dnd": "^2.1.2",
+    "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^0.14.7",
+    "react-rating": "^0.2.0",
+    "react-tag-input": "^2.2.3",
     "request": "^2.69.0",
     "require": "^2.4.20",
     "rethinkdb": "^2.2.1",

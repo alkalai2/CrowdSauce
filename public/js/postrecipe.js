@@ -1,18 +1,22 @@
 var Panel = ReactBootstrap.Panel,
 PanelGroup = ReactBootstrap.PanelGroup,
 Input = ReactBootstrap.Input,
-ButtonInput = ReactBootstrap.ButtonInput
+ButtonInput = ReactBootstrap.ButtonInput,
+Pagination = ReactBootstrap.Pagination
+
+var ReactTags = require(['react-tag-input']);
 
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: '', directions: '',
-         imgsrc:'http://i.imgur.com/SyZyVmN.jpg'};
+         imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
+         tags: []};
     },
     handleTitleChange: function(e){
       this.setState({title: e.target.value});
   	},    
-    handleSelect(activeKey) {
+    handlePanelSelect(activeKey) {
     	this.setState({ activeKey });
   	},   
   	changeImgSrc: function(e) {
@@ -30,6 +34,34 @@ var PostRecipe = React.createClass({
     onDirectionsChange: function(e) {
       this.setState({directions: e.target.value});
     },
+    handleRatingSelect: function(e, sel) {
+      this.setState({
+        activePage: sel.eventKey
+      });
+    },
+    handleDelete: function(i) {
+        var tags = this.state.tags;
+        tags.splice(i, 1);
+        this.setState({tags: tags});
+    },
+    handleAddition: function(tag) {
+        var tags = this.state.tags;
+        tags.push({
+            id: tags.length + 1,
+            text: tag
+        });
+        this.setState({tags: tags});
+    },
+    handleDrag: function(tag, currPos, newPos) {
+        var tags = this.state.tags;
+
+        // mutate array
+        tags.splice(currPos, 1);
+        tags.splice(newPos, 0, tag);
+
+        // re-render
+        this.setState({ tags: tags });
+    },
 	handlePostSubmit: function() {
 	  if(this.state.activeKey == 1){
 	    handleLinkSubmit();
@@ -43,6 +75,10 @@ var PostRecipe = React.createClass({
 		var data = {
 		  accessToken: fbAccessToken,
 		  recipeLink: this.state.link,
+		  recipeTitle: this.state.title,
+		  imageLink: this.state.imgsrc.trim(),
+		  recipeDescription: this.state.description,
+		  recipeRating: this.state.activePage,
 		  userId: fbUserID
 		};
 		var url = 'http://localhost:3000/api/posts/';
@@ -63,8 +99,11 @@ var PostRecipe = React.createClass({
 		var data = {
 		  accessToken: fbAccessToken,
 		  ingredients: this.state.ings,
+		  recipeTitle: this.state.title,
 		  directions: this.state.directions.trim(),
-		  imageLinks: this.state.imgsrc.trim(),
+		  imageLink: this.state.imgsrc.trim(),
+		  recipeDescription: this.state.description,
+		  recipeRating: this.state.activePage,
 		  userId: fbUserID
 		};
 		var url = 'http://localhost:3000/api/posts/';
@@ -106,7 +145,7 @@ var PostRecipe = React.createClass({
 			    onChange={this.changeImgSrc}
 			    value={this.state.imgsrc}
 			  />
-			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handleSelect} accordion>
+			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
 			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
 		    	</Panel>
@@ -123,7 +162,13 @@ var PostRecipe = React.createClass({
 			  value={this.state.description}
 			  onChange={this.handleDescChange}
 			/>
-			<ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large"/>
+			<h3>Rating:</h3>
+			<Pagination
+		      bsSize="large"
+		      items={5}
+		      activePage={this.state.activePage}
+		      onSelect={this.handleRatingSelect} />
+			<ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large" />
 		   </form>
         </div>);
     }
