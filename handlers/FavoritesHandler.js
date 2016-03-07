@@ -26,7 +26,7 @@ function handleCreateFavoritesRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
   // create Account object
-  var favorites = new Favorites({userId: req.headers.userid, postId: req.body.postId})
+  var favorites = new Favorites({userId: parseInt(req.headers.userid), postId: req.body.postId})
 
   // use Thinky to save Favorites data
   favorites.save().then(function (result) {
@@ -41,10 +41,12 @@ function handleGetUserFavoritesRequest(req,res) {
   if (!auth.assertHasUser(req)) return
 
   //Pass in userId in URL query
-  Account.get(req.headers.userid).getJoin({favorites: true}).run().then(function(account) {
+  Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
+    console.log("Result: "+ JSON.stringify(account))
     res.send(200, JSON.stringify(account.favorites, null, 2))
   }).error(function (error) {
     // something went wrong
+    console.log("Error: "+ error.message)
     res.send(500, {error: error.message})
   })
 }
@@ -100,10 +102,22 @@ function handleUpdateFavoritesRequest (req, res) {
 
 }
 function handleDeleteFavoritesRequest (req, res) {
+  queryObj = false
+  userId = req.body.userId
+  postId = req.body.postId
+  
+  if (userId && postId)
+    queryObj = {"userId": parseInt(userId), "postId": postId}
+  else if (userId)
+    queryObj = {"userId": parseInt(userId)}
+  else if (postId)
+    queryObj = {"postId": postId}
+
   console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
-    r.db(config.rethinkdb.db).table('favorites').filter(req.body).delete().run(
+    r.db(config.rethinkdb.db).table('favorites').filter(queryObj).delete().run(
          connection, function(err, cursor){
-          if (err) throw err
+          if (err) {throw err
+            console.log("Error message: "+ err.message())}
         }).then(function(result) {
            res.json({
                result: result

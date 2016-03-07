@@ -40,7 +40,7 @@ function handleGetAccountRequest (req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(req.query[q])).run(
+      r.db(config.rethinkdb.db).table('users').filter(r.row(q).eq(parseInt(req.query[q]))).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
