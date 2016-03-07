@@ -30,7 +30,7 @@ function handleCreatePostRequest (req, res) {
       ingredients: req.body.ingredients,
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
-      imageLinks: req.body.imageLinks,
+      imageLink: req.body.imageLink,
       tags: req.body.tags,
       notes: req.body.notes,
       rating: req.body.rating
