@@ -2,41 +2,54 @@
  * @jsx React.DOM
  */
 
-var post_data1 = {
-  "userId" : 123456, 
-  "title" : "Spicy Chicken Enchiladas",
-  "ingredients": ["ingredient 1",  "ingredient 2",  "ingredient 3"],
-  "directions" : ["mix two eggs", "fry bacon", "toast bread"], 
-  "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
-  "imageLink" : "http://i.imgur.com/SyZyVmN.jpg", 
-  "tags" : ["chicken", "dinner", "spicy", "orange"],
-  "notes": "This was everything I wanted. Nice texture to the chicken with the high stove heat, and the added spices really gave it a nice kick. I would recommend using cayenne to taste for those that like it less hot! Delicious! Okay!",
-  "rating": 4,
-  "timestamp": "Feb 24, 2016"
-}
-
-var post_data2 = {
-  "userId" : 9999, 
-  "title" : "Salty Mushroom Tacos ",
-  "ingredients": ["Salty ",  "Mushrooms ",  "Tacos "],
-  "directions" : ["add salt", "grill mushrooms", "make tacos"], 
-  "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
-  "imageLink" : "http://i.imgur.com/BjA1g9f.jpg", 
-  "tags" : ["salty", "mushroom", "tacos", "gross"],
-  "notes": "These were awful. Not that salty, barely any mushrooms, all in a falling-apart taco. I'm a bad cook.",
-  "rating": 3,
-  "timestamp": "Feb 24, 2016"
-}
-
 var Feed = React.createClass({
+    
+    getInitialState: function() {
+
+      // return getFacebookDetails().then(function(fb_details){
+      //   console.log("get facebook details : ", fb_details)
+      //   return {data: [], fb_details: fb_details}
+      // })
+      return {data: []}
+    },
+    getFBInfo: function() {
+      return getFacebookDetails().then(function(d){return d})
+    },
+    componentDidMount: function() {
+      this.loadPostsFromServer()
+    },
+
+    loadPostsFromServer : function() {
+      
+      jQuery.ajax({
+        url:  this.props.source,
+        type: 'GET',
+        headers: {
+          'Accept': 'text/html',
+          'userid': "112186842507184",
+          'accesstoken': "CAAIAH9y5RLgBAJVr9O4I0RTMNffSCcvKbP0kurYQaLVfeEk3OrFlTaCLSYZADm0YMGr11ZA2uGJ0sxUjHiXFjHGtICd6k5C69oYKx1dF1kliRl9ZAZCd9ZAhy3UcBWfFsR2CjdU8ZBKzobZCKWfRo4ZCeeDvaIryxkPudvV4zxZBk1Jbx3tHwRZBkWOvQVwzyDSXEWAhccMFZBPV7pZBWNzmQp3P",
+          'numposts': '10'
+        },
+        dataType: 'json',
+        timeout : 10000,
+        success: function(data) {
+          this.setState({data: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.source, status, err.toString());
+        }.bind(this)
+      });
+    },
+
     render: function() {
    		return (
-	    	<div>
-	    		<Post data={post_data1}/>
-	    		<Post data={post_data2}/>
+	    	<div> 
+         {this.state.data &&
+            <PostList data={this.state.data} />
+          } 
 	    	</div>
 	    );
     }
 });
 
-ReactDOM.render(<Feed />, posts);
+ReactDOM.render(<Feed source="http://localhost:3000/api/posts/feed/" />, posts);

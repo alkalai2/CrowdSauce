@@ -171,7 +171,6 @@ var FavoriteStar = React.createClass ({
 
 
 var Post = React.createClass({
-
   render : function() {
     return (
       <div className="post-full">
@@ -199,14 +198,26 @@ var Post = React.createClass({
               <Tags className = "tagset" items={this.props.data.tags}/>
               <FavoriteStar />
             </div>
-            <Comment comment_id={this.props.data.userId}/>
+            <Comment id={this.props.data.id}/>
           </div>
         </Panel>
-        
       </div>
     );
   },
 });
+
+var PostList = React.createClass({
+  render: function() {
+    return (
+      <div className="post-list">
+        {(this.props.data).map(function(post_data) {
+           return <Post data={post_data} />
+        })}
+      </div>
+    )
+  }
+})
+
 
 // add rendered post to element with id = 'posts'
 //ReactDOM.render(<Post data = {data}/>, posts);
