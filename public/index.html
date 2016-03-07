@@ -5,6 +5,7 @@
   <title>CrowdSauce</title>
   <meta charset="UTF-8">
   <script type="text/javascript" src="js/login.js"></script>
+  <script type="text/javascript" src="js/login_check.js"></script>
   <link href="css/landing-page.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap-theme.min.css" rel="stylesheet">
@@ -41,9 +42,8 @@
   <div class="panel-body">
     <div class="starter-template">
 
-    <a href="#" class="btn btn-block btn-social btn-lg btn-facebook" scope="public_profile,email" onlogin="checkLoginState();" id="fbLoginBtn">
-      <span class="fa fa-facebook"></span> Sign in with Facebook
-    </a>
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
     
       <div id="status">
       </div>

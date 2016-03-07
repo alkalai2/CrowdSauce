@@ -20,10 +20,11 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
+  console.dir(req.body)
   if (!auth.assertHasUser(req)) return
 
   // create Account object
-  var account = new Account({userId: req.headers.userid})
+  var account = new Account({userId: req.headers.userid, name: req.body.name})
 
   // use Thinky to save Account data
   account.save().then(function (result) {
