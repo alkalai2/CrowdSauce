@@ -202,6 +202,40 @@
       "x-swagger-pipe": "swagger_raw"
     }, 
     "/api/accounts/": {
+      "get": {
+        "operationId": "get accounts",
+        "tags": [ "accounts" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {
+            "description": "Success", 
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Account"
+              }, 
+              "type": "array"
+            }
+          }, 
+          "401": {"description": "Unauthorized"}
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }
+        ], 
+        "description": "Returns a list of all the posts of a given user"
+      }, 
       "post": {
         "operationId": "create account",
         "tags": [ "accounts" ],
@@ -326,41 +360,6 @@
           }
         ],
         "description": "Unfavorite a post"
-      },
-      "put": {
-        "operationId": "change favorite",
-        "tags": [ "favorites" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "integer",
-            "description": "UserID for user",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          },
-          {
-            "required": true,
-            "description": "Contains the post to update",
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/Favorite"
-            }
-          }
-        ],
-        "description": "Not sure what this is for"
       }
     },
     "/api/favorites/user/": {
@@ -483,6 +482,16 @@
           "type": "string"
         }, 
         "recipeLink": {
+          "type": "string"
+        }
+      }
+    },
+    "Account": {
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         }
       }
