@@ -117,10 +117,20 @@ var ImageThumbnail = React.createClass({
 
 var RatingStars = React.createClass ({
   render: function() {
-    var stars = [];
-    for(var i = 0; i < this.props.rating; i++) {
-      stars.push(<img src={"img/plain-star.png"} className="rating-star"/>)
-    }
+    var stars;
+    var rating = this.props.rating;
+    
+    if(rating===1) 
+      stars = (<img src={"img/1star.png"} className="rating-star"/>)
+    if(rating===2) 
+      stars = (<img src={"img/2stars.png"} className="rating-star"/>)
+    if(rating===3) 
+      stars = (<img src={"img/3stars.png"} className="rating-star"/>)
+    if(rating===4) 
+      stars = (<img src={"img/4stars.png"} className="rating-star"/>)  
+    if(rating===5) 
+      stars = (<img src={"img/5stars.png"} className="rating-star"/>)
+
     return (
       <span className = "rating-stars">
       {stars}
