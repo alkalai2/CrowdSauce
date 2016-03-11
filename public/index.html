@@ -5,6 +5,7 @@
   <title>CrowdSauce</title>
   <meta charset="UTF-8">
   <script type="text/javascript" src="js/login.js"></script>
+  <script type="text/javascript" src="js/login_check.js"></script>
   <link href="css/landing-page.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap-theme.min.css" rel="stylesheet">
@@ -12,11 +13,12 @@
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <link href="css/bootstrap-social.css" rel="stylesheet">
 
 
 </head>
 <body>
-
+    <div class="background" ></div>
 <nav class="navbar navbar-inverse navbar-fixed-top" role=navigation>
   <a class="navbar-brand" href="#">CrowdSauce</a>
   <ul class="nav navbar-nav">
@@ -32,17 +34,21 @@
   </ul>
 </nav>
 
-<div class="panel panel-primary">
+<div class="panel">
   <div class="panel-heading">
     <h1 id="welcome-header">Welcome to CrowdSauce</h1>
   </div>
   
   <div class="panel-body">
     <div class="starter-template">
-      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="fbLoginBtn"></fb:login-button>
-      <button type="button" id="fbLogoutBtn" onclick="fbLogout()">Logout</button>
-      <div id="status"></div>
+
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+    
+      <div id="status">
+      </div>
   </div>
+</div>
 </div>
 <!-- /.container -->
 

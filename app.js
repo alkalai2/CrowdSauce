@@ -16,6 +16,11 @@ var FB = require('fb')
 var swagger = require('swagger-node-express')
 var util = require('util')
 
+DEBUG = false
+process.argv.forEach(function (val, index, array) {
+  if (val == "debug") DEBUG = true
+});
+
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
 
@@ -79,7 +84,6 @@ function init() {
     licenseUrl: "GNU.com"
   })
 
-
   // ============================== Handlers ====================================
   var handlers = {
     account: new AccountHandler(),
@@ -97,10 +101,6 @@ function init() {
     res.sendFile(__dirname + '/swagger/index.html');
   })
 
-  app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/index.html'))
-  })
-
   app.get('/login', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/login.html'))
   })
@@ -111,6 +111,10 @@ function init() {
 
   app.get('/about', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/about.html'))
+  })
+
+  app.get('/feed', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/feed.html'))
   })
 
   // Generic error handling middleware.

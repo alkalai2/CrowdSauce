@@ -7,6 +7,8 @@ function statusChangeCallback(response) {
       document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response2.name + '!';
       $('#fbLoginBtn').hide();
       $('#fbLogoutBtn').show();
+      window.location.replace('/feed');
+      addAccToDB(response2.name)
     });
   } else {
     // User is not logged in, should display login page.
@@ -25,6 +27,34 @@ function fbLogout() {
   FB.logout(function(response) {
     statusChangeCallback(response)
   })
+}
+
+function addAccToDB(name){
+  console.log(fbAccessToken);
+  console.log(fbUserID);
+    var headers = {
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    var data = {
+      name: name
+    }
+    var url = 'http://localhost:3000/api/accounts/';
+    jQuery.ajax({
+      url: url,
+      headers: headers,
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        console.log("Successfully added user to db");
+        //alert(data);
+        //this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    })
 }
 window.fbAsyncInit = function() {
   FB.init({

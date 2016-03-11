@@ -4,9 +4,10 @@
     "title": "CrowdSauce"
   }, 
   "paths": {
-    "/api/posts/feed": {
+    "/api/posts/feed/": {
       "get": {
-        "operationId": "get feed", 
+        "operationId": "get feed",
+        "tags": [ "posts" ],
         "responses": {
           "default": {
             "description": "Error"
@@ -40,20 +41,20 @@
             "name": "accesstoken"
           }, 
           {
-            "required": true, 
-            "in": "body", 
-            "name": "body", 
-            "schema": {
-              "$ref": "#/definitions/Feed"
-            }
+            "in": "header",
+            "default": 10,
+            "name": "numposts",
+            "type": "number",
+            "description": "Number of posts"
           }
         ], 
         "description": "Get the list of the most recent posts from the given user's friends"
       }
     }, 
-    "/api/posts": {
+    "/api/posts/": {
       "put": {
         "operationId": "update post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -93,9 +94,9 @@
         ], 
         "description": "Update a post"
       },
-      "x-swagger-router-controller": "hello_world", 
       "post": {
         "operationId": "create post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -104,7 +105,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "The facebook userId of the user", 
             "in": "header", 
             "name": "userid"
@@ -129,7 +130,8 @@
         "description": "Create a new post"
       }, 
       "get": {
-        "operationId": "get posts", 
+        "operationId": "get posts",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
@@ -163,6 +165,7 @@
       }, 
       "delete": {
         "operationId": "delete post",
+        "tags": [ "posts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -199,8 +202,43 @@
       "x-swagger-pipe": "swagger_raw"
     }, 
     "/api/accounts/": {
+      "get": {
+        "operationId": "get accounts",
+        "tags": [ "accounts" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {
+            "description": "Success", 
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Account"
+              }, 
+              "type": "array"
+            }
+          }, 
+          "401": {"description": "Unauthorized"}
+        }, 
+        "parameters": [
+          {
+            "required": true, 
+            "type": "number", 
+            "description": "The facebook userId of the user", 
+            "in": "header", 
+            "name": "userid"
+          }, 
+          {
+            "required": true, 
+            "type": "string", 
+            "description": "The facebook access token of the user", 
+            "in": "header", 
+            "name": "accesstoken"
+          }
+        ], 
+        "description": "Returns a list of all the posts of a given user"
+      }, 
       "post": {
         "operationId": "create account",
+        "tags": [ "accounts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -209,7 +247,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "UserID for the account to create", 
             "in": "header", 
             "name": "userid"
@@ -227,6 +265,7 @@
       "x-swagger-router-controller": "hello_world",
       "delete": {
         "operationId": "delete account",
+        "tags": [ "accounts" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -235,7 +274,7 @@
         "parameters": [
           {
             "required": true, 
-            "type": "number", 
+            "type": "integer",
             "description": "UserID for the account to delete", 
             "in": "header", 
             "name": "userid"
@@ -254,6 +293,7 @@
     "/api/favorites/": {
       "post": {
         "operationId": "add a favorite",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -262,7 +302,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID of user doing the favoriting",
             "in": "header",
             "name": "userid"
@@ -288,6 +328,7 @@
       },
       "delete": {
         "operationId": "delete favorite",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {"description": "Success"},
@@ -296,7 +337,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user doing the unfavoriting",
             "in": "header",
             "name": "userid"
@@ -319,45 +360,12 @@
           }
         ],
         "description": "Unfavorite a post"
-      },
-      "put": {
-        "operationId": "change favorite",
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "number",
-            "description": "UserID for user",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          },
-          {
-            "required": true,
-            "description": "Contains the post to update",
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/Favorite"
-            }
-          }
-        ],
-        "description": "Not sure what this is for"
       }
     },
     "/api/favorites/user/": {
       "get": {
         "operationId": "get user favorites",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
@@ -374,7 +382,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user",
             "in": "header",
             "name": "userid"
@@ -393,6 +401,7 @@
     "/api/favorites/post/": {
       "get": {
         "operationId": "get post favorites",
+        "tags": [ "favorites" ],
         "responses": {
           "default": {"description": "Error"},
           "200": {
@@ -409,7 +418,7 @@
         "parameters": [
           {
             "required": true,
-            "type": "number",
+            "type": "integer",
             "description": "UserID for user",
             "in": "header",
             "name": "userid"
@@ -441,15 +450,8 @@
     "application/json"
   ], 
   "basePath": "/", 
-  "host": "localhost:10010", 
+  "host": "localhost:3000",
   "definitions": {
-    "Feed": {
-      "properties": {
-        "numposts": {
-          "type": "number"
-        }
-      }
-    }, 
     "Post": {
       "properties": {
         "rating": {
@@ -461,19 +463,35 @@
           }, 
           "type": "array"
         }, 
-        "imageLinks": {
+        "directions": {
+          "items": {
+            "type": "string"
+          }, 
+          "type": "array"
+        }, 
+        "ingredients": {
+          "items": {
+            "type": "string"
+          }, 
+          "type": "array"
+        }, 
+        "imageLink": {
           "type": "string"
         }, 
         "notes": {
           "type": "string"
         }, 
-        "ingredients": {
-          "type": "string"
-        }, 
-        "directions": {
-          "type": "string"
-        }, 
         "recipeLink": {
+          "type": "string"
+        }
+      }
+    },
+    "Account": {
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         }
       }
@@ -491,7 +509,7 @@
           "type": "string"
         },
         "userId": {
-          "type": "number"
+          "type": "integer"
         }
       }
     }

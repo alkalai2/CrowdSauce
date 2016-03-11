@@ -1,7 +1,7 @@
 var FB = require('fb')
 
 function isAuthenticated(req, res, next) {
-  if (req.headers.secret == fbAppSecret) {
+  if (DEBUG) {
     next()
     return
   } else if (req.headers.accesstoken === undefined) {
@@ -16,8 +16,10 @@ function isAuthenticated(req, res, next) {
     input_token: req.headers.accesstoken,
     access_token: fbAppAccessToken
   }, function (response) {
-    if (response.error) console.log(error)
-    if (!response.data.is_valid) {
+    if (response.error) {
+      console.log(error)
+      res.sendStatus(401)
+    } else if (!response.data.is_valid) {
       console.log('Invalid access attempted (' + req.headers.accesstoken + ')')
       res.sendStatus(401)
     } else if (response.data.user_id != req.headers.userid) {
@@ -30,4 +32,13 @@ function isAuthenticated(req, res, next) {
   })
 }
 
+function assertHasUser(req) {
+  if (!req.headers.userid) {
+    console.log("UserId required (in headers) for this request")
+    return false
+  }
+  return true
+}
+
 exports.isAuthenticated = isAuthenticated
+exports.assertHasUser = assertHasUser

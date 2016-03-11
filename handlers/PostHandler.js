@@ -4,6 +4,7 @@ var config = require('../config.js')
 var r = require('rethinkdb')
 var util = require('util')
 var email = require('../email')
+var auth = require('../auth.js')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -22,6 +23,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
+  if (!auth.assertHasUser(req)) return
 
   // create Post object
   var post = new Post(
@@ -30,7 +32,7 @@ function handleCreatePostRequest (req, res) {
       ingredients: req.body.ingredients,
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
-      imageLinks: req.body.imageLinks,
+      imageLink: req.body.imageLink,
       tags: req.body.tags,
       notes: req.body.notes,
       rating: req.body.rating
@@ -39,11 +41,9 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
-  // res.send(200, JSON.stringify(result))
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
-  // res.send(500, {error:error.message})
   })
 
   FB.api('/' + req.headers.userid + '?fields=email,name', 'get', {
@@ -87,6 +87,7 @@ function handleGetPostRequest (req, res) {
 }
 
 function handleUpdatePostRequest (req, res) {
+
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
   console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
@@ -106,7 +107,6 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
   r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query['postId']}).delete().run(
          connection, function(err, cursor){
@@ -124,7 +124,8 @@ function handleDeletePostRequest (req, res) {
 }
 
 function handleGetFeedRequest (req, res) {
-  num_posts = req.body.numposts
+  if (!auth.assertHasUser(req)) return
+  num_posts = +req.headers.numposts || 10
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -133,10 +134,11 @@ function handleGetFeedRequest (req, res) {
     }
     friends = []
     for (i = 0; i < response.data.length; i++) {
-      friends.push(response.data[i].id)
+      friends.push(+response.data[i].id)
     }
+    friends = r(friends)
     r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-      return r.expr(friends).contains(post('userId'))
+      return friends.contains(post('userId'))
     }).orderBy(r.desc('timePosted')).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
       cursor.toArray(function(err, result) {
