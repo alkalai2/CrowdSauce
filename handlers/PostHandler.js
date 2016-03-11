@@ -2,6 +2,8 @@ var Post = require('../models/Post')
 var FB = require('fb')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var util = require('util')
+var email = require('../email')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -44,6 +46,17 @@ function handleCreatePostRequest (req, res) {
   // res.send(500, {error:error.message})
   })
 
+  FB.api('/' + req.headers.userid + '?fields=email,name', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (response.error) {
+      console.log(util.inspect(response.error))
+    } else if (!response.email) {
+      console.log("User " + response.name + " (" + response.id + ") does not seem to have email permissions.")
+    } else {
+      email.send(response.email, "Test", "u made a post")
+    }
+  })
 }
 
 function handleGetPostRequest (req, res) {

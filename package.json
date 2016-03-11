@@ -31,6 +31,7 @@
     "standard": "^6.0.7",
     "thinky": "^2.2.4",
     "fb": "1.0.2",
-    "minimist": "*"
+    "minimist": "*",
+    "nodemailer": "2.3.0"
   }
 }
