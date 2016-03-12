@@ -30,8 +30,6 @@ function fbLogout() {
 }
 
 function addAccToDB(name){
-  console.log(fbAccessToken);
-  console.log(fbUserID);
     var headers = {
       accessToken: fbAccessToken,
       userId: fbUserID
@@ -48,8 +46,6 @@ function addAccToDB(name){
       data: data,
       success: function(data) {
         console.log("Successfully added user to db");
-        //alert(data);
-        //this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString());
@@ -64,6 +60,8 @@ window.fbAsyncInit = function() {
     version    : 'v2.5'
   });
   FB.getLoginStatus(function(response) {
+    fbUserID = response.authResponse.userID;
+    fbAccessToken = response.authResponse.accessToken;
     statusChangeCallback(response);
   });
 };
