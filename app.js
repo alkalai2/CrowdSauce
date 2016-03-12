@@ -5,6 +5,7 @@ var routes = require('./routes')
 var AccountHandler = require('./handlers/AccountHandler')
 var PostHandler = require('./handlers/PostHandler')
 var FavoritesHandler = require('./handlers/FavoritesHandler')
+var TagHandler = require('./handlers/TagHandler')
 var fileStreamRotator = require('file-stream-rotator')
 var fs = require('fs')
 var async = require('async')
@@ -88,7 +89,8 @@ function init() {
   var handlers = {
     account: new AccountHandler(),
     post: new PostHandler(),
-    favorites: new FavoritesHandler()
+    favorites: new FavoritesHandler(),
+    tag: new TagHandler()
   }
   // ============================== Page Routing ================================
   /*

@@ -21,6 +21,21 @@ function setup (app, handlers) {
   app.get('/api/favorites/post/', handlers.favorites.getPostFavorites)
   app.put('/api/favorites/', handlers.favorites.updateFavorites)
   app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
+
+  //Create a new tag
+  app.post('/api/tags/', handlers.tag.createTag)
+  //Add an existing tag to a post
+  app.post('/api/tags/post', handlers.tag.addTag)
+  //Get all tags for given post
+  app.get('/api/tags/post/', handlers.tag.getPostTags)
+  //Get all posts for given tag
+  app.get('/api/tags/tag/', handlers.tag.getTaggedPosts)
+  //Get all tags
+  app.get('/api/tags/', handlers.tag.getTags)
+  //Update the name of a tag (currently non-functional)
+  app.put('/api/tags/', handlers.tag.updateTag)
+  //Delete a tag, delete all tags from a post, or delete a tag from a post
+  app.delete('/api/tags/', handlers.tag.deleteTag)
 }
 
 exports.setup = setup
