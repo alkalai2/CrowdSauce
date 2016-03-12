@@ -50,7 +50,7 @@ var Feed = React.createClass({
    		return (
 	    	<div> 
          {this.state.data &&
-            <PostList data={this.state.data} />
+            <PostList data={this.state.data} favoriteAble={true}/>
           } 
 	    	</div>
 	    );

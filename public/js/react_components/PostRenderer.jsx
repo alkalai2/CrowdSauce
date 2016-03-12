@@ -141,13 +141,17 @@ var RatingStars = React.createClass ({
 
 var Tags = React.createClass ({
   render: function() {
-    return (
-      <span>
-      {this.props.items.map(function(item) {
-        return <span className="tag label label-info">{item}</span>
-      })}
-      </span>
-    );
+    if(!this.props.items) {
+      return <span></span>
+    } else {
+      return (
+        <span>
+        {this.props.items.map(function(item) {
+          return <span className="tag label label-info">{item}</span>
+        })}
+        </span>
+      );
+    } 
   }
 });
 
@@ -181,7 +185,10 @@ var FavoriteStar = React.createClass ({
 
 
 var Post = React.createClass({
+
   render : function() {
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar />
+
     return (
       <div className="post-full">
         <Panel className="post-panel">
@@ -206,7 +213,7 @@ var Post = React.createClass({
           <div className = "post-footer">
             <div>
               <Tags className = "tagset" items={this.props.data.tags}/>
-              <FavoriteStar />
+              {favoriteHeart}
             </div>
             <Comment id={this.props.data.id}/>
           </div>
@@ -218,10 +225,11 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
   render: function() {
+    var favoriteAble = this.props.favoriteAble
     return (
       <div className="post-list">
         {(this.props.data).map(function(post_data) {
-           return <Post data={post_data} />
+           return <Post data={post_data} favoriteAble={favoriteAble}/>
         })}
       </div>
     )
