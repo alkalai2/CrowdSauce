@@ -119,6 +119,10 @@ function init() {
     res.sendFile(path.join(__dirname + '/public/views/feed.html'))
   })
 
+  app.get('/favorites', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/favorites.html'))
+  })
+
   // Generic error handling middleware.
   app.use(handleError)
 
