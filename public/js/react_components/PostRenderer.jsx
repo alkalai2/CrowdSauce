@@ -167,9 +167,7 @@ var FavoriteStar = React.createClass ({
       accessToken: fbAccessToken,
       userId: fbUserID
     }
-    var data = {
-      postId: this.props.id
-    }
+    var data = this.props.data
     var url = 'http://localhost:3000/api/favorites/';
     jQuery.ajax({
       url:  url,
@@ -225,7 +223,7 @@ var FavoriteStar = React.createClass ({
   }, 
 
   render: function() {
-    var image_src = this.state.favorited ? "img/heart-empty.png" : "img/heart-filled.png";
+    var image_src = this.state.favorited ? "img/heart-filled.png" : "img/heart-empty.png";
     var tooltip_txt = this.state.favorited ? "Add to Favorites" : "Favorited";
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
 
@@ -261,7 +259,7 @@ var Post = React.createClass({
 
 
   render : function() {
-    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar />;
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
 
     return (
       <div className="post-full">
