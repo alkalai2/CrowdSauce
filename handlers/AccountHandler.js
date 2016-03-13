@@ -65,7 +65,6 @@ function handleGetAccountRequest (req, res) {
 
 function handleUpdateAccountRequest (req, res) {
   //Meaningless while userId is the only field because userId cannot be updated
-  console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
 }
 function handleDeleteAccountRequest (req, res) {
   if (!auth.assertHasUser(req)) return
