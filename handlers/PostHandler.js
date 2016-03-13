@@ -41,7 +41,14 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
-    email.sendToFriends(req.headers.userid, "Test", "friend made post")
+    FB.api('/' + req.headers.userid + '?fields=name', 'get', {
+      access_token: fbAppAccessToken
+    }, function (response) {
+      email.sendToFriends(
+        req.headers.userid,
+        response.name + " posted a new recipe!",
+        "<img src='" + req.body.imageLink + "'>")
+    })
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
