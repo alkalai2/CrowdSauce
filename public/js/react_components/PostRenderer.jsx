@@ -242,12 +242,26 @@ var FavoriteStar = React.createClass ({
   }
 });
 
+var NoPostsDisplay = React.createClass({
+  render: function() {
+     return <span className="no-posts-display"> 
+        <div>
+          <br></br>
+          <img src={"img/spilled_cup.png"} className="no-posts-image"/>
+        </div>
+        <div>
+          <center><i>Oops! Your friends havent posted anything :(</i></center>
+        </div>
+      </span>
+  }
+})
+
 
 var Post = React.createClass({
 
 
   render : function() {
-    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar id= {this.props.data.id.postId} />
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar />;
 
     return (
       <div className="post-full">
@@ -285,12 +299,21 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
   render: function() {
+
+    // if no posts, display a 'no posts image'
+    var toDisplay = <NoPostsDisplay />
+
+    if (this.props.data && this.props.data.length > 0) {
+      toDisplay = 
+        (this.props.data).map(function(post_data) {
+           return <Post data={post_data} favoriteAble={favoriteAble}/>
+        })
+    }
+
     var favoriteAble = this.props.favoriteAble
     return (
-      <div className="post-list">
-        {(this.props.data).map(function(post_data) {
-           return <Post data={post_data} favoriteAble={favoriteAble}/>
-        })}
+      <div className="post-list"> 
+        {toDisplay}
       </div>
     )
   }
