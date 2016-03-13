@@ -4,14 +4,12 @@ Input = ReactBootstrap.Input,
 ButtonInput = ReactBootstrap.ButtonInput,
 Pagination = ReactBootstrap.Pagination
 
-var ReactTags = require(['react-tag-input']);
-
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: '', directions: '',
          imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
-         tags: []};
+         items: [], text: ''};
     },
     handleTitleChange: function(e){
       this.setState({title: e.target.value});
@@ -38,38 +36,19 @@ var PostRecipe = React.createClass({
       this.setState({
         activePage: sel.eventKey
       });
+    }, 
+    createItem: function(item) {
+      return <li key={item.id}>{item.text}</li>;
     },
-    handleDelete: function(i) {
-        var tags = this.state.tags;
-        tags.splice(i, 1);
-        this.setState({tags: tags});
+    onChange: function(e) {
+      this.setState({text: e.target.value});
     },
-    handleAddition: function(tag) {
-        var tags = this.state.tags;
-        tags.push({
-            id: tags.length + 1,
-            text: tag
-        });
-        this.setState({tags: tags});
+    addTags: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
+		var nextText = '';
+		this.setState({items: nextItems, text: nextText});
     },
-    handleDrag: function(tag, currPos, newPos) {
-        var tags = this.state.tags;
-
-        // mutate array
-        tags.splice(currPos, 1);
-        tags.splice(newPos, 0, tag);
-
-        // re-render
-        this.setState({ tags: tags });
-    },
-	handlePostSubmit: function() {
-	  if(this.state.activeKey == 1){
-	    handleLinkSubmit();
-	  }
-	  else {
-	    handlePostSubmit();
-	  }
-	}, 
 	handleLinkSubmit: function() {
 		var link = this.state.link.trim();
 		var data = {
@@ -79,6 +58,7 @@ var PostRecipe = React.createClass({
 		  imageLink: this.state.imgsrc.trim(),
 		  recipeDescription: this.state.description,
 		  recipeRating: this.state.activePage,
+		  tags: this.state.items,
 		  userId: fbUserID
 		};
 		var url = 'http://localhost:3000/api/posts/';
@@ -104,6 +84,7 @@ var PostRecipe = React.createClass({
 		  imageLink: this.state.imgsrc.trim(),
 		  recipeDescription: this.state.description,
 		  recipeRating: this.state.activePage,
+		  tags: this.state.items,
 		  userId: fbUserID
 		};
 		var url = 'http://localhost:3000/api/posts/';
@@ -168,6 +149,10 @@ var PostRecipe = React.createClass({
 		      items={5}
 		      activePage={this.state.activePage}
 		      onSelect={this.handleRatingSelect} />
+		    <h3>Tags</h3>
+		    <ul>{this.state.items.map(this.createItem)}</ul>
+		    <input onChange={this.onChange} value={this.state.text} />
+		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
 			<ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large" />
 		   </form>
         </div>);
