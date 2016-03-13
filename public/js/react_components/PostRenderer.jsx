@@ -160,9 +160,68 @@ var FavoriteStar = React.createClass ({
     return {favorited: false};
   },
 
+
+  addFavorite: function() {
+    console.log("favoriting post..."); 
+    var headers = {
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    var data = {
+      postId: this.props.id
+    }
+    var url = 'http://localhost:3000/api/favorites/';
+    jQuery.ajax({
+      url:  url,
+      type: 'POST',
+      headers: headers,
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        console.log("successfully favorited");
+        console.log(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
+
+  removeFavorite: function() {
+    console.log("unfavoriting post..."); 
+    var headers = {
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    var data = {
+      postId: this.props.id
+    }
+    var url = 'http://localhost:3000/api/favorites/';
+    jQuery.ajax({
+      url:  url,
+      type: 'DELETE',
+      headers: headers,
+      dataType: 'json',
+      data:data,
+      success: function(data) {
+        console.log("successfully unfavorited")
+        console.log(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
   // toggle state
   handleClick: function() {
     this.setState({favorited: !this.state.favorited});
+    if(this.state.favorited) {
+      this.removeFavorite();
+    }
+    if(!this.state.favorited) {
+      this.addFavorite();
+    }
+
   }, 
 
   render: function() {
@@ -186,8 +245,9 @@ var FavoriteStar = React.createClass ({
 
 var Post = React.createClass({
 
+
   render : function() {
-    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar />
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar id= {this.props.data.id.postId} />
 
     return (
       <div className="post-full">
