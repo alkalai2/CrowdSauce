@@ -299,7 +299,8 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
   render: function() {
-
+    var favoriteAble = this.props.favoriteAble
+    
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay />
 
@@ -310,7 +311,6 @@ var PostList = React.createClass({
         })
     }
 
-    var favoriteAble = this.props.favoriteAble
     return (
       <div className="post-list"> 
         {toDisplay}
