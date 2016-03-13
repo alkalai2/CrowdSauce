@@ -30,7 +30,6 @@ var Favorites = React.createClass({
             'Accept': 'text/html',
             'userid': fbDetails['fbUserID'],
             'accesstoken': fbDetails['fbAccessToken'],
-            'numposts': '10'
           },
           dataType: 'json',
           timeout : 10000,
@@ -56,4 +55,4 @@ var Favorites = React.createClass({
     }
 });
 
-ReactDOM.render(<Favorites source={"http://localhost:3000/api/posts/feed/"}/>, posts);
+ReactDOM.render(<Favorites source={"http://localhost:3000/api/favorites/user/"}/>, posts);
