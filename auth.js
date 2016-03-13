@@ -1,7 +1,8 @@
 var FB = require('fb')
 
 function isAuthenticated(req, res, next) {
-  if (DEBUG) {
+  if (process.env.CRS_DEBUG == 1) {
+    // debug mode, automatic authentication
     next()
     return
   } else if (req.headers.accesstoken === undefined) {

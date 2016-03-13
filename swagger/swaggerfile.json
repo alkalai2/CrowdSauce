@@ -44,8 +44,15 @@
                         "in": "header",
                         "default": 10,
                         "name": "numposts",
-                        "type": "number",
-                        "description": "Number of posts"
+                        "type": "integer",
+                        "description": "Number of posts to provide"
+                    },
+                    {
+                        "in": "header",
+                        "default": 0,
+                        "name": "offset",
+                        "type": "integer",
+                        "description": "Number of posts to skip"
                     }
                 ], 
                 "description": "Get the list of the most recent posts from the given user's friends"

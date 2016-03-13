@@ -36,7 +36,7 @@ function handleCreateFavoritesRequest (req, res) {
     r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
       connection, function (err, res) {
         if (err) throw err
-        email.sendToUser(res.userId, "Test", "someone favorited ur post")
+        email.sendToUser(res.userId, "Someone favorited your post", "YOU ARE POPULAR")
       }
     )
   }).error(function (error) {

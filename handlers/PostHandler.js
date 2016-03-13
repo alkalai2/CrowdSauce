@@ -41,7 +41,14 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
-    email.sendToFriends(req.headers.userid, "Test", "friend made post")
+    FB.api('/' + req.headers.userid + '?fields=name', 'get', {
+      access_token: fbAppAccessToken
+    }, function (response) {
+      email.sendToFriends(
+        req.headers.userid,
+        response.name + " posted a new recipe!",
+        "<img src='" + req.body.imageLink + "'>")
+    })
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
@@ -115,6 +122,7 @@ function handleDeletePostRequest (req, res) {
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
+  offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -128,7 +136,7 @@ function handleGetFeedRequest (req, res) {
     friends = r(friends)
     r.db(config.rethinkdb.db).table('posts').filter(function(post) {
       return friends.contains(post('userId'))
-    }).orderBy(r.desc('timePosted')).limit(num_posts).run(connection, function (err, cursor) {
+    }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
       cursor.toArray(function(err, result) {
         if (err) throw err;
