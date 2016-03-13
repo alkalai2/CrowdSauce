@@ -7,7 +7,7 @@ Pagination = ReactBootstrap.Pagination
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
-         description: '', ings: '', directions: '',
+         description: '', ings: [], directions: [],
          imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
          items: [], text: ''};
     },
@@ -27,10 +27,10 @@ var PostRecipe = React.createClass({
 	  this.setState({link: e.target.value});
 	},
 	onIngredientsChange: function(e) {
-      this.setState({ings: e.target.value});
+      this.setState({ings: this.state.ings.concat(e)});
     },
     onDirectionsChange: function(e) {
-      this.setState({directions: e.target.value});
+      this.setState({directions: this.state.directions.concat(e)});
     },
     handleRatingSelect: function(e, sel) {
       this.setState({
@@ -46,8 +46,7 @@ var PostRecipe = React.createClass({
     addTags: function(e) {
 		e.preventDefault();
 		var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
-		var nextText = '';
-		this.setState({items: nextItems, text: nextText});
+		this.setState({items: nextItems, text: ''});
     },
 	handleLinkSubmit: function() {
 		var link = this.state.link.trim();
@@ -80,7 +79,7 @@ var PostRecipe = React.createClass({
 		  accessToken: fbAccessToken,
 		  ingredients: this.state.ings,
 		  recipeTitle: this.state.title,
-		  directions: this.state.directions.trim(),
+		  directions: this.state.directions,
 		  imageLink: this.state.imgsrc.trim(),
 		  recipeDescription: this.state.description,
 		  recipeRating: this.state.activePage,
@@ -161,35 +160,40 @@ var PostRecipe = React.createClass({
 
 var RecipeCustomForm = React.createClass({
   getInitialState: function() {
-    return {ings: '', directions: ''};
+    return {ings: [], dirs: [], ingstext: '', dirstext: ''};
   },
-  onIngredientsChange: function(e) {
-   this.setState({ings: e.target.value});
-   this.props.onIngredientsChange(e.target.value);
+  createItem: function(item) {
+      return <li key={item.id}>{item.text}</li>;
   },
-  onDirectionsChange: function(e) {
-    this.setState({directions: e.target.value});
-    this.props.onDirectionsChange(e);
+  onIngsChange: function(e) {
+      this.setState({ingstext: e.target.value});
+  },
+  onDirsChange: function(e) {
+      this.setState({dirstext: e.target.value});
+  },
+  addIngs: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.ings.concat([{text: this.state.ingstext, id: Date.now()}]);
+		this.props.onIngredientsChange(this.state.ingstext);
+		this.setState({ings: nextItems, ingstext: ''});		
+  },
+  addDirs: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.dirs.concat([{text: this.state.dirstext, id: Date.now()}]);
+		this.props.onDirectionsChange(this.state.dirstext);
+		this.setState({dirs: nextItems, dirstext: ''});
   },
   render: function () {
     return (
       <div>
-      <Input
-        type="textarea"
-        label="Ingredients"
-        labelClassName="col-xs-2"
-        wrapperClassName="col-xs-15"
-        onChange={this.onIngredientsChange}
-        value={this.state.ings}
-      />
-      <Input
-        type="textarea"
-        label="Directions"
-        labelClassName="col-xs-2"
-        wrapperClassName="col-xs-15"
-        onChange={this.onDirectionsChange}
-        value={this.state.directions}
-      />
+      <h3>Ingredients</h3>
+		    <ul>{this.state.ings.map(this.createItem)}</ul>
+		    <input onChange={this.onIngsChange} value={this.state.ingstext} />
+		    <button onClick={this.addIngs} >{'Add #' + (this.state.ings.length + 1)}</button>
+      <h3>Directions</h3>
+		    <ul>{this.state.dirs.map(this.createItem)}</ul>
+		    <input onChange={this.onDirsChange} value={this.state.dirstext} />
+		    <button onClick={this.addDirs} >{'Add #' + (this.state.dirs.length + 1)}</button>
       </div>
     );
   }
