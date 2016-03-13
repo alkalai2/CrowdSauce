@@ -258,6 +258,14 @@
             "description": "The facebook access token of the user", 
             "in": "header", 
             "name": "accesstoken"
+          },
+          {
+            "required": true, 
+            "in": "body", 
+            "name": "body", 
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
           }
         ], 
         "description": "Create new account"
@@ -488,9 +496,6 @@
     },
     "Account": {
       "properties": {
-        "userId": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         }
