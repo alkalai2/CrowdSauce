@@ -46,9 +46,6 @@ function init() {
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
 
-  // Couple application to the Swagger module
-  swagger.setAppHandler(app)
-
   // Morgan used for logging
   // https://github.com/expressjs/morgan
   var logDirectory = path.join(__dirname, '/log')
@@ -67,18 +64,25 @@ function init() {
   app.use(morgan('combined', {stream: accessLogStream}))
 
   app.use(express.static('public'))
-  // Dist used for swagger files
-  app.use(express.static('swagger'));
 
-
-  swagger.setApiInfo({
-    title: "CrowdSauce API",
-    description: "API serving crowdasuce users",
-    termsOfServiceUrl: "N/A",
-    contact: "devs@crowdsauce.com",
-    license: "GNU",
-    licenseUrl: "GNU.com"
-  })
+  // Set up swagger only in debug mode
+  if (process.env.CRS_DEBUG == 1) {
+    // Couple application to the Swagger module
+    swagger.setAppHandler(app)
+    // Dist used for swagger files
+    app.use(express.static('swagger'));
+    swagger.setApiInfo({
+      title: "CrowdSauce API",
+      description: "API serving crowdasuce users",
+      termsOfServiceUrl: "N/A",
+      contact: "devs@crowdsauce.com",
+      license: "GNU",
+      licenseUrl: "GNU.com"
+    })
+    app.get('/swagger', function (req, res) {
+      res.sendFile(__dirname + '/swagger/index.html');
+    })
+  }
 
   // ============================== Handlers ====================================
   var handlers = {
@@ -93,9 +97,6 @@ function init() {
    */
   app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/'))
-  })
-  app.get('/swagger', function (req, res) {
-    res.sendFile(__dirname + '/swagger/index.html');
   })
 
   app.get('/login', function (req, res) {
