@@ -41,21 +41,10 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
+    email.sendToFriends(req.headers.userid, "Test", "friend made post")
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
-  })
-
-  FB.api('/' + req.headers.userid + '?fields=email,name', 'get', {
-    access_token: fbAppAccessToken
-  }, function (response) {
-    if (response.error) {
-      console.log(util.inspect(response.error))
-    } else if (!response.email) {
-      console.log("User " + response.name + " (" + response.id + ") does not seem to have email permissions.")
-    } else {
-      email.send(response.email, "Test", "u made a post")
-    }
   })
 }
 

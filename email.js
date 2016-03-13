@@ -1,4 +1,5 @@
 var nodemailer = require('nodemailer')
+var FB = require('fb')
 
 var poolConfig = {
   pool: true,
@@ -25,4 +26,35 @@ function send(address, subject, message) {
   })
 }
 
+function sendToUser(user, subject, message) {
+  FB.api('/' + user + '?fields=email,name', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (response.error) {
+      console.log(util.inspect(response.error))
+    } else if (!response.email) {
+      console.log("User " + response.name + " (" + response.id + ") does not seem to have email permissions.")
+    } else {
+      send(response.email, subject, message)
+    }
+  })
+}
+
+function sendToFriends(user, subject, message) {
+  FB.api('/' + user + '/friends?fields=email,name', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (response.error) {
+      console.log(response.error)
+      return
+    }
+    for (i = 0; i < response.data.length; i++) {
+      if (!response.data[i].email) continue
+      send(response.data[i].email, subject, message)
+    }
+  })
+}
+
 exports.send = send
+exports.sendToFriends = sendToFriends
+exports.sendToUser = sendToUser

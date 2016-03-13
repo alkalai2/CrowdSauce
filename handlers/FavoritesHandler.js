@@ -5,6 +5,8 @@ var Post = require('../models/Post')
 var config = require('../config.js')
 var r = require('rethinkdb')
 var auth = require('../auth.js')
+var email = require('../email.js')
+var util = require('util')
 
 var FavoritesHandler = function () {
   this.createFavorites = handleCreateFavoritesRequest
@@ -31,6 +33,12 @@ function handleCreateFavoritesRequest (req, res) {
   // use Thinky to save Favorites data
   favorites.save().then(function (result) {
     res.send(200, JSON.stringify(result))
+    r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
+      connection, function (err, res) {
+        if (err) throw err
+        email.sendToUser(res.userId, "Test", "someone favorited ur post")
+      }
+    )
   }).error(function (error) {
     // something went wrong
     res.send(500, {error: error.message})
