@@ -105,5 +105,14 @@ background: #ECECEC;
 
 .feed-title{
 	text-align: center;
+}
 
+.no-posts-display {
+	color: gray;
+}
+.no-posts-image {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 }

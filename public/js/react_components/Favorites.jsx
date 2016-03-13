@@ -2,7 +2,7 @@
  * @jsx React.DOM
  */
 
-var Feed = React.createClass({
+var Favorites = React.createClass({
     
     getInitialState: function() {
       return {data: []}
@@ -23,7 +23,6 @@ var Feed = React.createClass({
     loadPostsFromServer : function(fbDetails) {
 
         console.log("getting posts from server..."); 
-        var url = 
         jQuery.ajax({
           url:  this.props.source,
           type: 'GET',
@@ -49,12 +48,12 @@ var Feed = React.createClass({
     render: function() {
    		return (
 	    	<div> 
-         {
-            <PostList data={this.state.data} favoriteAble={true}/>
+         {this.state.data &&
+            <PostList data={this.state.data} favoriteAble={false}/>
           } 
 	    	</div>
 	    );
     }
 });
 
-ReactDOM.render(<Feed source={"http://localhost:3000/api/posts/feed/"}/>, posts);
+ReactDOM.render(<Favorites source={"http://localhost:3000/api/posts/feed/"}/>, posts);
