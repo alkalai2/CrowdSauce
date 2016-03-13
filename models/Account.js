@@ -8,7 +8,8 @@ var Favorites = require('../models/Favorites');
 // This should model the schema we want in our RethinkDB
 var Account = thinky.createModel("users", {
     userId: type.number().default(0),
-    name: type.string().default("John Doe")
+    name: type.string().default("John Doe"),
+    email: type.string().default("")
 }, {pk: "userId"} );
 
 Account.hasMany(Favorites, "favorites", "userId", "userId")

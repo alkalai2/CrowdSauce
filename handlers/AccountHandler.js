@@ -1,5 +1,6 @@
 // Well need the model of account
 var Account = require('../models/Account')
+var FB = require('fb')
 var config = require('../config.js')
 var r = require('rethinkdb')
 var auth = require('../auth.js')
@@ -20,18 +21,23 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user logs in, add userId to DB if not present
 // create Account object, add data to DB using thinky
 function handleCreateAccountRequest (req, res) {
-  console.dir(req.body)
   if (!auth.assertHasUser(req)) return
 
-  // create Account object
-  var account = new Account({userId: req.headers.userid, name: req.body.name})
-
-  // use Thinky to save Account data
-  account.save().then(function (result) {
-    res.send(200, JSON.stringify(result))
-  }).error(function (error) {
-    // something went wrong
-    res.send(500, {error: error.message})
+  FB.api('/' + req.headers.userid + '?fields=name,email', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (!response.email) {
+      console.log("User has no email permissions: " + response.name)
+      return
+    }
+    var account = new Account({userId: req.headers.userid, name: response.name, email: response.email})
+    // use Thinky to save Account data
+    account.save().then(function (result) {
+      res.send(200, JSON.stringify(result))
+    }).error(function (error) {
+      // something went wrong
+      res.send(500, {error: error.message})
+    })
   })
 }
 

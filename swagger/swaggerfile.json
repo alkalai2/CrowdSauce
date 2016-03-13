@@ -265,13 +265,6 @@
                         "description": "The facebook access token of the user", 
                         "in": "header", 
                         "name": "accesstoken"
-                    },
-                    {
-                        "in": "body", 
-                        "name": "body", 
-                        "schema": {
-                            "$ref": "#/definitions/Account"
-                        }
                     }
                 ], 
                 "description": "Create new account"
