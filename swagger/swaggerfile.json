@@ -260,7 +260,6 @@
                         "name": "accesstoken"
                     },
                     {
-                        "required": true, 
                         "in": "body", 
                         "name": "body", 
                         "schema": {
@@ -321,15 +320,6 @@
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
-                    },
-                    {
-                        "required": true,
-                        "description": "Contains data about the tag to be posted",
-                        "in": "body",
-                        "name": "body",
-                        "schema": {
-                            "$ref": "#/definitions/Tag"
-                        }
                     }
                 ],
                 "description": "Favorite a post"
@@ -471,6 +461,15 @@
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be posted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/AddTag"
+                        }
                     }
                 ],
                 "description": "Get all favorites for a given user"
@@ -760,6 +759,16 @@
             "properties": {
                 "postId": {
                     "type": "string"
+                }
+            }
+        },
+        "AddTag": {
+            "properties": {
+                "tagName": {
+                    "tagName": "string"
+                },
+                "postId": {
+                    "tagName": "string"
                 }
             }
         },

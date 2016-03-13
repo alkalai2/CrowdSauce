@@ -110,7 +110,7 @@ function handleDeleteTagRequest (req, res) {
   //Pass in only tagName to body to delete that tag name from db (only removed from history)
   //Pass in only postId to body to delete all tags from that post in db
   //Pass in both tagName and postId to body to delete tag from given post in db
-  
+
   console.log('handleDeleteTagRequest called with ' + JSON.stringify(req.route))
     r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
          connection, function(err, cursor){
@@ -121,7 +121,7 @@ function handleDeleteTagRequest (req, res) {
                result: result
            })
        })
-  
+
 }
 
 
