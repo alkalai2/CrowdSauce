@@ -41,13 +41,14 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
-    FB.api('/' + req.headers.userid + '?fields=name', 'get', {
-      access_token: fbAppAccessToken
-    }, function (response) {
+
+    // send notifications to friends
+    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
       email.sendToFriends(
         req.headers.userid,
-        response.name + " posted a new recipe!",
-        "<img src='" + req.body.imageLink + "'>")
+        result + " posted a new recipe!",
+        "<img src='" + req.body.imageLink + "'>"
+      )
     })
   }).error(function (error) {
     console.log(error.message)
