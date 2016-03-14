@@ -118,7 +118,7 @@ function init() {
   app.get('/favorites', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/favorites.html'))
   })
-  
+
   app.get('/profile', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/profile.html'))
   })

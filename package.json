@@ -7,8 +7,10 @@
     "standard": "^3.0.0"
   },
   "scripts": {
+    "debugmode": "grunt && npm run debug_fire_node",
     "start": "grunt && npm run fire_node",
     "fire_node": "node app.js",
+    "debug_fire_node": "CRS_DEBUG=1 node app.js",
     "test": "npm run style || npm run mocha",
     "style": "standard",
     "mocha": "mocha test/*.js"
