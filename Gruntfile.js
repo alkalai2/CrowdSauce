@@ -26,7 +26,7 @@ module.exports = function(grunt) {
             'public/js/react_components/Comments.jsx',
             'public/js/react_components/PostRenderer.jsx' ,
             'public/js/react_components/Feed.jsx',
-			       'public/js/react_components/Friends.jsx'
+			'public/js/react_components/Friends.jsx'
           ]
         }
       },
@@ -36,6 +36,13 @@ module.exports = function(grunt) {
             'public/js/react_components/Comments.jsx',
             'public/js/react_components/PostRenderer.jsx' ,
             'public/js/react_components/Favorites.jsx'
+          ]
+        }
+      },
+      build_postrecipe: {
+        files: {
+          'public/js/react_build/postrecipe.build.js': [
+            'public/js/react_components/PostRecipe.jsx'
           ]
         }
       }
