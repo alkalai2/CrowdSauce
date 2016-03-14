@@ -16,25 +16,25 @@ function setup (app, handlers) {
   app.put('/api/posts/', handlers.post.updatePost)
   app.delete('/api/posts/', handlers.post.deletePost)
 
-  app.post('/api/favorites/', handlers.favorites.createFavorites)
+  app.post('/api/favorites/', handlers.favorites.createFavorites) 
   app.get('/api/favorites/user/', handlers.favorites.getUserFavorites)
   app.get('/api/favorites/post/', handlers.favorites.getPostFavorites)
   app.put('/api/favorites/', handlers.favorites.updateFavorites)
   app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
 
-  //Create a new tag
-  app.post('/api/tags/', handlers.tag.createTag)
-  //Add an existing tag to a post
-  app.post('/api/tags/post', handlers.tag.addTag)
+  //Add tag to a post
+  app.post('/api/tags/', handlers.tag.addTag)
   //Get all tags for given post
   app.get('/api/tags/post/', handlers.tag.getPostTags)
   //Get all posts for given tag
-  app.get('/api/tags/tag/', handlers.tag.getTaggedPosts)
+  app.get('/api/tags/feed/', handlers.tag.getTagFeed)
   //Get all tags
   app.get('/api/tags/', handlers.tag.getTags)
   //Update the name of a tag (currently non-functional)
   app.put('/api/tags/', handlers.tag.updateTag)
-  //Delete a tag, delete all tags from a post, or delete a tag from a post
+  //Delete a tag from db (used for testing)
+  app.delete('/api/tags/name', handlers.tag.deleteTagName)
+  //Delete one or all tag(s) from a post 
   app.delete('/api/tags/', handlers.tag.deleteTag)
 }
 

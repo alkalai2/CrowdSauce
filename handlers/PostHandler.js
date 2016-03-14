@@ -41,21 +41,18 @@ function handleCreatePostRequest (req, res) {
   // try to store in DB
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
+
+    // send notifications to friends
+    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
+      email.sendToFriends(
+        req.headers.userid,
+        result + " posted a new recipe!",
+        "<img src='" + req.body.imageLink + "'>"
+      )
+    })
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
-  })
-
-  FB.api('/' + req.headers.userid + '?fields=email,name', 'get', {
-    access_token: fbAppAccessToken
-  }, function (response) {
-    if (response.error) {
-      console.log(util.inspect(response.error))
-    } else if (!response.email) {
-      console.log("User " + response.name + " (" + response.id + ") does not seem to have email permissions.")
-    } else {
-      email.send(response.email, "Test", "u made a post")
-    }
   })
 }
 
@@ -126,6 +123,7 @@ function handleDeletePostRequest (req, res) {
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
+  offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -139,11 +137,23 @@ function handleGetFeedRequest (req, res) {
     friends = r(friends)
     r.db(config.rethinkdb.db).table('posts').filter(function(post) {
       return friends.contains(post('userId'))
-    }).orderBy(r.desc('timePosted')).limit(num_posts).run(connection, function (err, cursor) {
+    }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
       cursor.toArray(function(err, result) {
         if (err) throw err;
-        res.status(200).send(JSON.stringify(result, null, 2))
+          function send_results () { res.status(200).send(JSON.stringify(result, null, 2)) }
+          counter = 0
+          result.forEach(function(elem, ind, arr){
+              r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
+                  if (err) throw err
+                  arr[ind].name = result
+                  counter ++
+                  if (counter === arr.length){
+                      send_results()
+                  }
+              })
+          })
+        
       })
     })
   })

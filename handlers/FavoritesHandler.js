@@ -5,6 +5,8 @@ var Post = require('../models/Post')
 var config = require('../config.js')
 var r = require('rethinkdb')
 var auth = require('../auth.js')
+var email = require('../email.js')
+var util = require('util')
 
 var FavoritesHandler = function () {
   this.createFavorites = handleCreateFavoritesRequest
@@ -25,16 +27,45 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 function handleCreateFavoritesRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
-  // create Account object
-  var favorites = new Favorites({userId: parseInt(req.headers.userid), postId: req.body.postId})
+  r.db(config.rethinkdb.db).table('favorites').filter({userId: parseInt(req.headers.userid), postId: req.body.postId}).run(
+    connection, function (err, cursor) {
 
-  // use Thinky to save Favorites data
-  favorites.save().then(function (result) {
-    res.send(200, JSON.stringify(result))
-  }).error(function (error) {
-    // something went wrong
-    res.send(500, {error: error.message})
-  })
+      if (err) throw err
+            cursor.toArray(function (err, result) {
+              if (err) throw err
+              if (result.length > 0)
+                res.send(500, {error: "Duplicate favorite on post"})
+              else{
+                    // create Favorites object
+                    var favorites = new Favorites({userId: parseInt(req.headers.userid), postId: req.body.postId})
+
+                    console.log("PostId: "+ req.body.postId)
+                    // use Thinky to save Favorites data
+                    favorites.save().then(function (result) {
+                      console.log("Favorites Result: "+ JSON.stringify(result))
+                      res.send(200, JSON.stringify(result))
+                      r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
+                        connection, function (err, res) {
+                          if (err){
+                            console.log("Error favorites: "+ err.message)
+                            throw err
+
+                            } 
+                          console.log("RESULT "+ JSON.stringify(res))
+                          email.sendToUser(res.userId, "Someone favorited your post", "YOU ARE POPULAR")
+                        }
+                      )
+                    }).error(function (error) {
+                      // something went wrong
+                      res.send(500, {error: error.message})
+                    })
+
+
+              }
+
+          })
+    })
+
 }
 
 function handleGetUserFavoritesRequest(req,res) {

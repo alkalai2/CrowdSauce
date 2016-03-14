@@ -1,4 +1,13 @@
 var nodemailer = require('nodemailer')
+var FB = require('fb')
+var config = require('./config.js')
+var r = require('rethinkdb')
+
+var connection = null;
+r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
+  if (err) throw err;
+  connection = conn
+})
 
 var poolConfig = {
   pool: true,
@@ -25,4 +34,28 @@ function send(address, subject, message) {
   })
 }
 
+function sendToUser(user, subject, message) {
+  r.db(config.rethinkdb.db).table('users').get(user).getField('email').run(connection, function (err, result) {
+    if (result == "") return;
+    send(result, subject, message)
+  })
+}
+
+function sendToFriends(user, subject, message) {
+  FB.api('/' + user + '/friends?fields=email,name', 'get', {
+    access_token: fbAppAccessToken
+  }, function (response) {
+    if (response.error) {
+      console.log(response.error)
+      return
+    }
+    for (i = 0; i < response.data.length; i++) {
+      if (!response.data[i].email) continue
+      send(response.data[i].email, subject, message)
+    }
+  })
+}
+
 exports.send = send
+exports.sendToFriends = sendToFriends
+exports.sendToUser = sendToUser

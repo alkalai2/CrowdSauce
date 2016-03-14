@@ -1,522 +1,802 @@
 {
-  "info": {
-    "version": "0.0.1", 
-    "title": "CrowdSauce"
-  }, 
-  "paths": {
-    "/api/posts/feed/": {
-      "get": {
-        "operationId": "get feed",
-        "tags": [ "posts" ],
-        "responses": {
-          "default": {
-            "description": "Error"
-          }, 
-          "200": {
-            "description": "Success", 
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/Post"
-              }, 
-              "type": "array"
-            }
-          }, 
-          "401": {
-            "description": "Unauthorized"
-          }
-        }, 
-        "parameters": [
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }, 
-          {
-            "in": "header",
-            "default": 10,
-            "name": "numposts",
-            "type": "number",
-            "description": "Number of posts"
-          }
-        ], 
-        "description": "Get the list of the most recent posts from the given user's friends"
-      }
+    "info": {
+        "version": "0.0.1", 
+        "title": "CrowdSauce"
     }, 
-    "/api/posts/": {
-      "put": {
-        "operationId": "update post",
-        "tags": [ "posts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true, 
-            "type": "number", 
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The post to update", 
-            "in": "query", 
-            "name": "postid"
-          }, 
-          {
-            "required": true, 
-            "in": "body", 
-            "description": "Post data", 
-            "name": "body", 
-            "schema": {
-              "$ref": "#/definitions/Post"
+    "paths": {
+        "/api/posts/feed/": {
+            "get": {
+                "operationId": "get feed",
+                "tags": [ "posts" ],
+                "responses": {
+                    "default": {
+                        "description": "Error"
+                    }, 
+                    "200": {
+                        "description": "Success", 
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/Post"
+                            }, 
+                            "type": "array"
+                        }
+                    }, 
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }, 
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }, 
+                    {
+                        "in": "header",
+                        "default": 10,
+                        "name": "numposts",
+                        "type": "integer",
+                        "description": "Number of posts to provide"
+                    },
+                    {
+                        "in": "header",
+                        "default": 0,
+                        "name": "offset",
+                        "type": "integer",
+                        "description": "Number of posts to skip"
+                    }
+                ], 
+                "description": "Get the list of the most recent posts from the given user's friends"
             }
-          }
-        ], 
-        "description": "Update a post"
-      },
-      "post": {
-        "operationId": "create post",
-        "tags": [ "posts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true, 
-            "type": "integer",
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }, 
-          {
-            "required": true, 
-            "in": "body", 
-            "description": "Post data", 
-            "name": "body", 
-            "schema": {
-              "$ref": "#/definitions/Post"
-            }
-          }
-        ], 
-        "description": "Create a new post"
-      }, 
-      "get": {
-        "operationId": "get posts",
-        "tags": [ "posts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {
-            "description": "Success", 
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/Post"
-              }, 
-              "type": "array"
-            }
-          }, 
-          "401": {"description": "Unauthorized"}
         }, 
-        "parameters": [
-          {
-            "required": true, 
-            "type": "number", 
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }
-        ], 
-        "description": "Returns a list of all the posts of a given user"
-      }, 
-      "delete": {
-        "operationId": "delete post",
-        "tags": [ "posts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }, 
-          {
-            "required": true, 
-            "in": "body", 
-            "name": "body", 
-            "schema": {
-              "$ref": "#/definitions/Post"
+        "/api/posts/": {
+            "put": {
+                "operationId": "update post",
+                "tags": [ "posts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "number", 
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The post to update", 
+                        "in": "query", 
+                        "name": "postId"
+                    }, 
+                    {
+                        "required": true, 
+                        "in": "body", 
+                        "description": "Post data", 
+                        "name": "body", 
+                        "schema": {
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                ], 
+                "description": "Update a post"
+            },
+            "post": {
+                "operationId": "create post",
+                "tags": [ "posts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "integer",
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }, 
+                    {
+                        "required": true, 
+                        "in": "body", 
+                        "description": "Post data", 
+                        "name": "body", 
+                        "schema": {
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                ], 
+                "description": "Create a new post"
+            }, 
+            "get": {
+                "operationId": "get posts",
+                "tags": [ "posts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success", 
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/Post"
+                            }, 
+                            "type": "array"
+                        }
+                    }, 
+                    "401": {"description": "Unauthorized"}
+                }, 
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "number", 
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }
+                ], 
+                "description": "Returns a list of all the posts of a given user"
+            }, 
+            "delete": {
+                "operationId": "delete post",
+                "tags": [ "posts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }, 
+                    {
+                        "required": true, 
+                        "in": "body", 
+                        "name": "body", 
+                        "schema": {
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                ], 
+                "description": "Delete posts"
             }
-          }
-        ], 
-        "description": "Delete posts"
-      }
+        }, 
+        "/swagger": {
+            "x-swagger-pipe": "swagger_raw"
+        }, 
+        "/api/accounts/": {
+            "get": {
+                "operationId": "get accounts",
+                "tags": [ "accounts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success", 
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/Account"
+                            }, 
+                            "type": "array"
+                        }
+                    }, 
+                    "401": {"description": "Unauthorized"}
+                }, 
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "number", 
+                        "description": "The facebook userId of the user", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }
+                ], 
+                "description": "Returns a list of all the posts of a given user"
+            }, 
+            "post": {
+                "operationId": "create account",
+                "tags": [ "accounts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "integer",
+                        "description": "UserID for the account to create", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }
+                ], 
+                "description": "Create new account"
+            }, 
+            "x-swagger-router-controller": "hello_world",
+            "delete": {
+                "operationId": "delete account",
+                "tags": [ "accounts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "integer",
+                        "description": "UserID for the account to delete", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": true, 
+                        "type": "string", 
+                        "description": "The facebook access token of the user", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }
+                ], 
+                "description": "Delete account"
+            }
+        },
+        "/api/tags/": {
+            "get": {
+                "operationId": "add a tag",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID of user doing the favoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    }
+                ],
+                "description": "Favorite a post"
+            },
+            "put": {
+                "operationId": "add a tag",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID of user doing the favoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be posted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    }
+                ],
+                "description": "Favorite a post"
+            },
+            "post": {
+                "operationId": "add a tag",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID of user doing the favoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be posted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    }
+                ],
+                "description": "Favorite a post"
+            },
+            "delete": {
+                "operationId": "delete tag",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user doing the unfavoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be deleted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    }
+                ],
+                "description": "Unfavorite a post"
+            }
+        },
+        "/api/tags/post/": {
+            "post": {
+                "operationId": "Add an existing tag to a post",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/TagReturn"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be posted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/AddTag"
+                        }
+                    }
+                ],
+                "description": "Get all favorites for a given user"
+            },
+            "get": {
+                "operationId": "Add an existing tag to a post",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/TagReturn"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    }
+                ],
+                "description": "Get all favorites for a given user"
+            }
+        },
+        "/api/tags/tag/": {
+            "get": {
+                "operationId": "get post favorites",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/FavoriteReturn"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The post to get a favorites for",
+                        "in": "query",
+                        "name": "postId"
+                    }
+                ],
+                "description": "Get all posts for a given user"
+            }
+        },
+        "/api/favorites/": {
+            "post": {
+                "operationId": "add a favorite",
+                "tags": [ "favorites" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID of user doing the favoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains the post to favorite",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Favorite"
+                        }
+                    }
+                ],
+                "description": "Favorite a post"
+            },
+            "delete": {
+                "operationId": "delete favorite",
+                "tags": [ "favorites" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user doing the unfavoriting",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains the post to unfavorite",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Favorite"
+                        }
+                    }
+                ],
+                "description": "Unfavorite a post"
+            }
+        },
+        "/api/favorites/user/": {
+            "get": {
+                "operationId": "get user favorites",
+                "tags": [ "favorites" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/FavoriteReturn"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    }
+                ],
+                "description": "Get all favorites for a given user"
+            }
+        },
+        "/api/favorites/post/": {
+            "get": {
+                "operationId": "get post favorites",
+                "tags": [ "favorites" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/FavoriteReturn"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "integer",
+                        "description": "UserID for user",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The facebook access token of the user",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The post to get a favorites for",
+                        "in": "query",
+                        "name": "postId"
+                    }
+                ],
+                "description": "Get all posts for a given user"
+            }
+        }
     }, 
-    "/swagger": {
-      "x-swagger-pipe": "swagger_raw"
+    "schemes": [
+        "http", 
+        "https"
+    ], 
+    "produces": [
+        "application/json"
+    ], 
+    "basePath": "/", 
+    "host": "localhost:3000",
+    "definitions": {
+        "Post": {
+            "properties": {
+                "rating": {
+                    "type": "number"
+                }, 
+                "directions": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "ingredients": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "imageLink": {
+                    "type": "string"
+                }, 
+                "notes": {
+                    "type": "string"
+                }, 
+                "recipeLink": {
+                    "type": "string"
+                }
+            }
+        },
+        "Account": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Favorite": {
+            "properties": {
+                "postId": {
+                    "type": "string"
+                }
+            }
+        },
+        "AddTag": {
+            "properties": {
+                "tagName": {
+                    "tagName": "string"
+                },
+                "postId": {
+                    "tagName": "string"
+                }
+            }
+        },
+        "Tag": {
+            "properties": {
+                "postId": {
+                    "tagName": "string"
+                }
+            }
+        },
+        "TagReturn": {
+            "properties": {
+                "tagName": {
+                    "type": "string"
+                },
+                "postId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "FavoriteReturn": {
+            "properties": {
+                "postId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        }
     }, 
-    "/api/accounts/": {
-      "get": {
-        "operationId": "get accounts",
-        "tags": [ "accounts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {
-            "description": "Success", 
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/Account"
-              }, 
-              "type": "array"
-            }
-          }, 
-          "401": {"description": "Unauthorized"}
-        }, 
-        "parameters": [
-          {
-            "required": true, 
-            "type": "number", 
-            "description": "The facebook userId of the user", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }
-        ], 
-        "description": "Returns a list of all the posts of a given user"
-      }, 
-      "post": {
-        "operationId": "create account",
-        "tags": [ "accounts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true, 
-            "type": "integer",
-            "description": "UserID for the account to create", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }
-        ], 
-        "description": "Create new account"
-      }, 
-      "x-swagger-router-controller": "hello_world",
-      "delete": {
-        "operationId": "delete account",
-        "tags": [ "accounts" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true, 
-            "type": "integer",
-            "description": "UserID for the account to delete", 
-            "in": "header", 
-            "name": "userid"
-          }, 
-          {
-            "required": true, 
-            "type": "string", 
-            "description": "The facebook access token of the user", 
-            "in": "header", 
-            "name": "accesstoken"
-          }
-        ], 
-        "description": "Delete account"
-      }
-    },
-    "/api/favorites/": {
-      "post": {
-        "operationId": "add a favorite",
-        "tags": [ "favorites" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "integer",
-            "description": "UserID of user doing the favoriting",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          },
-          {
-            "required": true,
-            "description": "Contains the post to favorite",
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/Favorite"
-            }
-          }
-        ],
-        "description": "Favorite a post"
-      },
-      "delete": {
-        "operationId": "delete favorite",
-        "tags": [ "favorites" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {"description": "Success"},
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "integer",
-            "description": "UserID for user doing the unfavoriting",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          },
-          {
-            "required": true,
-            "description": "Contains the post to unfavorite",
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/Favorite"
-            }
-          }
-        ],
-        "description": "Unfavorite a post"
-      }
-    },
-    "/api/favorites/user/": {
-      "get": {
-        "operationId": "get user favorites",
-        "tags": [ "favorites" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {
-            "description": "Success",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/FavoriteReturn"
-              },
-              "type": "array"
-            }
-          },
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "integer",
-            "description": "UserID for user",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          }
-        ],
-        "description": "Get all favorites for a given user"
-      }
-    },
-    "/api/favorites/post/": {
-      "get": {
-        "operationId": "get post favorites",
-        "tags": [ "favorites" ],
-        "responses": {
-          "default": {"description": "Error"},
-          "200": {
-            "description": "Success",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/FavoriteReturn"
-              },
-              "type": "array"
-            }
-          },
-          "401": {"description": "Unauthorized"}
-        },
-        "parameters": [
-          {
-            "required": true,
-            "type": "integer",
-            "description": "UserID for user",
-            "in": "header",
-            "name": "userid"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The facebook access token of the user",
-            "in": "header",
-            "name": "accesstoken"
-          },
-          {
-            "required": true,
-            "type": "string",
-            "description": "The post to get a favorites for",
-            "in": "query",
-            "name": "postId"
-          }
-        ],
-        "description": "Get all posts for a given user"
-      }
-    }
-  }, 
-  "schemes": [
-    "http", 
-    "https"
-  ], 
-  "produces": [
-    "application/json"
-  ], 
-  "basePath": "/", 
-  "host": "localhost:3000",
-  "definitions": {
-    "Post": {
-      "properties": {
-        "rating": {
-          "type": "number"
-        }, 
-        "tags": {
-          "items": {
-            "type": "string"
-          }, 
-          "type": "array"
-        }, 
-        "directions": {
-          "items": {
-            "type": "string"
-          }, 
-          "type": "array"
-        }, 
-        "ingredients": {
-          "items": {
-            "type": "string"
-          }, 
-          "type": "array"
-        }, 
-        "imageLink": {
-          "type": "string"
-        }, 
-        "notes": {
-          "type": "string"
-        }, 
-        "recipeLink": {
-          "type": "string"
-        }
-      }
-    },
-    "Account": {
-      "properties": {
-        "userId": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "Favorite": {
-      "properties": {
-        "postId": {
-          "type": "string"
-        }
-      }
-    },
-    "FavoriteReturn": {
-      "properties": {
-        "postId": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "integer"
-        }
-      }
-    }
-  }, 
-  "swagger": "2.0", 
-  "consumes": [
-    "application/json"
-  ]
+    "swagger": "2.0", 
+    "consumes": [
+        "application/json"
+    ]
 }
 

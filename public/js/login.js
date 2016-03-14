@@ -8,7 +8,7 @@ function statusChangeCallback(response) {
       $('#fbLoginBtn').hide();
       $('#fbLogoutBtn').show();
       window.location.replace('/feed');
-      addAccToDB(response2.name)
+      addAccToDB()
     });
   } else {
     // User is not logged in, should display login page.
@@ -34,9 +34,7 @@ function addAccToDB(name){
       accessToken: fbAccessToken,
       userId: fbUserID
     }
-    var data = {
-      name: name
-    }
+    var data = {}
     var url = 'http://localhost:3000/api/accounts/';
     jQuery.ajax({
       url: url,
