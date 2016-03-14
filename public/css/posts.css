@@ -116,3 +116,15 @@ background: #ECECEC;
 	margin-right: auto;
 	display: block;
 }
+
+.search-bar {
+	width: 570px;
+	margin-top: 20px;
+}
+
+.search-input {
+	height: 38px;
+}
+
+
+
