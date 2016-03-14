@@ -69,8 +69,7 @@ var PostRecipe = React.createClass({
 		  title: this.state.title,
 		  imageLink: this.state.imgsrc.trim(),
 		  notes: this.state.description,
-		  rating: this.state.activePage,
-		  tags: this.state.items
+		  rating: this.state.activePage
 		};
 		
 		var heads = {
@@ -102,8 +101,7 @@ var PostRecipe = React.createClass({
 		  directions: this.state.directions,
 		  imageLink: this.state.imgsrc.trim(),
 		  notes: this.state.description,
-		  rating: this.state.activePage,
-		  tags: this.state.items
+		  rating: this.state.activePage
 		};		
 		
 		var heads = {

@@ -99,7 +99,6 @@ var RecipeLink = React.createClass({
 
   render: function() {
     return (
-
       <Panel className="recipe-link">
         <a onClick={this.navigateToPage}>{this.props.url}</a>
       </Panel>
@@ -248,7 +247,7 @@ var NoPostsDisplay = React.createClass({
           <img src={"img/spilled_cup.png"} className="no-posts-image"/>
         </div>
         <div>
-          <center><i>Oops! Your friends havent posted anything :(</i></center>
+          <center><i>Oops! No Posts Found! :(</i></center>
         </div>
       </span>
   }
@@ -257,10 +256,17 @@ var NoPostsDisplay = React.createClass({
 
 var Post = React.createClass({
 
-
+  checkForLink: function(){
+    if(this.props.data.ingredients.length === 0){
+      return <RecipeLink url={this.props.data.recipeLink} />
+    } else {
+      return <CustomRecipe ingredients={this.props.data.ingredients}
+            directions={this.props.data.directions}/>
+    }
+  },
   render : function() {
     var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
-
+    var recipe = this.checkForLink();
     return (
       <div className="post-full">
         <Panel className="post-panel">
@@ -278,9 +284,7 @@ var Post = React.createClass({
               {this.props.data.notes}
             </blockquote>
           </div>
-          <CustomRecipe 
-            ingredients={this.props.data.ingredients}
-            directions={this.props.data.directions}/>
+            {recipe}
 
           <div className = "post-footer">
             <div>
