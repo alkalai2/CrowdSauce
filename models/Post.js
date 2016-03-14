@@ -9,14 +9,11 @@ var TagHistory = require('../models/TagHistory')
 // This should model the schema we want in our RethinkDB
 var Post = thinky.createModel('posts', {
   userId: type.number().default(0),
-  // TODO; Make array of strings
   ingredients: type.array().default([]),
-  // TODO; Make array of strings
   directions: type.array().default([]),
   recipeLink: type.string().default(''),
   imageLink: type.string().default(''),
   timePosted: type.date().default(r.now()),
-  tags: type.array().default([]),
   notes: type.string().default(''),
   rating: type.number().default(0)
 }, {pk: "postId"}
