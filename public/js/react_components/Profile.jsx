@@ -21,7 +21,6 @@ var Feed = React.createClass({
     },
 
     loadPostsFromServer : function(fbDetails) {
-
         console.log("getting posts from server..."); 
         var url = 
         jQuery.ajax({
