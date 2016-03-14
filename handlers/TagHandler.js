@@ -8,7 +8,6 @@ var auth = require('../auth.js')
 var FB = require('fb')
 
 var TagHandler = function () {
-  this.createTag = handleCreateTagRequest
   this.addTag = handleAddTagRequest
   this.getPostTags = handleGetPostTagsRequest
   this.getTagFeed = handleGetTagFeedRequest
@@ -24,34 +23,13 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
     connection = conn
 })
 
-// called when a user logs in, add userId to DB if not present
-// create Tag object, add data to DB using thinky
-function handleCreateTagRequest (req, res) {
-  if (!auth.assertHasUser(req)) return
-
-  var tag = new Tag({tagName: req.body.tagName})
-
-  // use Thinky to save Tag data
-  tag.save().then(function (result) {
-    res.send(200, JSON.stringify(result))
-  }).error(function (error) {
-    // something went wrong
-    res.send(500, {error: error.message})
-  })
-}
-
 function handleAddTagRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
   var tag = new Tag({tagName: req.body.tagName})
 
   // use Thinky to save Tag data
-  tag.save().then(function (result) {
-    res.send(200, JSON.stringify(result))
-  }).error(function (error) {
-      // something went wrong
-      console.log("Error: "+ error.message)
-    })
+  tag.save()
 
   var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
 
@@ -78,7 +56,7 @@ function handleGetPostTagsRequest(req,res) {
   })
 }
 
-function handleGetTagFeedRequest(req,res) {
+function handleGetTagFeedRequest(req,res) { 
   //Pass in tagName in URL query
   if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
