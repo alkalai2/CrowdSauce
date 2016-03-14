@@ -29,12 +29,14 @@ function setup (app, handlers) {
   //Get all tags for given post
   app.get('/api/tags/post/', handlers.tag.getPostTags)
   //Get all posts for given tag
-  app.get('/api/tags/tag/', handlers.tag.getTaggedPosts)
+  app.get('/api/tags/feed/', handlers.tag.getTagFeed)
   //Get all tags
   app.get('/api/tags/', handlers.tag.getTags)
   //Update the name of a tag (currently non-functional)
   app.put('/api/tags/', handlers.tag.updateTag)
-  //Delete a tag, delete all tags from a post, or delete a tag from a post
+  //Delete a tag from db (used for testing)
+  app.delete('/api/tags/name', handlers.tag.deleteTagName)
+  //Delete one or all tag(s) from a post 
   app.delete('/api/tags/', handlers.tag.deleteTag)
 }
 
