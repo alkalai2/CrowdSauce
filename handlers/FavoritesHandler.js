@@ -30,12 +30,19 @@ function handleCreateFavoritesRequest (req, res) {
   // create Account object
   var favorites = new Favorites({userId: parseInt(req.headers.userid), postId: req.body.postId})
 
+  console.log("PostId: "+ req.body.postId)
   // use Thinky to save Favorites data
   favorites.save().then(function (result) {
+    console.log("Favorites Result: "+ JSON.stringify(result))
     res.send(200, JSON.stringify(result))
     r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
       connection, function (err, res) {
-        if (err) throw err
+        if (err){
+          console.log("Error favorites: "+ err.message)
+          throw err
+
+          } 
+        console.log("RESULT "+ JSON.stringify(res))
         email.sendToUser(res.userId, "Someone favorited your post", "YOU ARE POPULAR")
       }
     )

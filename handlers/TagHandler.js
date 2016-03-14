@@ -132,17 +132,15 @@ function handleDeleteTagRequest (req, res) {
 
 function handleDeleteTagNameRequest(req,res){
     console.log('handleDeleteTagNameRequest called with ' + JSON.stringify(req.route))
-    r.db(config.rethinkdb.db).table('tag').filter(req.body).delete().run(
+    r.db(config.rethinkdb.db).table('tags').filter(req.body).delete().run(
          connection, function(err, cursor){
           if (err) 
             throw err
-            console.log("Error message: "+ err.message())
   })
     r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
           connection, function(err, cursor){
             if (err) 
               throw err
-            console.log("Error message: "+ err.message())
           }).then(function(result) {
             res.json({
                result: result
