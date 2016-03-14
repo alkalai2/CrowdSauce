@@ -23,14 +23,18 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 function handleCreateAccountRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
-  FB.api('/' + req.headers.userid + '?fields=name,email', 'get', {
+  FB.api('/' + req.headers.userid + '?fields=name,email,picture', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
     if (!response.email) {
-      console.log("User has no email permissions: " + response.name)
-      return
+      console.log("User either has no email or no email permissions: " + response.name)
     }
-    var account = new Account({userId: req.headers.userid, name: response.name, email: response.email})
+    var account = new Account({
+      userId: req.headers.userid,
+      name: response.name,
+      email: response.email || "",
+      picture: response.picture.data.url
+    })
     // use Thinky to save Account data
     account.save().then(function (result) {
       res.send(200, JSON.stringify(result))

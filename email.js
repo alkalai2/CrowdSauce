@@ -35,7 +35,8 @@ function send(address, subject, message) {
 }
 
 function sendToUser(user, subject, message) {
-  r.db(config.rethinkdb.db).table('users').get(user).getField('email').run(connection, function (err, result){
+  r.db(config.rethinkdb.db).table('users').get(user).getField('email').run(connection, function (err, result) {
+    if (result == "") return;
     send(result, subject, message)
   })
 }

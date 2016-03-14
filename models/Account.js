@@ -9,7 +9,8 @@ var Favorites = require('../models/Favorites');
 var Account = thinky.createModel("users", {
     userId: type.number().default(0),
     name: type.string().default("John Doe"),
-    email: type.string().default("")
+    email: type.string().default(""),
+    picture: type.string().default("https://pbs.twimg.com/profile_images/619573624903761920/EGZ2I6wG.jpg")
 }, {pk: "userId"} );
 
 Account.hasMany(Favorites, "favorites", "userId", "userId")
