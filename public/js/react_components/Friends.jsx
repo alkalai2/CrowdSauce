@@ -41,7 +41,11 @@ var FriendsList = React.createClass({
 		}
    		return (
 			<div> 
+				<ListGroup>
+				<ListGroupItem>Friends</ListGroupItem>
 				{toDisplay}
+				<input type="text" onChange={this.onChange}/>
+				</ListGroup>
 			</div>
 	    );
     }
