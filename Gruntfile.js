@@ -30,6 +30,16 @@ module.exports = function(grunt) {
           ]
         }
       },
+      build_profile: {
+        files: {
+          'public/js/react_build/profile.build.js': [
+            'public/js/react_components/Comments.jsx',
+            'public/js/react_components/PostRenderer.jsx' ,
+            'public/js/react_components/Profile.jsx',
+			'public/js/react_components/Friends.jsx'
+          ]
+        }
+      },
       build_favorites: {
         files: {
           'public/js/react_build/favorites.build.js': [
