@@ -26,20 +26,28 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 function handleAddTagRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
-  var tag = new Tag({tagName: req.body.tagName})
-
-  // use Thinky to save Tag data
-  tag.save()
-
-  var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
-
-  // use Thinky to save TagHistory data
-  tagHistory.save().then(function (result) {
-    res.send(200, JSON.stringify(result))
-  }).error(function (error) {
-    // something went wrong
-    res.send(500, {error: error.message})
-  })
+  r.db(config.rethinkdb.db).table('tagHistory').filter({tagName: req.body.tagName, postId: req.body.postId}).run(
+          connection, function (err, cursor) {
+            if (err) throw err
+            cursor.toArray(function (err, result) {
+              if (err) throw err
+              if (result.length > 0)
+                res.send(500, {error: "Duplicate tag on post"})
+              else{
+                    var tag = new Tag({tagName: req.body.tagName})
+                    // use Thinky to save Tag data
+                    tag.save()
+                    var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
+                    // use Thinky to save TagHistory data
+                    tagHistory.save().then(function (result) {
+                      res.send(200, JSON.stringify(result))
+                    }).error(function (error) {
+                      // something went wrong
+                      res.send(500, {error: error.message})
+                    })
+              }
+          })
+    })
 }
 
 function handleGetPostTagsRequest(req,res) {
