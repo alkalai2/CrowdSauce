@@ -248,7 +248,7 @@ var NoPostsDisplay = React.createClass({
           <img src={"img/spilled_cup.png"} className="no-posts-image"/>
         </div>
         <div>
-          <center><i>Oops! Your friends havent posted anything :(</i></center>
+          <center><i>{this.props.errorMsg}</i></center>
         </div>
       </span>
   }
@@ -300,7 +300,7 @@ var PostList = React.createClass({
     var favoriteAble = this.props.favoriteAble
     
     // if no posts, display a 'no posts image'
-    var toDisplay = <NoPostsDisplay />
+    var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 

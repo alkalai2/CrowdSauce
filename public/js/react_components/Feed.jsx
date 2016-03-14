@@ -50,7 +50,11 @@ var Feed = React.createClass({
    		return (
 	    	<div> 
          {
-            <PostList data={this.state.data} favoriteAble={true}/>
+            <PostList 
+              data={this.state.data} 
+              favoriteAble={true}
+              errorMsg={"Oops! Your friends have not posted anything :( "}
+            />
           } 
 	    	</div>
 	    );
