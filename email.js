@@ -1,5 +1,13 @@
 var nodemailer = require('nodemailer')
 var FB = require('fb')
+var config = require('./config.js')
+var r = require('rethinkdb')
+
+var connection = null;
+r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
+  if (err) throw err;
+  connection = conn
+})
 
 var poolConfig = {
   pool: true,
@@ -27,16 +35,9 @@ function send(address, subject, message) {
 }
 
 function sendToUser(user, subject, message) {
-  FB.api('/' + user + '?fields=email,name', 'get', {
-    access_token: fbAppAccessToken
-  }, function (response) {
-    if (response.error) {
-      console.log(util.inspect(response.error))
-    } else if (!response.email) {
-      console.log("User " + response.name + " (" + response.id + ") does not seem to have email permissions.")
-    } else {
-      send(response.email, subject, message)
-    }
+  r.db(config.rethinkdb.db).table('users').get(user).getField('email').run(connection, function (err, result) {
+    if (result == "") return;
+    send(result, subject, message)
   })
 }
 
