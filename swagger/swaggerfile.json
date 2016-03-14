@@ -80,7 +80,7 @@
                         "type": "string", 
                         "description": "The post to update", 
                         "in": "query", 
-                        "name": "postid"
+                        "name": "postId"
                     }, 
                     {
                         "required": true, 
@@ -718,12 +718,6 @@
             "properties": {
                 "rating": {
                     "type": "number"
-                }, 
-                "tags": {
-                    "items": {
-                        "type": "string"
-                    }, 
-                    "type": "array"
                 }, 
                 "directions": {
                     "items": {
