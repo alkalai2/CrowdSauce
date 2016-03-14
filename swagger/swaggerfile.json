@@ -27,14 +27,14 @@
                 }, 
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -69,14 +69,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "number", 
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -90,7 +90,7 @@
                         "name": "postId"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "in": "body", 
                         "description": "Post data", 
                         "name": "body", 
@@ -111,21 +111,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "integer",
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "in": "body", 
                         "description": "Post data", 
                         "name": "body", 
@@ -154,14 +154,14 @@
                 }, 
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "number", 
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -180,21 +180,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "in": "body", 
                         "name": "body", 
                         "schema": {
@@ -227,14 +227,14 @@
                 }, 
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "number", 
                         "description": "The facebook userId of the user", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -253,14 +253,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "integer",
                         "description": "UserID for the account to create", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -280,14 +280,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "integer",
                         "description": "UserID for the account to delete", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "The facebook access token of the user", 
                         "in": "header", 
@@ -308,14 +308,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID of user doing the favoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
@@ -334,21 +334,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID of user doing the favoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains data about the tag to be posted",
                         "in": "body",
                         "name": "body",
@@ -369,21 +369,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID of user doing the favoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains data about the tag to be posted",
                         "in": "body",
                         "name": "body",
@@ -404,21 +404,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user doing the unfavoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains data about the tag to be deleted",
                         "in": "body",
                         "name": "body",
@@ -449,21 +449,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains data about the tag to be posted",
                         "in": "body",
                         "name": "body",
@@ -492,14 +492,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
@@ -528,14 +528,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
@@ -563,21 +563,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID of user doing the favoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains the post to favorite",
                         "in": "body",
                         "name": "body",
@@ -598,21 +598,21 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user doing the unfavoriting",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
                         "name": "accesstoken"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "description": "Contains the post to unfavorite",
                         "in": "body",
                         "name": "body",
@@ -643,14 +643,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
@@ -679,14 +679,14 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
                         "name": "userid"
                     },
                     {
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "description": "The facebook access token of the user",
                         "in": "header",
