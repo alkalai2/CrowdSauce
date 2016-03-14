@@ -99,7 +99,6 @@ var RecipeLink = React.createClass({
 
   render: function() {
     return (
-
       <Panel className="recipe-link">
         <a onClick={this.navigateToPage}>{this.props.url}</a>
       </Panel>
@@ -141,13 +140,17 @@ var RatingStars = React.createClass ({
 
 var Tags = React.createClass ({
   render: function() {
-    return (
-      <span>
-      {this.props.items.map(function(item) {
-        return <span className="tag label label-info">{item}</span>
-      })}
-      </span>
-    );
+    if(!this.props.items) {
+      return <span></span>
+    } else {
+      return (
+        <span>
+        {this.props.items.map(function(item) {
+          return <span className="tag label label-info">{item}</span>
+        })}
+        </span>
+      );
+    } 
   }
 });
 
@@ -156,13 +159,70 @@ var FavoriteStar = React.createClass ({
     return {favorited: false};
   },
 
+
+  addFavorite: function() {
+    console.log("favoriting post..."); 
+    var headers = {
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    var data = this.props.data
+    var url = 'http://localhost:3000/api/favorites/';
+    jQuery.ajax({
+      url:  url,
+      type: 'POST',
+      headers: headers,
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        console.log("successfully favorited");
+        console.log(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
+
+  removeFavorite: function() {
+    console.log("unfavoriting post..."); 
+    var headers = {
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    var data = {
+      postId: this.props.id
+    }
+    var url = 'http://localhost:3000/api/favorites/';
+    jQuery.ajax({
+      url:  url,
+      type: 'DELETE',
+      headers: headers,
+      dataType: 'json',
+      data:data,
+      success: function(data) {
+        console.log("successfully unfavorited")
+        console.log(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
   // toggle state
   handleClick: function() {
     this.setState({favorited: !this.state.favorited});
+    if(this.state.favorited) {
+      this.removeFavorite();
+    }
+    if(!this.state.favorited) {
+      this.addFavorite();
+    }
+
   }, 
 
   render: function() {
-    var image_src = this.state.favorited ? "img/heart-empty.png" : "img/heart-filled.png";
+    var image_src = this.state.favorited ? "img/heart-filled.png" : "img/heart-empty.png";
     var tooltip_txt = this.state.favorited ? "Add to Favorites" : "Favorited";
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
 
@@ -179,9 +239,34 @@ var FavoriteStar = React.createClass ({
   }
 });
 
+var NoPostsDisplay = React.createClass({
+  render: function() {
+     return <span className="no-posts-display"> 
+        <div>
+          <br></br>
+          <img src={"img/spilled_cup.png"} className="no-posts-image"/>
+        </div>
+        <div>
+          <center><i>{this.props.errorMsg}</i></center>
+        </div>
+      </span>
+  }
+})
+
 
 var Post = React.createClass({
+
+  checkForLink: function(){
+    if(this.props.data.ingredients.length === 0){
+      return <RecipeLink url={this.props.data.recipeLink} />
+    } else {
+      return <CustomRecipe ingredients={this.props.data.ingredients}
+            directions={this.props.data.directions}/>
+    }
+  },
   render : function() {
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
+    var recipe = this.checkForLink();
     return (
       <div className="post-full">
         <Panel className="post-panel">
@@ -199,14 +284,12 @@ var Post = React.createClass({
               {this.props.data.notes}
             </blockquote>
           </div>
-          <CustomRecipe 
-            ingredients={this.props.data.ingredients}
-            directions={this.props.data.directions}/>
+            {recipe}
 
           <div className = "post-footer">
             <div>
               <Tags className = "tagset" items={this.props.data.tags}/>
-              <FavoriteStar />
+              {favoriteHeart}
             </div>
             <Comment id={this.props.data.id}/>
           </div>
@@ -218,11 +301,21 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
   render: function() {
+    var favoriteAble = this.props.favoriteAble
+    
+    // if no posts, display a 'no posts image'
+    var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
+
+    if (this.props.data && this.props.data.length > 0) {
+      toDisplay = 
+        (this.props.data).map(function(post_data) {
+           return <Post data={post_data} favoriteAble={favoriteAble}/>
+        })
+    }
+
     return (
-      <div className="post-list">
-        {(this.props.data).map(function(post_data) {
-           return <Post data={post_data} />
-        })}
+      <div className="post-list"> 
+        {toDisplay}
       </div>
     )
   }

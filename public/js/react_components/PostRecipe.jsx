@@ -4,12 +4,14 @@ Input = ReactBootstrap.Input,
 ButtonInput = ReactBootstrap.ButtonInput,
 Pagination = ReactBootstrap.Pagination
 
+var fbDetails = getFacebookDetails();
+
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
-         description: '', ings: '', directions: '',
+         description: '', ings: [], directions: [],
          imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
-         items: [], text: ''};
+         items: [], tags: [], text: ''};
     },
     handleTitleChange: function(e){
       this.setState({title: e.target.value});
@@ -27,10 +29,10 @@ var PostRecipe = React.createClass({
 	  this.setState({link: e.target.value});
 	},
 	onIngredientsChange: function(e) {
-      this.setState({ings: e.target.value});
+      this.setState({ings: this.state.ings.concat(e)});
     },
     onDirectionsChange: function(e) {
-      this.setState({directions: e.target.value});
+      this.setState({directions: this.state.directions.concat(e)});
     },
     handleRatingSelect: function(e, sel) {
       this.setState({
@@ -46,66 +48,112 @@ var PostRecipe = React.createClass({
     addTags: function(e) {
 		e.preventDefault();
 		var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
-		var nextText = '';
-		this.setState({items: nextItems, text: nextText});
+		var nextTags = this.state.tags.concat(this.state.text)
+		this.setState({items: nextItems, text: '', tags: nextTags});
+    },
+    getFBInfo: function() {
+      return getFacebookDetails().then(function(d){return d})
+    },
+    handleSubmit: function(){
+		if(this.state.activeKey == 1){
+			this.handleLinkSubmit();
+		} else {
+			this.handlePostSubmit();
+		}
     },
 	handleLinkSubmit: function() {
+		console.log("LINK SUBMIT")
 		var link = this.state.link.trim();
 		var data = {
-		  accessToken: fbAccessToken,
 		  recipeLink: this.state.link,
-		  recipeTitle: this.state.title,
+		  title: this.state.title,
 		  imageLink: this.state.imgsrc.trim(),
-		  recipeDescription: this.state.description,
-		  recipeRating: this.state.activePage,
-		  tags: this.state.items,
-		  userId: fbUserID
+		  notes: this.state.description,
+		  rating: this.state.activePage
 		};
+		
+		var heads = {
+            'userid': fbDetails['fbUserID'],
+            'accesstoken': fbDetails['fbAccessToken']
+		};
+		
 		var url = 'http://localhost:3000/api/posts/';
 		jQuery.ajax({
 		  url: url,
 		  dataType: 'json',
 		  type: 'POST',
 		  data: data,
-		  success: function(data) {
-		    console.log("Successfully added recipe to db")
+		  headers: heads,
+		  success: function(responsedata) {
+		    console.log(responsedata)
+		    this.associatePostToTags(responsedata.id)
 		  }.bind(this),
 		  error: function(xhr, status, err) {
-		    console.error(url, status, err.toString());
+		    console.log(err.toString());
 		  }.bind(this)
 		});
 	  },
 	handlePostSubmit: function() {
+		console.log("POST SUBMIT")
 		var data = {
-		  accessToken: fbAccessToken,
 		  ingredients: this.state.ings,
-		  recipeTitle: this.state.title,
-		  directions: this.state.directions.trim(),
+		  title: this.state.title,
+		  directions: this.state.directions,
 		  imageLink: this.state.imgsrc.trim(),
-		  recipeDescription: this.state.description,
-		  recipeRating: this.state.activePage,
-		  tags: this.state.items,
-		  userId: fbUserID
+		  notes: this.state.description,
+		  rating: this.state.activePage
+		};		
+		
+		var heads = {
+            'userid': fbDetails['fbUserID'],
+            'accesstoken': fbDetails['fbAccessToken']
 		};
+		
 		var url = 'http://localhost:3000/api/posts/';
-		console.log("data : " + data.toString());
 		jQuery.ajax({
 		  url: url,
 		  dataType: 'json',
 		  type: 'POST',
 		  data: data,
-		  success: function(data) {
-		    console.log("Successfully added recipe to db");
+		  headers: heads,
+		  success: function(responsedata) {
+		    console.log(responsedata)
+		    this.associatePostToTags(responsedata.id)
 		  }.bind(this),
 		  error: function(xhr, status, err) {
-		    console.error(url, status, err.toString());
+		    console.log(err.toString());
 		  }.bind(this)
 		});
 	  },
+	associatePostToTags: function(id) {
+		console.log("TODO" + id)
+		var heads = {
+            'userid': fbDetails['fbUserID'],
+            'accesstoken': fbDetails['fbAccessToken']
+		};
+		
+		var data = {
+			postId: id,
+			tags: this.state.items
+		};
+		
+		jQuery.ajax({
+		  url: 'http://localhost:3000/api/posts/tags',
+		  dataType: 'json',
+		  type: 'POST',
+		  data: data,
+		  headers: heads,
+		  success: function(responsedata) {
+		    console.log("Full Success")
+		  }.bind(this),
+		  error: function(xhr, status, err) {
+		    console.log(err.toString());
+		  }.bind(this)
+		});
+	},
     render: function() {
         return (  
         <div>
-          <form onSubmit={this.handleSubmit}>
 	        <Input
 			  type="text"
 			  label="Title"
@@ -153,43 +201,48 @@ var PostRecipe = React.createClass({
 		    <ul>{this.state.items.map(this.createItem)}</ul>
 		    <input onChange={this.onChange} value={this.state.text} />
 		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
-			<ButtonInput type="submit" value="Post" bsStyle="success" bsSize="large" />
-		   </form>
+			<ButtonInput onClick={this.handleSubmit} type="submit" value="Post" bsStyle="success" bsSize="large" />
+
         </div>);
     }
 });
 
 var RecipeCustomForm = React.createClass({
   getInitialState: function() {
-    return {ings: '', directions: ''};
+    return {ings: [], dirs: [], ingstext: '', dirstext: ''};
   },
-  onIngredientsChange: function(e) {
-   this.setState({ings: e.target.value});
-   this.props.onIngredientsChange(e.target.value);
+  createItem: function(item) {
+      return <li key={item.id}>{item.text}</li>;
   },
-  onDirectionsChange: function(e) {
-    this.setState({directions: e.target.value});
-    this.props.onDirectionsChange(e);
+  onIngsChange: function(e) {
+      this.setState({ingstext: e.target.value});
+  },
+  onDirsChange: function(e) {
+      this.setState({dirstext: e.target.value});
+  },
+  addIngs: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.ings.concat([{text: this.state.ingstext, id: Date.now()}]);
+		this.props.onIngredientsChange(this.state.ingstext);
+		this.setState({ings: nextItems, ingstext: ''});		
+  },
+  addDirs: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.dirs.concat([{text: this.state.dirstext, id: Date.now()}]);
+		this.props.onDirectionsChange(this.state.dirstext);
+		this.setState({dirs: nextItems, dirstext: ''});
   },
   render: function () {
     return (
       <div>
-      <Input
-        type="textarea"
-        label="Ingredients"
-        labelClassName="col-xs-2"
-        wrapperClassName="col-xs-15"
-        onChange={this.onIngredientsChange}
-        value={this.state.ings}
-      />
-      <Input
-        type="textarea"
-        label="Directions"
-        labelClassName="col-xs-2"
-        wrapperClassName="col-xs-15"
-        onChange={this.onDirectionsChange}
-        value={this.state.directions}
-      />
+      <h3>Ingredients</h3>
+		    <ul>{this.state.ings.map(this.createItem)}</ul>
+		    <input onChange={this.onIngsChange} value={this.state.ingstext} />
+		    <button onClick={this.addIngs} >{'Add #' + (this.state.ings.length + 1)}</button>
+      <h3>Directions</h3>
+		    <ul>{this.state.dirs.map(this.createItem)}</ul>
+		    <input onChange={this.onDirsChange} value={this.state.dirstext} />
+		    <button onClick={this.addDirs} >{'Add #' + (this.state.dirs.length + 1)}</button>
       </div>
     );
   }

@@ -2,19 +2,6 @@
  * @jsx React.DOM
  */
 
-var Input = ReactBootstrap.Input,
-  Button = ReactBootstrap.Button
-
-var SearchBar = React.createClass({
-    render : function() {
-      return (
-        <div className="search-bar">
-          <Input autoFocus className="search-input" type="text" placeholder=" What are you in the mood for? "/>
-        </div>
-      );    
-    },
-});
-
 var Feed = React.createClass({
     
     getInitialState: function() {
@@ -34,7 +21,6 @@ var Feed = React.createClass({
     },
 
     loadPostsFromServer : function(fbDetails) {
-
         console.log("getting posts from server..."); 
         var url = 
         jQuery.ajax({
@@ -62,17 +48,16 @@ var Feed = React.createClass({
     render: function() {
    		return (
 	    	<div> 
-            <div>
-              <SearchBar />
-            </div>
+         {
             <PostList 
               data={this.state.data} 
               favoriteAble={true}
-              errorMsg={"Oops! Your friends have not posted anything :( "}/>
-
+              errorMsg={"Could not find any posts :( "}
+            />
+          } 
 	    	</div>
 	    );
     }
 });
 
-ReactDOM.render(<Feed source={"http://localhost:3000/api/posts/feed/"}/>, posts);
+ReactDOM.render(<Feed source={"http://localhost:3000/api/posts/"}/>, posts);
