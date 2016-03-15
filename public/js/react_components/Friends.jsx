@@ -1,23 +1,3 @@
-var friend_data = {
-  "friendName" : "John Smith", 
-  "imageLink" : "http://www.chicagobusiness.com/images/icons/default-user-icon.png" 
-}
-var friend_data2 = {
-  "friendName" : "Jane Doe", 
-  "imageLink" : "http://www.chicagobusiness.com/images/icons/default-user-icon.png" 
-}
-var friend_data3 = {
-  "friendName" : "Kevin Wang", 
-  "imageLink" : "http://www.chicagobusiness.com/images/icons/default-user-icon.png" 
-}
-var friend_data4 = {
-  "friendName" : "Emily Reed", 
-  "imageLink" : "http://www.chicagobusiness.com/images/icons/default-user-icon.png" 
-}
-var friend_data5 = {
-  "friendName" : "Jake King", 
-  "imageLink" : "http://www.chicagobusiness.com/images/icons/default-user-icon.png" 
-}
 
 var search = ""
 
@@ -25,26 +5,48 @@ var ListGroup = ReactBootstrap.ListGroup,
 	ListGroupItem = ReactBootstrap.ListGroupItem,
 	Image = ReactBootstrap.Image
 
+var NoFriendsDisplay = React.createClass({
+  render: function() {
+     return (<div>
+	 <b>Invite Friends Image</b>
+	 </div>);
+	 
+  }
+})
+	
 var FriendsList = React.createClass({
 
+    getInitialState: function() {
+      return {data: {data: []}}
+    },
 	onChange: function(event) {
 		search = event.target.value;
 		this.forceUpdate();
 
 	},
     render: function() {
+	
+		var friends = this.props.data
+		
+		// if no friends, display a 'no friends'
+		var toDisplay = <NoFriendsDisplay />		
+		
+		if (friends) {
+			toDisplay = 
+			(friends["data"]).map(function(friend_data) {
+				console.log("onefriend " + JSON.stringify(friend_data, null, 4))
+				return <OneFriend data={friend_data} string={search}/>
+			})
+			console.log("Friends.jsx: " + JSON.stringify(friends["data"], null, 4))
+		}
    		return (
-	    	<div>
+			<div> 
 				<ListGroup>
 				<ListGroupItem>Friends</ListGroupItem>
-	    		<OneFriend data={friend_data} string={search}/>
-	    		<OneFriend data={friend_data2} string={search}/>
-				<OneFriend data={friend_data3} string={search}/>
-	    		<OneFriend data={friend_data4} string={search}/>
-				<OneFriend data={friend_data5} string={search}/>
+				{toDisplay}
 				<input type="text" onChange={this.onChange}/>
 				</ListGroup>
-	    	</div>
+			</div>
 	    );
     }
 });	
@@ -53,14 +55,14 @@ var OneFriend = React.createClass({
     render: function() {
         return (
 			<div>
-				{this.props.data.friendName.indexOf(this.props.string) > -1 ? 
+				{this.props.data.name.indexOf(this.props.string) > -1 ? 
 				<ListGroupItem> 
-				<Image src = {this.props.data.imageLink}/>
-				{this.props.data.friendName}
+				<Image src = "http://www.chicagobusiness.com/images/icons/default-user-icon.png" />
+				{this.props.data.name}
 				</ListGroupItem> : false}
 			</div>
         );
     },
 });
 
-ReactDOM.render(<FriendsList />, friends);
+//ReactDOM.render(<FriendsList />, friends);
