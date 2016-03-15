@@ -385,7 +385,7 @@
                         "name": "accesstoken"
                     }
                 ],
-                "description": "Favorite a post"
+                "description": "This will return all tags in the database."
             },
             "put": {
                 "operationId": "add a tag",
@@ -455,7 +455,7 @@
                         }
                     }
                 ],
-                "description": "Favorite a post"
+                "description": "This will add a tag (does not have to be an existing tag) to a specific post."
             },
             "delete": {
                 "operationId": "delete tag",
@@ -490,7 +490,7 @@
                         }
                     }
                 ],
-                "description": "Unfavorite a post"
+                "description": "This will remove a tag from a post. The tagName and postId need to be specified."
             }
         },
         "/api/tags/post/": {
@@ -569,7 +569,7 @@
                         "name": "accesstoken"
                     }
                 ],
-                "description": "Get all favorites for a given user"
+                "description": "This will return all the tags for a specific post. The postId must be specified in the query."
             }
         },
         "/api/tags/feed/": {
@@ -623,7 +623,7 @@
                         "description": "Number of posts to skip"
                     }
                 ], 
-                "description": "Get the list of the most recent posts from the given user's friends"
+                "description": "This will return a feed (with posts) for a given tag name which is specified as query."
             }
         },
         "/api/favorites/": {
