@@ -16,9 +16,9 @@ function setup (app, handlers) {
   app.put('/api/posts/', handlers.post.updatePost)
   app.delete('/api/posts/', handlers.post.deletePost)
 
-  app.post('/api/favorites/', handlers.favorites.createFavorites) 
   app.get('/api/favorites/user/', handlers.favorites.getUserFavorites)
   app.get('/api/favorites/post/', handlers.favorites.getPostFavorites)
+  app.post('/api/favorites/', handlers.favorites.createFavorites)
   app.put('/api/favorites/', handlers.favorites.updateFavorites)
   app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
 
@@ -34,7 +34,7 @@ function setup (app, handlers) {
   app.put('/api/tags/', handlers.tag.updateTag)
   //Delete a tag from db (used for testing)
   app.delete('/api/tags/name', handlers.tag.deleteTagName)
-  //Delete one or all tag(s) from a post 
+  //Delete one or all tag(s) from a post
   app.delete('/api/tags/', handlers.tag.deleteTag)
 }
 
