@@ -86,7 +86,7 @@ var PostRecipe = React.createClass({
 		  headers: heads,
 		  success: function(responsedata) {
 		    console.log(responsedata)
-		    this.associatePostToTags(responsedata.id)
+		    this.associatePostToTags(responsedata['postId'])
 		  }.bind(this),
 		  error: function(xhr, status, err) {
 		    console.log(err.toString());
@@ -118,38 +118,48 @@ var PostRecipe = React.createClass({
 		  headers: heads,
 		  success: function(responsedata) {
 		    console.log(responsedata)
-		    this.associatePostToTags(responsedata.id)
+		    this.associatePostToTags(responsedata.postId)
 		  }.bind(this),
 		  error: function(xhr, status, err) {
 		    console.log(err.toString());
 		  }.bind(this)
 		});
 	  },
-	associatePostToTags: function(id) {
-		console.log("TODO" + id)
-		var heads = {
-            'userid': fbDetails['fbUserID'],
-            'accesstoken': fbDetails['fbAccessToken']
-		};
-		
-		var data = {
-			postId: id,
-			tags: this.state.items
-		};
-		
-		jQuery.ajax({
-		  url: 'http://localhost:3000/api/posts/tags',
-		  dataType: 'json',
-		  type: 'POST',
-		  data: data,
-		  headers: heads,
-		  success: function(responsedata) {
-		    console.log("Full Success")
-		  }.bind(this),
-		  error: function(xhr, status, err) {
-		    console.log(err.toString());
-		  }.bind(this)
-		});
+	associatePostToTags: function(postId) {
+		console.log("TODO" + postId)
+		console.log(this.state.items)
+		for (t in this.state.items){
+			tagName = this.state.items[t].text
+			if (tagName) {
+				console.log(tagName)
+				// make tag names lower case
+				tagName = tagName.toLowerCase(tagName)
+				
+				var heads = {
+		            'userid': fbDetails['fbUserID'],
+		            'accesstoken': fbDetails['fbAccessToken']
+				};
+				
+				var data = {
+					postId: postId,
+					tagName: tagName
+				};
+				
+				jQuery.ajax({
+				  url: 'http://localhost:3000/api/tags',
+				  dataType: 'json',
+				  type: 'POST',
+				  data: data,
+				  headers: heads,
+				  success: function(responsedata) {
+				    console.log("Full Success for tag " + tagName)
+				  }.bind(this),
+				  error: function(xhr, status, err) {
+				    console.log(err.toString());
+				  }.bind(this)
+				});
+			}
+		}
 	},
     render: function() {
         return (  

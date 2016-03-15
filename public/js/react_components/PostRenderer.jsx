@@ -139,14 +139,52 @@ var RatingStars = React.createClass ({
 });
 
 var Tags = React.createClass ({
+  getInitialState: function() {
+    return {tags: []}
+  },
+
+  componentDidMount: function() {
+    this.loadTagsFromServer()
+  },
+
+  loadTagsFromServer: function() {
+    console.log('getting tags for ' + this.props.postId)
+    var url = 'http://localhost:3000/api/tags/post'
+    jQuery.ajax({
+      url:  url,
+      type: 'GET',
+      headers: {
+        'accessToken': fbAccessToken,
+        'userId': fbUserID
+      },
+      dataType: 'json',
+      data: {
+        'postId': this.props.postId
+      },
+      success: function(data) {
+        var tags = this.state.tags
+        for(d in data) {
+          tagName = data[d]['tagName']
+          if(tagName) {
+            tags = tags.concat(tagName)
+          }
+        }
+        this.setState({tags: tags})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    });
+  },
+
   render: function() {
-    if(!this.props.items) {
+    if(!this.state.tags) {
       return <span></span>
     } else {
       return (
         <span>
-        {this.props.items.map(function(item) {
-          return <span className="tag label label-info">{item}</span>
+        {this.state.tags.map(function(tag) {
+          return <span className="tag label label-info">{tag}</span>
         })}
         </span>
       );
@@ -288,7 +326,7 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" items={this.props.data.tags}/>
+              <Tags className = "tagset" postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.id}/>
