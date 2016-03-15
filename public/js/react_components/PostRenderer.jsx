@@ -271,7 +271,7 @@ var Post = React.createClass({
       <div className="post-full">
         <Panel className="post-panel">
           <div> 
-            <b>Jonathan</b> posted a new recipe
+            <b>{this.props.data.name}</b> posted a new recipe
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
             <h3 className = "post-title">
@@ -306,11 +306,21 @@ var PostList = React.createClass({
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
+    // add search bar 
+    var searchBar = this.props.searchBar ? <SearchBar /> : ""
+
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
-        (this.props.data).map(function(post_data) {
-           return <Post data={post_data} favoriteAble={favoriteAble}/>
-        })
+        <div>
+          <div>
+            {searchBar}
+          </div>
+          {
+            (this.props.data).map(function(post_data) {
+             return <Post data={post_data} favoriteAble={favoriteAble}/>
+            })
+          }
+        </div>
     }
 
     return (
