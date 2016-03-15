@@ -2,19 +2,6 @@
  * @jsx React.DOM
  */
 
-var Input = ReactBootstrap.Input,
-  Button = ReactBootstrap.Button
-
-var SearchBar = React.createClass({
-    render : function() {
-      return (
-        <div className="search-bar">
-          <Input autoFocus className="search-input" type="text" placeholder=" What are you in the mood for? "/>
-        </div>
-      );    
-    },
-});
-
 var Feed = React.createClass({
     
     getInitialState: function() {
@@ -83,14 +70,12 @@ var Feed = React.createClass({
 			
 			<div className ="col-md-6">
 			
-            <div>
-              <SearchBar />
-            </div>
-            <PostList 
-              data={this.state.data} 
-              favoriteAble={true}
-              errorMsg={"Oops! Your friends have not posted anything "}/>
-			  
+        <PostList 
+          data={this.state.data} 
+          favoriteAble={true}
+          searchBar = {true}
+          errorMsg={"Oops! Your friends have not posted anything "}/>
+			 
 			</div>
 			
 			<div className="col-md-3">
