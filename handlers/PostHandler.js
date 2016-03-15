@@ -20,6 +20,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
     connection = conn
 })
 
+
 // called when a user is creating a new post
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
@@ -62,7 +63,10 @@ function handleGetPostRequest (req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(req.query[q])).run(
+      to_query_db = req.query[q]
+      if(!isNaN(to_query_db))
+        to_query_db = parseInt(to_query_db)
+      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(to_query_db)).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
@@ -153,7 +157,7 @@ function handleGetFeedRequest (req, res) {
                   }
               })
           })
-        
+
       })
     })
   })

@@ -166,6 +166,13 @@
                         "description": "The facebook access token of the user", 
                         "in": "header", 
                         "name": "accesstoken"
+                    },
+                    {
+                        "required": false, 
+                        "type": "string", 
+                        "description": "userId to query the api on", 
+                        "in": "query", 
+                        "name": "userId"
                     }
                 ], 
                 "description": "Returns a list of all the posts of a given user"

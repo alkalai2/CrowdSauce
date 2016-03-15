@@ -64,7 +64,7 @@ function handleGetPostTagsRequest(req,res) {
   })
 }
 
-function handleGetTagFeedRequest(req,res) { 
+function handleGetTagFeedRequest(req,res) {
   //Pass in tagName in URL query
   if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
@@ -142,19 +142,19 @@ function handleDeleteTagNameRequest(req,res){
     console.log('handleDeleteTagNameRequest called with ' + JSON.stringify(req.route))
     r.db(config.rethinkdb.db).table('tags').filter(req.body).delete().run(
          connection, function(err, cursor){
-          if (err) 
+          if (err)
             throw err
   })
     r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
           connection, function(err, cursor){
-            if (err) 
+            if (err)
               throw err
           }).then(function(result) {
             res.json({
                result: result
            })
        })
-  
+
 }
 
 
