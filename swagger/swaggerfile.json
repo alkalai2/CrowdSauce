@@ -29,14 +29,14 @@
                     {
                         "required": true, 
                         "type": "string", 
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
@@ -71,14 +71,14 @@
                     {
                         "required": true, 
                         "type": "number", 
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
@@ -113,14 +113,14 @@
                     {
                         "required": true, 
                         "type": "integer",
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
@@ -156,21 +156,49 @@
                     {
                         "required": false, 
                         "type": "number", 
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     },
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "userId to query the api on", 
+                        "description": "QUERY: notes to filter the response on.", 
+                        "in": "query", 
+                        "name": "notes"
+                    },
+                    {
+                        "required": false, 
+                        "type": "integer", 
+                        "description": "QUERY: rating to filter the response on.", 
+                        "in": "query", 
+                        "name": "rating"
+                    },
+                    {
+                        "required": false, 
+                        "type": "string", 
+                        "description": "QUERY: postId to filter the response on.", 
+                        "in": "query", 
+                        "name": "postId"
+                    },
+                    {
+                        "required": false, 
+                        "type": "string", 
+                        "description": "QUERY: recipeLink to filter the response on.", 
+                        "in": "query", 
+                        "name": "recipeLink"
+                    },
+                    {
+                        "required": false, 
+                        "type": "integer", 
+                        "description": "QUERY: userId to filter the response on.", 
                         "in": "query", 
                         "name": "userId"
                     }
@@ -189,14 +217,14 @@
                     {
                         "required": true, 
                         "type": "string", 
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }, 
@@ -236,16 +264,44 @@
                     {
                         "required": false, 
                         "type": "number", 
-                        "description": "The facebook userId of the user", 
+                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
+                    },
+                    {
+                        "required": false, 
+                        "type": "number", 
+                        "description": "QUERY: email to filter the response on.", 
+                        "in": "query", 
+                        "name": "email"
+                    },
+                    {
+                        "required": false, 
+                        "type": "number", 
+                        "description": "QUERY: name to filter the response on.", 
+                        "in": "query", 
+                        "name": "name"
+                    },
+                    {
+                        "required": false, 
+                        "type": "number", 
+                        "description": "QUERY: picture to filter the response on.", 
+                        "in": "query", 
+                        "name": "picture"
+                    },
+                    {
+                        "required": false, 
+                        "type": "number", 
+                        "description": "QUERY: userId to filter the response on.", 
+                        "in": "query", 
+                        "name": "userid"
                     }
                 ], 
                 "description": "Returns a list of all the posts of a given user"
@@ -269,7 +325,7 @@
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }
@@ -296,7 +352,7 @@
                     {
                         "required": false, 
                         "type": "string", 
-                        "description": "The facebook access token of the user", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
                         "in": "header", 
                         "name": "accesstoken"
                     }
@@ -324,7 +380,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     }
@@ -350,7 +406,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -385,7 +441,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -420,7 +476,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -465,7 +521,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -508,7 +564,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     }
@@ -544,7 +600,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -579,7 +635,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -614,7 +670,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
@@ -659,7 +715,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     }
@@ -695,7 +751,7 @@
                     {
                         "required": false,
                         "type": "string",
-                        "description": "The facebook access token of the user",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
                     },
