@@ -126,5 +126,18 @@ background: #ECECEC;
 	height: 38px;
 }
 
+.search-banner {
+	width: 570px;
+	margin-left: 3px;
+}
+
+.user-banner {
+	width: 570px;
+	margin-top: 15px;
+	padding-left: 3px;
+}
+.back-to-feed {
+	float: right;
+}
 
 

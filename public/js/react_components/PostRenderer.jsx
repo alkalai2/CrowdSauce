@@ -18,8 +18,6 @@ var Input = ReactBootstrap.Input,
     OverlayTrigger = ReactBootstrap.OverlayTrigger
 
 
-
-
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
 // var data = {
@@ -345,7 +343,12 @@ var Post = React.createClass({
       <div className="post-full">
         <Panel className="post-panel">
           <div> 
-            <b>Jonathan</b> posted a new recipe
+            <span> 
+              <ProfileLink 
+                profileNavigation={this.props.profileNavigation}
+                userId={this.props.data.userId}
+                userName={this.props.data.name}/> posted a new recipe
+            </span>
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
             <h3 className = "post-title">
@@ -365,7 +368,7 @@ var Post = React.createClass({
               <Tags className = "tagset" postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
-            <Comment id={this.props.data.id}/>
+            <Comment id={this.props.data.postId}/>
           </div>
         </Panel>
       </div>
@@ -376,15 +379,32 @@ var Post = React.createClass({
 var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
+    var profileNavigation=this.props.profileNavigation
     
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
+    // add search bar 
+    var searchBar = this.props.searchBar ? 
+      <SearchBar handleSearch={this.props.handleSearch}/> : ""
+
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
-        (this.props.data).map(function(post_data) {
-           return <Post data={post_data} favoriteAble={favoriteAble}/>
-        })
+        <div>
+          <div>
+            {searchBar}
+          </div>
+          {
+            (this.props.data).map(function(post_data) {
+             return (
+                <Post 
+                  data={post_data} 
+                  favoriteAble={favoriteAble}
+                  profileNavigation={profileNavigation}/>
+              )
+            })
+          }
+        </div>
     }
 
     return (
