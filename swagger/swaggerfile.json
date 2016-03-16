@@ -429,7 +429,7 @@
                         }
                     }
                 ],
-                "description": "Associate a TagHistory object with a given post."
+                "description": "This will add a tag (does not have to be an existing tag) to a specific post."
             },
             "delete": {
                 "operationId": "delete tag",
@@ -507,7 +507,7 @@
                         "name": "postId"
                     }
                 ],
-                "description": "Retrieves all TagHistory Objects for a given post."
+                "description": "This will return all the tags for a specific post. The postId must be specified in the query."
             }
         },
         "/api/tags/feed/": {
@@ -561,7 +561,7 @@
                         "description": "The tag to generate a feed of results on."
                     }
                 ], 
-                "description": "Returns a feed of friends posts that have a given tag associated with it."
+                "description": "This will return a feed (with posts) for a given tag name which is specified as query."
             }
         },
         "/api/favorites/": {

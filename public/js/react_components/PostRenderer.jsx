@@ -18,8 +18,6 @@ var Input = ReactBootstrap.Input,
     OverlayTrigger = ReactBootstrap.OverlayTrigger
 
 
-
-
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
 // var data = {
@@ -139,14 +137,52 @@ var RatingStars = React.createClass ({
 });
 
 var Tags = React.createClass ({
+  getInitialState: function() {
+    return {tags: []}
+  },
+
+  componentDidMount: function() {
+    this.loadTagsFromServer()
+  },
+
+  loadTagsFromServer: function() {
+    console.log('getting tags for ' + this.props.postId)
+    var url = 'http://localhost:3000/api/tags/post'
+    jQuery.ajax({
+      url:  url,
+      type: 'GET',
+      headers: {
+        'accessToken': fbAccessToken,
+        'userId': fbUserID
+      },
+      dataType: 'json',
+      data: {
+        'postId': this.props.postId
+      },
+      success: function(data) {
+        var tags = this.state.tags
+        for(d in data) {
+          tagName = data[d]['tagName']
+          if(tagName) {
+            tags = tags.concat(tagName)
+          }
+        }
+        this.setState({tags: tags})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    });
+  },
+
   render: function() {
-    if(!this.props.items) {
+    if(!this.state.tags) {
       return <span></span>
     } else {
       return (
         <span>
-        {this.props.items.map(function(item) {
-          return <span className="tag label label-info">{item}</span>
+        {this.state.tags.map(function(tag) {
+          return <span className="tag label label-info">{tag}</span>
         })}
         </span>
       );
@@ -160,8 +196,51 @@ var FavoriteStar = React.createClass ({
   },
 
 
+  componentDidMount: function() {
+    this.getFavorites();
+  },
+
+  getFavorites: function() {
+    console.log("getting favorites from server..."); 
+    var headers = {
+      Accept: 'text/html',
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    jQuery.ajax({
+      url: 'http://localhost:3000/api/favorites/user/',
+      type: 'GET',
+      headers: headers,
+      dataType: 'json',
+      timeout : 10000,
+      success: function(data) {
+        console.log(data);
+        this.checkFavorites(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.log("ERROR GET FAVORITES")
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
+
+  checkFavorites: function(data) {
+    for(d in data) {
+      postId = data[d]['postId'];
+      console.log("this's data")
+      console.log(this.props.data);
+      console.log("this's postid")
+      console.log(this.props.data.postId);
+      if(postId === this.props.data.postId) {
+          this.setState({favorited: true});
+      }
+    }
+  },
+
+
   addFavorite: function() {
     console.log("favoriting post..."); 
+    this.setState({favorited: true});
     var headers = {
       accessToken: fbAccessToken,
       userId: fbUserID
@@ -186,13 +265,12 @@ var FavoriteStar = React.createClass ({
 
   removeFavorite: function() {
     console.log("unfavoriting post..."); 
+    this.setState({favorited: false});
     var headers = {
       accessToken: fbAccessToken,
       userId: fbUserID
     }
-    var data = {
-      postId: this.props.id
-    }
+    var data = this.props.data
     var url = 'http://localhost:3000/api/favorites/';
     jQuery.ajax({
       url:  url,
@@ -211,19 +289,13 @@ var FavoriteStar = React.createClass ({
   },
   // toggle state
   handleClick: function() {
-    this.setState({favorited: !this.state.favorited});
-    if(this.state.favorited) {
-      this.removeFavorite();
-    }
-    if(!this.state.favorited) {
-      this.addFavorite();
-    }
-
+    //this.setState({favorited: !this.state.favorited});
+    this.state.favorited ? this.removeFavorite() : this.addFavorite();
   }, 
 
   render: function() {
     var image_src = this.state.favorited ? "img/heart-filled.png" : "img/heart-empty.png";
-    var tooltip_txt = this.state.favorited ? "Add to Favorites" : "Favorited";
+    var tooltip_txt = this.state.favorited ? "Favorited" : "Add to Favorites";
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
 
     return (
@@ -271,7 +343,12 @@ var Post = React.createClass({
       <div className="post-full">
         <Panel className="post-panel">
           <div> 
-            <b>Jonathan</b> posted a new recipe
+            <span> 
+              <ProfileLink 
+                profileNavigation={this.props.profileNavigation}
+                userId={this.props.data.userId}
+                userName={this.props.data.name}/> posted a new recipe
+            </span>
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
             <h3 className = "post-title">
@@ -288,10 +365,10 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" items={this.props.data.tags}/>
+              <Tags className = "tagset" postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
-            <Comment id={this.props.data.id}/>
+            <Comment id={this.props.data.postId}/>
           </div>
         </Panel>
       </div>
@@ -302,15 +379,32 @@ var Post = React.createClass({
 var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
+    var profileNavigation=this.props.profileNavigation
     
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
+    // add search bar 
+    var searchBar = this.props.searchBar ? 
+      <SearchBar handleSearch={this.props.handleSearch}/> : ""
+
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
-        (this.props.data).map(function(post_data) {
-           return <Post data={post_data} favoriteAble={favoriteAble}/>
-        })
+        <div>
+          <div>
+            {searchBar}
+          </div>
+          {
+            (this.props.data).map(function(post_data) {
+             return (
+                <Post 
+                  data={post_data} 
+                  favoriteAble={favoriteAble}
+                  profileNavigation={profileNavigation}/>
+              )
+            })
+          }
+        </div>
     }
 
     return (
