@@ -31,11 +31,17 @@ var FriendsList = React.createClass({
 		// if no friends, display a 'no friends'
 		var toDisplay = <NoFriendsDisplay />		
 		
+		var profileNavigation = this.props.profileNavigation
 		if (friends) {
 			toDisplay = 
 			(friends["data"]).map(function(friend_data) {
 				console.log("onefriend " + JSON.stringify(friend_data, null, 4))
-				return <OneFriend data={friend_data} string={search}/>
+				return (
+					<OneFriend 
+						data={friend_data} 
+						string={search}
+						profileNavigation={profileNavigation}/>
+				)
 			})
 			console.log("Friends.jsx: " + JSON.stringify(friends["data"], null, 4))
 		}
@@ -58,7 +64,14 @@ var OneFriend = React.createClass({
 				{this.props.data.name.indexOf(this.props.string) > -1 ? 
 				<ListGroupItem> 
 				<Image src = "http://www.chicagobusiness.com/images/icons/default-user-icon.png" />
-				{this.props.data.name}
+				<span>
+					<ProfileLink 
+					  profileNavigation={this.props.profileNavigation}
+					  userId={this.props.data.id}
+					  userName={this.props.data.name}/> 
+					
+				</span>
+					
 				</ListGroupItem> : false}
 			</div>
         );

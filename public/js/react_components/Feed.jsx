@@ -5,32 +5,29 @@
 var Feed = React.createClass({
     
     getInitialState: function() {
-      return {data: []}
-    },
-    getFBInfo: function() {
-      return getFacebookDetails().then(function(d){return d})
+      return {
+        data: []
+      }
     },
     componentDidMount: function() {
-      var self = this
-      getFacebookDetails().then(function(fbDetails) {
-        console.log("Getting facebook details : " + fbDetails)
-		FB.api(
-		"/me/friends",
-		function (response) {
-			if (response && !response.error) {
-				//handle the result 
-				//console.log("friends: " + JSON.stringify(response, null, 4))
-				// pass data to <FriendsList>
-				self.setState({friends: response});
-				console.log("set respond to friends")
-				
-			}
-		}
-		);		
-        self.loadPostsFromServer(fbDetails)
-      }, function(error) {
-        console.log("Error : " + error)
-      })
+      alert("Feed component did mount ")
+      // var self = this
+      // getFacebookDetails().then(function(fbDetails) {
+      //   console.log("Getting facebook details : ")
+      //   console.log(fbDetails)	
+      //   self.loadPostsFromServer(fbDetails)
+      // }, function(error) {
+      //   console.log("Error : " + error)
+      // })
+      // fbDetails =  {
+      //   'fbUserID': fbUserID,
+      //   'fbAccessToken': fbAccessToken
+      // }
+      // if(this.props.fbDetails) {
+      //  this.loadPostsFromServer(this.props.fbDetails)
+      // } else {
+      //   console.log("Could not load Feed posts. No access to Facebook Details")
+      // }
     },
 
     loadPostsFromServer : function(fbDetails) {
@@ -51,7 +48,9 @@ var Feed = React.createClass({
           success: function(data) {
             console.log("setting state with data ... ")
             console.log(data)
-            this.setState({data: data});
+            if(data.length) { 
+              this.setState({data: data});
+            }
           }.bind(this),
           error: function(xhr, status, err) {
             console.error(this.props.source, status, err.toString());
@@ -61,30 +60,26 @@ var Feed = React.createClass({
 
 	
 	render: function() {
+
+      // Jank - necessary to get data from FeedController
+      var fbDetails = this.props.fbDetails
+      if(this.props.fbDetails && !this.state.data.length) {
+        this.loadPostsFromServer(this.props.fbDetails)
+      } else {
+        console.log("Could not load Feed posts. No access to Facebook Details")
+      }
+      
    		return (
-	    	<div> 
-			
-			<div className="col-md-3">
-			<FriendsList data={this.state.friends}/>
-			</div>
-			
-			<div className ="col-md-6">
-			
-        <PostList 
-          data={this.state.data} 
-          favoriteAble={true}
-          searchBar = {true}
-          errorMsg={"Oops! Your friends have not posted anything "}/>
-			 
-			</div>
-			
-			<div className="col-md-3">
-			
-			</div>
-           
-	    	</div>
+  			<div>
+          <PostList 
+            data={this.state.data} 
+            favoriteAble={true}
+            searchBar = {true}
+            handleSearch={this.props.handleSearch}
+            profileNavigation={this.props.profileNavigation}
+            errorMsg={"Oops! Your friends have not posted anything "}/>
+  			</div>
 	    );
     },
 });
 
-ReactDOM.render(<Feed source={"http://localhost:3000/api/posts/feed/"}/>, feed);
