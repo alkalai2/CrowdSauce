@@ -198,8 +198,51 @@ var FavoriteStar = React.createClass ({
   },
 
 
+  componentDidMount: function() {
+    this.getFavorites();
+  },
+
+  getFavorites: function() {
+    console.log("getting favorites from server..."); 
+    var headers = {
+      Accept: 'text/html',
+      accessToken: fbAccessToken,
+      userId: fbUserID
+    }
+    jQuery.ajax({
+      url: 'http://localhost:3000/api/favorites/user/',
+      type: 'GET',
+      headers: headers,
+      dataType: 'json',
+      timeout : 10000,
+      success: function(data) {
+        console.log(data);
+        this.checkFavorites(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.log("ERROR GET FAVORITES")
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
+
+  checkFavorites: function(data) {
+    for(d in data) {
+      postId = data[d]['postId'];
+      console.log("this's data")
+      console.log(this.props.data);
+      console.log("this's postid")
+      console.log(this.props.data.postId);
+      if(postId === this.props.data.postId) {
+          this.setState({favorited: true});
+      }
+    }
+  },
+
+
   addFavorite: function() {
     console.log("favoriting post..."); 
+    this.setState({favorited: true});
     var headers = {
       accessToken: fbAccessToken,
       userId: fbUserID
@@ -224,13 +267,12 @@ var FavoriteStar = React.createClass ({
 
   removeFavorite: function() {
     console.log("unfavoriting post..."); 
+    this.setState({favorited: false});
     var headers = {
       accessToken: fbAccessToken,
       userId: fbUserID
     }
-    var data = {
-      postId: this.props.id
-    }
+    var data = this.props.data
     var url = 'http://localhost:3000/api/favorites/';
     jQuery.ajax({
       url:  url,
@@ -249,19 +291,13 @@ var FavoriteStar = React.createClass ({
   },
   // toggle state
   handleClick: function() {
-    this.setState({favorited: !this.state.favorited});
-    if(this.state.favorited) {
-      this.removeFavorite();
-    }
-    if(!this.state.favorited) {
-      this.addFavorite();
-    }
-
+    //this.setState({favorited: !this.state.favorited});
+    this.state.favorited ? this.removeFavorite() : this.addFavorite();
   }, 
 
   render: function() {
     var image_src = this.state.favorited ? "img/heart-filled.png" : "img/heart-empty.png";
-    var tooltip_txt = this.state.favorited ? "Add to Favorites" : "Favorited";
+    var tooltip_txt = this.state.favorited ? "Favorited" : "Add to Favorites";
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
 
     return (
