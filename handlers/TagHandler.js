@@ -24,8 +24,6 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 })
 
 function handleAddTagRequest (req, res) {
-  if (!auth.assertHasUser(req)) return
-
   r.db(config.rethinkdb.db).table('tagHistory').filter({tagName: req.body.tagName, postId: req.body.postId}).run(
           connection, function (err, cursor) {
             if (err) throw err
@@ -51,8 +49,6 @@ function handleAddTagRequest (req, res) {
 }
 
 function handleGetPostTagsRequest(req,res) {
-  if (!auth.assertHasUser(req)) return
-
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
     console.log("Result: "+ JSON.stringify(post.tags))
@@ -66,7 +62,6 @@ function handleGetPostTagsRequest(req,res) {
 
 function handleGetTagFeedRequest(req,res) {
   //Pass in tagName in URL query
-  if (!auth.assertHasUser(req)) return
   num_posts = +req.headers.numposts || 10
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
