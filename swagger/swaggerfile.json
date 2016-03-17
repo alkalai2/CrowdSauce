@@ -294,7 +294,7 @@
                         "type": "number", 
                         "description": "QUERY: userId to filter the response on.", 
                         "in": "query", 
-                        "name": "userid"
+                        "name": "userId"
                     }
                 ], 
                 "description": "Returns a list of all the accounts currently stored. Note: currently only query on one item at once."
