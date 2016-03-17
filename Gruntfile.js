@@ -22,6 +22,7 @@ module.exports = function(grunt) {
       // }, 
       build_feed: {
         files: {
+
           'public/js/react_build/feed.master.build.js': [
 			      'public/js/react_components/Friends.jsx',		  
             'public/js/react_components/Comments.jsx',
