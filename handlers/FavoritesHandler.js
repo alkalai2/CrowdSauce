@@ -75,6 +75,10 @@ function handleGetUserFavoritesRequest(req,res) {
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
     console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
+    if (postIds.length === 0){
+        res.status(200).send([])
+        return
+    }
     console.log(postIds)
     Post.getAll.apply(Post, postIds).getJoin({user:true}).run().then(function(result){
           console.log(JSON.stringify(result, null, 2))
