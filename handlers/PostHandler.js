@@ -34,7 +34,6 @@ function handleCreatePostRequest (req, res) {
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
       imageLink: req.body.imageLink,
-      tags: req.body.tags,
       notes: req.body.notes,
       rating: req.body.rating
     })
@@ -92,8 +91,8 @@ function handleUpdatePostRequest (req, res) {
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
   console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
-  if (req.query.hasOwnProperty("postId")){
-    r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query.postId}).update(req.body).run(
+  if (req.body.hasOwnProperty("postId")){
+    r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).update(req.body).run(
            connection, function(err, cursor){
             if (err) throw err
           }).then(function(result) {
@@ -109,7 +108,7 @@ function handleUpdatePostRequest (req, res) {
 
 function handleDeletePostRequest (req, res) {
   console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
-  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.query['postId']}).delete().run(
+  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         }).then(function(result) {
@@ -138,6 +137,7 @@ function handleGetFeedRequest (req, res) {
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
+    console.log("friends " + friends)
     friends = r(friends)
     r.db(config.rethinkdb.db).table('posts').filter(function(post) {
       return friends.contains(post('userId'))

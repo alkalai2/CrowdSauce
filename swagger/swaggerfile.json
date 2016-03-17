@@ -16,7 +16,7 @@
                         "description": "Success", 
                         "schema": {
                             "items": {
-                                "$ref": "#/definitions/Post"
+                                "$ref": "#/definitions/PostFeed"
                             }, 
                             "type": "array"
                         }
@@ -29,7 +29,7 @@
                     {
                         "required": true, 
                         "type": "string", 
-                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
+                        "description": "The userId used to retrieve list of friends", 
                         "in": "header", 
                         "name": "userid"
                     }, 
@@ -69,7 +69,7 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "number", 
                         "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
@@ -84,22 +84,15 @@
                     }, 
                     {
                         "required": true, 
-                        "type": "string", 
-                        "description": "The post to update", 
-                        "in": "query", 
-                        "name": "postId"
-                    }, 
-                    {
-                        "required": true, 
                         "in": "body", 
                         "description": "Post data", 
                         "name": "body", 
                         "schema": {
-                            "$ref": "#/definitions/Post"
+                            "$ref": "#/definitions/PostUpdate"
                         }
                     }
                 ], 
-                "description": "Update a post"
+                "description": "Update a post with any new data except postId which is a primary key, which is a required field in the body of the request."
             },
             "post": {
                 "operationId": "create post",
@@ -113,7 +106,7 @@
                     {
                         "required": true, 
                         "type": "integer",
-                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
+                        "description": "The userId of the user creating the post.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
@@ -203,7 +196,7 @@
                         "name": "userId"
                     }
                 ], 
-                "description": "Returns a list of all the posts of a given user"
+                "description": "Returns a list of all the posts. Note: Currently only query on one thing."
             }, 
             "delete": {
                 "operationId": "delete post",
@@ -215,7 +208,7 @@
                 },
                 "parameters": [
                     {
-                        "required": true, 
+                        "required": false, 
                         "type": "string", 
                         "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
                         "in": "header", 
@@ -233,7 +226,7 @@
                         "in": "body", 
                         "name": "body", 
                         "schema": {
-                            "$ref": "#/definitions/Post"
+                            "$ref": "#/definitions/PostDelete"
                         }
                     }
                 ], 
@@ -301,10 +294,10 @@
                         "type": "number", 
                         "description": "QUERY: userId to filter the response on.", 
                         "in": "query", 
-                        "name": "userid"
+                        "name": "userId"
                     }
                 ], 
-                "description": "Returns a list of all the posts of a given user"
+                "description": "Returns a list of all the accounts currently stored. Note: currently only query on one item at once."
             }, 
             "post": {
                 "operationId": "create account",
@@ -366,7 +359,15 @@
                 "tags": [ "tags" ],
                 "responses": {
                     "default": {"description": "Error"},
-                    "200": {"description": "Success"},
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/Tag"
+                            },
+                            "type": "array"
+                        }
+                    },
                     "401": {"description": "Unauthorized"}
                 },
                 "parameters": [
@@ -385,117 +386,10 @@
                         "name": "accesstoken"
                     }
                 ],
-                "description": "This will return all tags in the database."
-            },
-            "put": {
-                "operationId": "add a tag",
-                "tags": [ "tags" ],
-                "responses": {
-                    "default": {"description": "Error"},
-                    "200": {"description": "Success"},
-                    "401": {"description": "Unauthorized"}
-                },
-                "parameters": [
-                    {
-                        "required": true,
-                        "type": "integer",
-                        "description": "UserID of user doing the favoriting",
-                        "in": "header",
-                        "name": "userid"
-                    },
-                    {
-                        "required": false,
-                        "type": "string",
-                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
-                        "in": "header",
-                        "name": "accesstoken"
-                    },
-                    {
-                        "required": true,
-                        "description": "Contains data about the tag to be posted",
-                        "in": "body",
-                        "name": "body",
-                        "schema": {
-                            "$ref": "#/definitions/Tag"
-                        }
-                    }
-                ],
-                "description": "Favorite a post"
+                "description": "Gets all the tags in the database."
             },
             "post": {
                 "operationId": "add a tag",
-                "tags": [ "tags" ],
-                "responses": {
-                    "default": {"description": "Error"},
-                    "200": {"description": "Success"},
-                    "401": {"description": "Unauthorized"}
-                },
-                "parameters": [
-                    {
-                        "required": true,
-                        "type": "integer",
-                        "description": "UserID of user doing the favoriting",
-                        "in": "header",
-                        "name": "userid"
-                    },
-                    {
-                        "required": false,
-                        "type": "string",
-                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
-                        "in": "header",
-                        "name": "accesstoken"
-                    },
-                    {
-                        "required": true,
-                        "description": "Contains data about the tag to be posted",
-                        "in": "body",
-                        "name": "body",
-                        "schema": {
-                            "$ref": "#/definitions/Tag"
-                        }
-                    }
-                ],
-                "description": "This will add a tag (does not have to be an existing tag) to a specific post."
-            },
-            "delete": {
-                "operationId": "delete tag",
-                "tags": [ "tags" ],
-                "responses": {
-                    "default": {"description": "Error"},
-                    "200": {"description": "Success"},
-                    "401": {"description": "Unauthorized"}
-                },
-                "parameters": [
-                    {
-                        "required": true,
-                        "type": "integer",
-                        "description": "UserID for user doing the unfavoriting",
-                        "in": "header",
-                        "name": "userid"
-                    },
-                    {
-                        "required": false,
-                        "type": "string",
-                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
-                        "in": "header",
-                        "name": "accesstoken"
-                    },
-                    {
-                        "required": true,
-                        "description": "Contains data about the tag to be deleted",
-                        "in": "body",
-                        "name": "body",
-                        "schema": {
-                            "$ref": "#/definitions/Tag"
-                        }
-                    }
-                ],
-                "description": "This will remove a tag from a post. The tagName and postId need to be specified."
-            }
-        },
-        "/api/tags/post/": {
-            "post": {
-                "operationId": "Add an existing tag to a post",
                 "tags": [ "tags" ],
                 "responses": {
                     "default": {"description": "Error"},
@@ -512,9 +406,9 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
-                        "description": "UserID for user",
+                        "description": "AUTHENTICATION: The usedId to be authenticated.",
                         "in": "header",
                         "name": "userid"
                     },
@@ -535,8 +429,45 @@
                         }
                     }
                 ],
-                "description": "Get all favorites for a given user"
+                "description": "This will add a tag (does not have to be an existing tag) to a specific post."
             },
+            "delete": {
+                "operationId": "delete tag",
+                "tags": [ "tags" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": false,
+                        "type": "integer",
+                        "description": "AUTHENTICATION: The userId of to be authenticated.",
+                        "in": "header",
+                        "name": "userid"
+                    },
+                    {
+                        "required": false,
+                        "type": "string",
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+                        "in": "header",
+                        "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "description": "Contains data about the tag to be deleted",
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/AddTag"
+                        }
+                    }
+                ],
+                "description": "If a postId and a tagName are specified in the body of the request only tagHistory matching those two parameters will be removed. If exclusively one of them is specified it will delete all tagHistory matching that specified field"
+            }
+        },
+        "/api/tags/post/": {
             "get": {
                 "operationId": "Add an existing tag to a post",
                 "tags": [ "tags" ],
@@ -567,6 +498,13 @@
                         "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
                         "in": "header",
                         "name": "accesstoken"
+                    },
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "The postId of which we want to get all TagHistory objects.",
+                        "in": "query",
+                        "name": "postId"
                     }
                 ],
                 "description": "This will return all the tags for a specific post. The postId must be specified in the query."
@@ -584,7 +522,7 @@
                         "description": "Success", 
                         "schema": {
                             "items": {
-                                "$ref": "#/definitions/TagReturn"
+                                "$ref": "#/definitions/PostFeed"
                             }, 
                             "type": "array"
                         }
@@ -597,7 +535,7 @@
                     {
                         "required": true, 
                         "type": "string", 
-                        "description": "AUTHENTICATION: The facebook userId to be authenticated.", 
+                        "description": "Used to get all friends to generate a feed.", 
                         "in": "header", 
                         "name": "userid"
                     }, 
@@ -616,11 +554,11 @@
                         "description": "Number of posts to provide"
                     },
                     {
-                        "in": "header",
-                        "default": 0,
-                        "name": "offset",
-                        "type": "integer",
-                        "description": "Number of posts to skip"
+                        "required": true, 
+                        "in": "query",
+                        "name": "tagName",
+                        "type": "string",
+                        "description": "The tag to generate a feed of results on."
                     }
                 ], 
                 "description": "This will return a feed (with posts) for a given tag name which is specified as query."
@@ -656,11 +594,11 @@
                         "in": "body",
                         "name": "body",
                         "schema": {
-                            "$ref": "#/definitions/Favorite"
+                            "$ref": "#/definitions/FavoritePost"
                         }
                     }
                 ],
-                "description": "Favorite a post"
+                "description": "This creates a favorite object that associates a userId with a postId and vice versa."
             },
             "delete": {
                 "operationId": "delete favorite",
@@ -672,9 +610,9 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
-                        "description": "UserID for user doing the unfavoriting",
+                        "description": "AUTHENTICATION: UserID for user doing the unfavoriting",
                         "in": "header",
                         "name": "userid"
                     },
@@ -691,11 +629,11 @@
                         "in": "body",
                         "name": "body",
                         "schema": {
-                            "$ref": "#/definitions/Favorite"
+                            "$ref": "#/definitions/FavoriteDelete"
                         }
                     }
                 ],
-                "description": "Unfavorite a post"
+                "description": "If a userId and a postId are passed in then a single favorite object will be deleted. If only a userId all the favorites of that userId will be deleted, if only a postId is specified all the favorite objects containing that postId will be deleted."
             }
         },
         "/api/favorites/user/": {
@@ -731,7 +669,7 @@
                         "name": "accesstoken"
                     }
                 ],
-                "description": "Get all favorites for a given user"
+                "description": "This will return favorite objects containing postId and userId of a given user."
             }
         },
         "/api/favorites/post/": {
@@ -753,7 +691,7 @@
                 },
                 "parameters": [
                     {
-                        "required": true,
+                        "required": false,
                         "type": "integer",
                         "description": "UserID for user",
                         "in": "header",
@@ -774,7 +712,7 @@
                         "name": "postId"
                     }
                 ],
-                "description": "Get all posts for a given user"
+                "description": "Get all the favorite objects containing userIds and the postId of a given post, for all users who liked the post."
             }
         }
     }, 
@@ -788,6 +726,78 @@
     "basePath": "/", 
     "host": "localhost:3000",
     "definitions": {
+        "PostDelete": {
+            "properties": {
+                "postId": {
+                    "type": "string"
+                }
+            }
+        },
+        "PostFeed": {
+            "properties": {
+                "rating": {
+                    "type": "number"
+                }, 
+                "directions": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "ingredients": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "imageLink": {
+                    "type": "string"
+                }, 
+                "postId": {
+                    "type": "string"
+                }, 
+                "notes": {
+                    "type": "string"
+                }, 
+                "userId": {
+                    "type": "string"
+                },
+                "recipeLink": {
+                    "type": "string"
+                }
+            }
+        },
+        "PostUpdate": {
+            "properties": {
+                "rating": {
+                    "type": "number"
+                }, 
+                "directions": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "ingredients": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "imageLink": {
+                    "type": "string"
+                }, 
+                "postId": {
+                    "type": "string"
+                }, 
+                "notes": {
+                    "type": "string"
+                }, 
+                "recipeLink": {
+                    "type": "string"
+                }
+            }
+        },
         "Post": {
             "properties": {
                 "rating": {
@@ -823,8 +833,18 @@
                 }
             }
         },
-        "Favorite": {
+        "FavoritePost": {
             "properties": {
+                "postId": {
+                    "type": "string"
+                }
+            }
+        },
+        "FavoriteDelete": {
+            "properties": {
+                "userId": {
+                    "type": "integer"
+                },
                 "postId": {
                     "type": "string"
                 }
@@ -833,17 +853,17 @@
         "AddTag": {
             "properties": {
                 "tagName": {
-                    "tagName": "string"
+                    "type": "string"
                 },
                 "postId": {
-                    "tagName": "string"
+                    "type": "string"
                 }
             }
         },
         "Tag": {
             "properties": {
-                "postId": {
-                    "tagName": "string"
+                "tagName": {
+                    "type": "string"
                 }
             }
         },
@@ -852,8 +872,11 @@
                 "tagName": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "postId": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },

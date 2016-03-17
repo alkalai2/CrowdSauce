@@ -6,6 +6,7 @@ var type = thinky.type
 var Favorites = require('../models/Favorites')
 var TagHistory = require('../models/TagHistory')
 
+
 // This should model the schema we want in our RethinkDB
 var Post = thinky.createModel('posts', {
   userId: type.number().default(0),
@@ -19,7 +20,11 @@ var Post = thinky.createModel('posts', {
 }, {pk: "postId"}
 )
 
+module.exports = Post
+
+// this line has to be here otherwise the circular import will not work
+// Post requires Account and Account requires Post
+var Account = require('../models/Account')
+Post.belongsTo(Account, "user", "userId", "userId")
 Post.hasMany(Favorites, "favorites", "postId", "postId")
 Post.hasMany(TagHistory, "tags", "postId", "postId")
-
-module.exports = Post
