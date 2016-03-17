@@ -17,7 +17,7 @@ var NoFriendsDisplay = React.createClass({
 var FriendsList = React.createClass({
 
     getInitialState: function() {
-      return {data: {data: []}}
+      return {data: {data: []}, profileurls: "notloaded"}
     },
 	onChange: function(event) {
 		search = event.target.value;
@@ -27,19 +27,28 @@ var FriendsList = React.createClass({
     render: function() {
 	
 		var friends = this.props.data
+		var urls = this.props.profileurls
 		
 		// if no friends, display a 'no friends'
 		var toDisplay = <NoFriendsDisplay />		
 		
+		var i = 0
 		var profileNavigation = this.props.profileNavigation
 		if (friends) {
 			toDisplay = 
 			(friends["data"]).map(function(friend_data) {
 				console.log("onefriend " + JSON.stringify(friend_data, null, 4))
+				if (urls) {
+					url = urls[i]
+					i++
+				} else {
+					url = "https://cdn0.iconfinder.com/data/icons/duesseldorf/32/process.png"
+				}
 				return (
 					<OneFriend 
 						data={friend_data} 
 						string={search}
+						url={url}
 						profileNavigation={profileNavigation}/>
 				)
 			})
@@ -63,7 +72,7 @@ var OneFriend = React.createClass({
 			<div>
 				{this.props.data.name.indexOf(this.props.string) > -1 ? 
 				<ListGroupItem> 
-				<Image src = "http://www.chicagobusiness.com/images/icons/default-user-icon.png" />
+				<Image src = {this.props.url} />
 				<span>
 					<ProfileLink 
 					  profileNavigation={this.props.profileNavigation}
