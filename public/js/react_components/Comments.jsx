@@ -3,7 +3,7 @@
 var Comment = React.createClass({
 	  componentDidMount : function() {
 	
-	  
+	/*  
   	window.fbAsyncInit = function() {
   	FB.init({
   		appId      : '563086800536760',
@@ -26,13 +26,15 @@ var Comment = React.createClass({
       'fbload', 
   	 function(){
   		FB.XFBML.parse();
-  		alert("load sdk");
+  		//alert("load sdk");
   	});
+	
+	*/
       },
   	
   	componentDidUpdate : function() {
-      FB.XFBML.parse();
-  	alert("parsed");
+      //FB.XFBML.parse();
+  	//alert("parsed");
   	},
   	
   	render : function() {

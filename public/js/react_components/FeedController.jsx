@@ -17,27 +17,57 @@ var FeedController = React.createClass({
 				profileUserId: '',
 			}
 		},
-
+		
+		idToProfilePic: function (id) {
+			FB.api("/" + id + "/picture", function (response) {
+				if (response && !response.error) {
+					return (response["data"]["url"])
+				}
+			});
+		},
+		
 		// get facebook details, facebook friends
 		componentDidMount: function() {
 			var self = this
-      getFacebookDetails().then(function(fbDetails) {
-        console.log("Getting facebook details : ")
-        console.log(fbDetails)
+			getFacebookDetails().then(function(fbDetails) {
+			console.log("Getting facebook details : ")
+			console.log(fbDetails)
 
 				FB.api( "/me/friends", function (response) {
 					if (response && !response.error) {
 						//handle the result 
-						//console.log("friends: " + JSON.stringify(response, null, 4))
+						console.log("friends: " + JSON.stringify(response, null, 4))
 						// pass data to <FriendsList>
 						self.setState({friends: response})
 						console.log("set respond to friends")
 						self.setState({fbDetails: fbDetails})
+						friendsID = response["data"].map(function(friend_data) {
+							//console.log("getting profile id for:  " + JSON.stringify(friend_data.name, null, 4))
+							return (
+								friend_data.id
+							)
+						})
+						console.log("friends id", JSON.stringify(friendsID))
+						var friendsProfileURL = []
+						friendsID.map(function (id) {
+							//console.log("/" + id + "/picture")
+							FB.api("/" + id + "/picture", function (response) {
+								if (response && !response.error) {
+									console.log("friends url", JSON.stringify(response["data"]["url"]))
+									friendsProfileURL.push(response["data"]["url"])
+									self.setState({profileurls: friendsProfileURL})
+								}
+							});
+						})
+						console.log("friends url", JSON.stringify(friendsProfileURL))
 					}
 				});
+				
 			})	
 		},
 
+		
+		
 		// a Search has come in
 		// pass query onto Search to load results
 		// change display to show search results
@@ -120,6 +150,7 @@ var FeedController = React.createClass({
     			<div className="col-md-3">
     				<FriendsList 
     					data={this.state.friends}
+						profileurls={this.state.profileurls}
     					profileNavigation={this.handleProfileNavigation}/>
     			</div>
    
