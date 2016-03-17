@@ -29,7 +29,7 @@ function handleCreatePostRequest (req, res) {
   // create Post object
   var post = new Post(
     {
-      userId: req.headers.userid,
+      userId: parseInt(req.headers.userid),
       ingredients: req.body.ingredients,
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
