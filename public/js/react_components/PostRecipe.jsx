@@ -2,17 +2,34 @@ var Panel = ReactBootstrap.Panel,
 PanelGroup = ReactBootstrap.PanelGroup,
 Input = ReactBootstrap.Input,
 ButtonInput = ReactBootstrap.ButtonInput,
-Pagination = ReactBootstrap.Pagination
+Pagination = ReactBootstrap.Pagination,
+Modal = ReactBootstrap.Modal,
+Button = ReactBootstrap.Button
 
 var fbDetails = getFacebookDetails();
+
 
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: [], directions: [],
          imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
-         items: [], tags: [], text: ''};
+         items: [], tags: [], text: '', showModal: false};
     },
+
+
+	close() {
+	this.setState({ showModal: false });
+	},
+
+	open() {
+	this.setState({ showModal: true });
+	},
+
+	hide: function() {
+	this.setState({ showModal: false });
+	},
+
     handleTitleChange: function(e){
       this.setState({title: e.target.value});
   	},    
@@ -57,8 +74,10 @@ var PostRecipe = React.createClass({
     handleSubmit: function(){
 		if(this.state.activeKey == 1){
 			this.handleLinkSubmit();
+			this.close();
 		} else {
 			this.handlePostSubmit();
+		    this.close();
 		}
     },
 	handleLinkSubmit: function() {
@@ -164,6 +183,16 @@ var PostRecipe = React.createClass({
     render: function() {
         return (  
         <div>
+  		<button className="post_fab" onClick={this.open}> 
+  			+
+        </button>
+
+	    <Modal show={this.state.showModal} onHide={this.close}>
+	      <Modal.Header closeButton>
+	      	<Modal.Title>Modal heading</Modal.Title>
+	      </Modal.Header>
+	      <Modal.Body>
+
 	        <Input
 			  type="text"
 			  label="Title"
@@ -173,7 +202,8 @@ var PostRecipe = React.createClass({
 			  bsStyle={this.state.title.length > 0 ? 'success' : 'error'}
 			  value={this.state.title}
 			  onChange={this.handleTitleChange}
-			/>
+			>
+			</Input>
 			<img src={this.state.imgsrc} alt="Add a picture!"
 	           height='200px' width='200px' className="img-responsive"/>
 			  <Input
@@ -183,7 +213,8 @@ var PostRecipe = React.createClass({
 			    wrapperClassName="col-xs-15"
 			    onChange={this.changeImgSrc}
 			    value={this.state.imgsrc}
-			  />
+			  >
+			  </Input>
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
 			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
@@ -211,8 +242,13 @@ var PostRecipe = React.createClass({
 		    <ul>{this.state.items.map(this.createItem)}</ul>
 		    <input onChange={this.onChange} value={this.state.text} />
 		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
-			<ButtonInput onClick={this.handleSubmit} type="submit" value="Post" bsStyle="success" bsSize="large" />
 
+       		</Modal.Body>
+
+       		<Modal.Footer>
+       			<ButtonInput onClick={this.handleSubmit} type="submit" value="Post" bsStyle="success" bsSize="large" />
+       		</Modal.Footer>
+		    </Modal>
         </div>);
     }
 });
@@ -282,4 +318,4 @@ var RecipeLinkForm = React.createClass({
   }
 });
 
-ReactDOM.render(<PostRecipe />, content);
+ReactDOM.render(<PostRecipe/>, content);

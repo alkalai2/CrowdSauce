@@ -23,10 +23,11 @@ module.exports = function(grunt) {
       build_feed: {
         files: {
           'public/js/react_build/feed.build.js': [
-			'public/js/react_components/Friends.jsx',		  
+			      'public/js/react_components/Friends.jsx',		  
             'public/js/react_components/Comments.jsx',
             'public/js/react_components/PostRenderer.jsx' ,
-            'public/js/react_components/Feed.jsx'
+            'public/js/react_components/Feed.jsx',
+            'public/js/react_components/PostRecipe.jsx'
           ]
         }
       },
