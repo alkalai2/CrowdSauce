@@ -117,7 +117,7 @@ function handleDeletePostRequest (req, res) {
            })
        })
 
-  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.query['postId']}).delete().run(
+  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.body.postId}).delete().run(
          connection, function(err, cursor){
           if (err) throw err
         })
