@@ -10,7 +10,6 @@ var Feed = React.createClass({
       }
     },
     componentDidMount: function() {
-      alert("Feed component did mount ")
       // var self = this
       // getFacebookDetails().then(function(fbDetails) {
       //   console.log("Getting facebook details : ")
