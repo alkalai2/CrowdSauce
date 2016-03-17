@@ -14,7 +14,6 @@ var SearchBar = React.createClass({
 	handleSubmit: function(e) {
 		e.preventDefault()
 		var query = this.state.value.toLowerCase(this.state.value)
-		alert(query)
 		this.setState({value: ''})
 
 		// handle in FeedController

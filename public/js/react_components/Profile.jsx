@@ -4,7 +4,6 @@
 
 var ProfileLink = React.createClass({
   goToProfile: function() {
-    alert(this.props.userId)
     this.props.profileNavigation(this.props.userId, this.props.userName)
   },
 
@@ -27,7 +26,6 @@ var Profile = React.createClass({
 
     componentDidMount: function() {
       var self = this
-      alert("componentdid mount profile")
       getFacebookDetails().then(function(fbDetails) {
         console.log("Getting facebook details : " + fbDetails)
         self.loadPostsFromServer(fbDetails)
