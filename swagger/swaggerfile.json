@@ -882,11 +882,45 @@
         },
         "FavoriteReturn": {
             "properties": {
+                "rating": {
+                    "type": "number"
+                }, 
+                "directions": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "ingredients": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array"
+                }, 
+                "imageLink": {
+                    "type": "string"
+                }, 
+                "notes": {
+                    "type": "string"
+                }, 
+                "recipeLink": {
+                    "type": "string"
+                },
                 "postId": {
                     "type": "string"
                 },
-                "userId": {
-                    "type": "integer"
+                "user": {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "userId": {
+                            "type": "number"
+                        }
+                    }
                 }
             }
         }
