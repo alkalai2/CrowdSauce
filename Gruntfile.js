@@ -51,7 +51,9 @@ module.exports = function(grunt) {
           'public/js/react_build/favorites.build.js': [
             'public/js/react_components/Comments.jsx',
             'public/js/react_components/PostRenderer.jsx' ,
-            'public/js/react_components/Favorites.jsx'
+            'public/js/react_components/Favorites.jsx',
+            'public/js/react_components/Profile.jsx'
+
           ]
         }
       },
