@@ -63,6 +63,7 @@ function handleGetPostTagsRequest(req,res) {
 function handleGetTagFeedRequest(req,res) {
   //Pass in tagName in URL query
   num_posts = +req.headers.numposts || 10
+  offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -86,7 +87,7 @@ function handleGetTagFeedRequest(req,res) {
 
       r.db(config.rethinkdb.db).table('posts').filter(function(post) {
         return friends.contains(post('userId')).and(posts.contains(post('postId')))
-      }).orderBy(r.desc('timePosted')).limit(num_posts).run(connection, function (err, cursor) {
+      }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
         cursor.toArray(function(err, result) {
           if (err) throw err;

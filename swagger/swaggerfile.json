@@ -554,6 +554,13 @@
                         "description": "Number of posts to provide"
                     },
                     {
+                        "in": "header",
+                        "default": 0,
+                        "name": "offset",
+                        "type": "integer",
+                        "description": "Number of posts to skip"
+                    },
+                    {
                         "required": true, 
                         "in": "query",
                         "name": "tagName",
