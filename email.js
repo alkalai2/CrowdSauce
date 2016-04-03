@@ -35,14 +35,22 @@ function send(address, subject, message) {
 }
 
 function sendToUser(user, subject, message) {
-  r.db(config.rethinkdb.db).table('users').get(user).getField('email').run(connection, function (err, result) {
-    if (result == "") return;
-    send(result, subject, message)
+  r.db(config.rethinkdb.db).table('users').get(user).run(connection, function (err, result) {
+    if (result) {
+      var emailAddress = result.email
+      if (emailAddress == "") 
+        return;
+      var notification = result.notification
+      var name = result.name
+      if (notification){
+          send(emailAddress, subject, message)
+      }
+    }
   })
 }
 
 function sendToFriends(user, subject, message) {
-  FB.api('/' + user + '/friends?fields=email,name', 'get', {
+  FB.api('/' + user + '/friends?fields=email,name,id', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
     if (response.error) {
@@ -51,7 +59,16 @@ function sendToFriends(user, subject, message) {
     }
     for (i = 0; i < response.data.length; i++) {
       if (!response.data[i].email) continue
-      send(response.data[i].email, subject, message)
+      r.db(config.rethinkdb.db).table('users').get(parseInt(response.data[i].id)).run(connection, function (err, result) {
+        if (result) {
+            var emailAddress = result.email
+            var notification = result.notification
+            var name = result.name
+            if (notification){
+              send(emailAddress, subject, message)
+            }
+        }
+      })
     }
   })
 }

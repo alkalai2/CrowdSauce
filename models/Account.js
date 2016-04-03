@@ -11,7 +11,8 @@ var Account = thinky.createModel("users", {
     userId: type.number().default(0),
     name: type.string().default("John Doe"),
     email: type.string().default(""),
-    picture: type.string().default("https://pbs.twimg.com/profile_images/619573624903761920/EGZ2I6wG.jpg")
+    picture: type.string().default("https://pbs.twimg.com/profile_images/619573624903761920/EGZ2I6wG.jpg"),
+    notification: type.boolean().default(true)
 }, {pk: "userId"} );
 
 module.exports = Account
@@ -21,3 +22,4 @@ module.exports = Account
 var Post = require('../models/Post');
 Account.hasMany(Post, "posts", "userId", "userId")
 Account.hasMany(Favorites, "favorites", "userId", "userId")
+
