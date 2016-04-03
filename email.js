@@ -51,7 +51,7 @@ function sendToUser(user, subject, message) {
 
 function sendToFriends(user, subject, message) {
   FB.api('/' + user + '/friends?fields=email,name,id', 'get', {
-    access_token: fbAppAccessToken
+    access_token: fbAppAccessToken   
   }, function (response) {
     if (response.error) {
       console.log(response.error)
