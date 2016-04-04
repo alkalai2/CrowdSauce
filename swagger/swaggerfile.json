@@ -237,6 +237,41 @@
             "x-swagger-pipe": "swagger_raw"
         }, 
         "/api/accounts/": {
+            "put": {
+                "operationId": "update account",
+                "tags": [ "accounts" ],
+                "responses": {
+                    "default": {"description": "Error"},
+                    "200": {"description": "Success"},
+                    "401": {"description": "Unauthorized"}
+                },
+                "parameters": [
+                    {
+                        "required": true, 
+                        "type": "number", 
+                        "description": "The userId of the account that needs to be updated", 
+                        "in": "header", 
+                        "name": "userid"
+                    }, 
+                    {
+                        "required": false, 
+                        "type": "string", 
+                        "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.", 
+                        "in": "header", 
+                        "name": "accesstoken"
+                    }, 
+                    {
+                        "required": true, 
+                        "in": "body", 
+                        "description": "Account data", 
+                        "name": "body", 
+                        "schema": {
+                            "$ref": "#/definitions/AccountUpdate"
+                        }
+                    }
+                ], 
+                "description": "Update an account with any new data except userId which is a primary key."
+            },
             "get": {
                 "operationId": "get accounts",
                 "tags": [ "accounts" ],
@@ -846,6 +881,26 @@
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+
+        "AccountUpdate": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+
+                "email":{
+                    "type": "string"
+                },
+
+                "picture": {
+                    "type": "string"
+                },
+
+                "notification":{
+                    "type": "boolean"
                 }
             }
         },
