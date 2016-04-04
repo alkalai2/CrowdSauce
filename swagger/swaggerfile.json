@@ -563,12 +563,12 @@
                     {
                         "required": true, 
                         "in": "query",
-                        "name": "tagName",
-                        "type": "string",
-                        "description": "The tag to generate a feed of results on."
+                        "name": "tagNames",
+                        "type": "array",
+                        "description": "The tags to generate a feed of results on."
                     }
                 ], 
-                "description": "This will return a feed (with posts) for a given tag name which is specified as query."
+                "description": "This will return a feed (with posts) for a given tag names which is specified as query."
             }
         },
         "/api/favorites/": {

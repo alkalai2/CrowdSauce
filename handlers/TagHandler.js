@@ -60,6 +60,7 @@ function handleGetPostTagsRequest(req,res) {
   })
 }
 
+var search_tags = []
 function handleGetTagFeedRequest(req,res) {
   //Pass in tagName in URL query
   num_posts = +req.headers.numposts || 10
@@ -76,15 +77,30 @@ function handleGetTagFeedRequest(req,res) {
     }
     friends = r(friends)
 
-    Tag.get(req.query["tagName"]).getJoin({taggedPosts: true}).run().then(function(tag) {
-      console.log("Result: "+ JSON.stringify(tag.taggedPosts))
-      var posts = []
-      for (i = 0; i < tag.taggedPosts.length; i++){
-        var taggedPostId = tag.taggedPosts[i].postId
-        posts.push(taggedPostId)
-      }
-      posts = r(posts)
+    search_tags = req.query['tagNames'].split(",")
+    Post.getJoin({tags: true}).run().then(function(posts) {
+      var result_posts = []
+      for (i = 0; i < posts.length; i++){
+        var post_tags = posts[i].tags
+        var post_tag_names = []
+        for (j = 0; j < post_tags.length; j++){
+          post_tag_names.push(post_tags[j]['tagName'])
+        }
 
+        if (post_tag_names.length == 0)
+          continue
+        var valid = true
+        for (k = 0; k < search_tags.length; k++){
+          if (post_tag_names.indexOf(search_tags[k]) < 0)
+              valid = false
+        }
+
+        if (valid)
+          result_posts.push(posts[i].postId)
+
+      }
+
+      var posts = r(result_posts)
       r.db(config.rethinkdb.db).table('posts').filter(function(post) {
         return friends.contains(post('userId')).and(posts.contains(post('postId')))
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
@@ -93,7 +109,11 @@ function handleGetTagFeedRequest(req,res) {
           if (err) throw err;
           res.status(200).send(JSON.stringify(result, null, 2))
         })
-      })
+      }).error(function (error) {
+      // something went wrong
+      console.log("Error: "+ error.message)
+      res.send(500, {error: error.message})
+    })
 
     })
 
