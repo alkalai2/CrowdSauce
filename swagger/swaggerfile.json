@@ -742,6 +742,9 @@
         },
         "PostFeed": {
             "properties": {
+                "title":{
+                    "type": "string"
+                },
                 "rating": {
                     "type": "number"
                 }, 
@@ -776,6 +779,9 @@
         },
         "PostUpdate": {
             "properties": {
+                "title":{
+                    "type": "string"
+                },
                 "rating": {
                     "type": "number"
                 }, 
@@ -807,6 +813,9 @@
         },
         "Post": {
             "properties": {
+                "title":{
+                    "type": "string"
+                },
                 "rating": {
                     "type": "number"
                 }, 
