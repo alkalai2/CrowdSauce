@@ -79,7 +79,9 @@ function handleGetTagFeedRequest(req,res) {
     }
     friends = r(friends)
 
-    search_tags = req.query['tagNames'].split(",")
+    // get tags from query, remove whitespace
+    search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+
     //Keep track of all the search tags that a post has
     post_search_tags = {}
     Post.getJoin({tags: true}).run().then(function(posts) {

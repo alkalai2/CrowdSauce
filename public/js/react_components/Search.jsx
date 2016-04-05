@@ -51,6 +51,11 @@ var SearchBar = React.createClass({
 		},
 
 		loadSearchResults: function(fbDetails) {
+
+			// get search terms, remove whitespace, combine with ','  (how backend expects)
+			query_terms = this.props.query.split(' ').map(function(q){return q.trim()})
+			query_terms_string = query_terms.join()
+
 			console.log("loading results for \'" + this.props.query + "\'..."); 
 	        var url = "http://localhost:3000/api/tags/feed/"
 	        jQuery.ajax({
@@ -63,7 +68,7 @@ var SearchBar = React.createClass({
 	            'numposts': '10'
 	          },
 	          data: {
-	          	'tagNames': this.props.query
+	          	'tagNames': query_terms_string
 	          },
 	          dataType: 'json',
 	          timeout : 30000,
