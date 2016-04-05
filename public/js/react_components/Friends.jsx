@@ -72,7 +72,7 @@ var OneFriend = React.createClass({
 			<div>
 				{this.props.data.name.indexOf(this.props.string) > -1 ? 
 				<ListGroupItem> 
-				<Image src = {this.props.url} />
+				<Image className="profile-image" src = {this.props.url} />
 				<span>
 					<ProfileLink 
 					  profileNavigation={this.props.profileNavigation}

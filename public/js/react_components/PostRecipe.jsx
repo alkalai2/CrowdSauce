@@ -189,7 +189,7 @@ var PostRecipe = React.createClass({
 
 	    <Modal show={this.state.showModal} onHide={this.close}>
 	      <Modal.Header closeButton>
-	      	<Modal.Title>Modal heading</Modal.Title>
+	      	<Modal.Title>Add a Recipe</Modal.Title>
 	      </Modal.Header>
 	      <Modal.Body>
 
