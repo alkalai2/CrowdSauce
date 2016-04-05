@@ -45,7 +45,6 @@ function handleCreatePostRequest (req, res) {
     res.status(200).send(JSON.stringify(result))
 
     Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
-      console.log("res.title: " + result.title)
       email.sendToFriends(req.headers.userid,
           user[0].name + " posted a new post!",
           "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
@@ -101,7 +100,6 @@ function handleUpdatePostRequest (req, res) {
 
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
-  console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
   if (req.body.hasOwnProperty("postId")){
     r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).update(req.body).run(
            connection, function(err, cursor){
@@ -118,7 +116,6 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
   r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
          connection, function(err, cursor){
           if (err) throw err
