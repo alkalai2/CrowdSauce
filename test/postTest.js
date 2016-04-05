@@ -9,95 +9,116 @@ describe('Post Endpoint Tests', function() {
   process.env.CRS_DEBUG = 1
 
   it('post, get, update, delete requests', function (done) {
-    var postId = 0
-    var postBody = {
-        "ingredients": ["salt", "pepper"],
-        "directions": ["boil water", "cook"],
-        "recipeLink": "google.com"
-      }
-
-    var postOptions = {
-      url: "http://localhost:3000/api/posts/",
+  	var postOptions = {
+      url: "http://localhost:3000/api/accounts/",
       headers: {
       'userid' : testUserId,
-      'accesstoken' : testAccessToken,
-      'Content-Type' : "application/json"
-      },
-
-      body: JSON.stringify(postBody)
+      'accesstoken' : testAccessToken
     }
+  }
       request.post(postOptions, function (err, res, body) {
-        assert.equal(200, res.statusCode, "response was not a 200")
-        result = JSON.parse(res.body)
-        assert.equal(testUserId, result.userId)
-        assert.equal(2, result.ingredients.length)
-        assert.equal("salt", result.ingredients[0])
-        assert.equal("pepper", result.ingredients[1])
-        assert.equal(2, result.directions.length)
-        assert.equal("boil water", result.directions[0])
-        assert.equal("cook", result.directions[1])
-        assert.equal("google.com", result.recipeLink)
-        postId = result.postId
+	    var postId = 0
+	    var postBody = {
+	        "ingredients": ["salt", "pepper"],
+	        "directions": ["boil water", "cook"],
+	        "recipeLink": "google.com"
+	      }
 
-        var getOptions = {
-        url: "http://localhost:3000/api/posts/?postId="+postId,
-        headers: {
-        'userid' : testUserId,
-        'Content-Type' : 'application/json',
-        'accesstoken' : testAccessToken
-      }
-    }
-        request.get(getOptions, function (err, res, body) {
-          assert.equal(200, res.statusCode, "response was not a 200")
-          var result = JSON.parse(res.body)
-          //assert.equal(1, result.length)
-          assert.equal(2, result[0].ingredients.length)
-          assert.equal("salt", result[0].ingredients[0])
-          assert.equal("pepper", result[0].ingredients[1])
-          assert.equal(2, result[0].directions.length)
-          assert.equal("boil water", result[0].directions[0])
-          assert.equal("cook", result[0].directions[1])
+	    var postOptions = {
+	      url: "http://localhost:3000/api/posts/",
+	      headers: {
+	      'userid' : testUserId,
+	      'accesstoken' : testAccessToken,
+	      'Content-Type' : "application/json"
+	      },
 
-          var updateBody = {"postId": postId, "directions": ["microwave", "stir"]}
-          var updateOptions = {
-            url: "http://localhost:3000/api/posts/",
-            headers: {
-            'userid' : testUserId,
-            'Content-Type' : 'application/json',
-            'accesstoken' : testAccessToken
-            },
+	      body: JSON.stringify(postBody)
+	    }
+	      request.post(postOptions, function (err, res, body) {
+	        assert.equal(200, res.statusCode, "response was not a 200")
+	        result = JSON.parse(res.body)
+	        assert.equal(testUserId, result.userId)
+	        assert.equal(2, result.ingredients.length)
+	        assert.equal("salt", result.ingredients[0])
+	        assert.equal("pepper", result.ingredients[1])
+	        assert.equal(2, result.directions.length)
+	        assert.equal("boil water", result.directions[0])
+	        assert.equal("cook", result.directions[1])
+	        assert.equal("google.com", result.recipeLink)
+	        postId = result.postId
 
-            body: JSON.stringify(updateBody)   
+	        var getOptions = {
+	        url: "http://localhost:3000/api/posts/?postId="+postId,
+	        headers: {
+	        'userid' : testUserId,
+	        'Content-Type' : 'application/json',
+	        'accesstoken' : testAccessToken
+	      }
+	    }
+	        request.get(getOptions, function (err, res, body) {
+	          assert.equal(200, res.statusCode, "response was not a 200")
+	          var result = JSON.parse(res.body)
+	          //assert.equal(1, result.length)
+	          assert.equal(2, result[0].ingredients.length)
+	          assert.equal("salt", result[0].ingredients[0])
+	          assert.equal("pepper", result[0].ingredients[1])
+	          assert.equal(2, result[0].directions.length)
+	          assert.equal("boil water", result[0].directions[0])
+	          assert.equal("cook", result[0].directions[1])
 
-          }
-          request.put(updateOptions, function (err, res, body) {
-            assert.equal(200, res.statusCode, "response was not a 200")
-            var val = JSON.parse(res.body)
-            assert.equal("1", val.result.replaced)
+	          var updateBody = {"postId": postId, "directions": ["microwave", "stir"]}
+	          var updateOptions = {
+	            url: "http://localhost:3000/api/posts/",
+	            headers: {
+	            'userid' : testUserId,
+	            'Content-Type' : 'application/json',
+	            'accesstoken' : testAccessToken
+	            },
 
-            var deleteBody = {"postId": postId}
+	            body: JSON.stringify(updateBody)   
 
-             var deleteOptions = {
-              url: "http://localhost:3000/api/posts/",
-              headers: {
-              'userid' : testUserId,
-              'Content-Type' : 'application/json',
-              'accesstoken' : testAccessToken
-              },
+	          }
+	          request.put(updateOptions, function (err, res, body) {
+	            assert.equal(200, res.statusCode, "response was not a 200")
+	            var val = JSON.parse(res.body)
+	            assert.equal("1", val.result.replaced)
 
-              body: JSON.stringify(deleteBody)   
+	            var deleteBody = {"postId": postId}
 
-            }
-            request.del(deleteOptions, function (err, res, body) {
-              assert.equal(200, res.statusCode, "response was not a 200")
-              var val = JSON.parse(res.body)
-              assert.equal("1", val.result.deleted)
-              done()
-            });
-          });
-        })
-    });
+	             var deleteOptions = {
+	              url: "http://localhost:3000/api/posts/",
+	              headers: {
+	              'userid' : testUserId,
+	              'Content-Type' : 'application/json',
+	              'accesstoken' : testAccessToken
+	              },
 
-  });
+	              body: JSON.stringify(deleteBody)   
+
+	            }
+	            request.del(deleteOptions, function (err, res, body) {
+	              assert.equal(200, res.statusCode, "response was not a 200")
+	              var val = JSON.parse(res.body)
+	              assert.equal("1", val.result.deleted)
+	              var deleteOptions = {
+		            url: "http://localhost:3000/api/accounts/",
+		            headers: {
+		            'userid' : testUserId,
+		            'Content-Type' : 'application/json',
+		            'accesstoken' : testAccessToken
+		            }   
+
+		         }
+		          request.del(deleteOptions, function (err, res, body) {
+		            assert.equal(200, res.statusCode, "response was not a 200")
+		            var val = JSON.parse(res.body)
+		            done()
+		          });
+	            }); 
+	          }); 
+	        }) 
+	    }); 
+	}); 
+  }); 
 
 });
