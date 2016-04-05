@@ -59,7 +59,6 @@ function sendToUser(user, subject, message, post){
       var notification = result.notification
       var name = result.name
       if (notification){
-        console.log("THIS SHOULD BE GOING OFF")
         send(emailAddress, subject, message, post, user)
       }
     }

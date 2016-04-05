@@ -38,25 +38,20 @@ function handleCreateFavoritesRequest (req, res) {
                     // create Favorites object
                     var favorites = new Favorites({userId: parseInt(req.headers.userid),
                                                   postId: req.body.postId})
-                    console.log("PostId: "+ req.body.postId)
                     // use Thinky to save Favorites data
                     favorites.save().then(function (result) {
-                      console.log("Favorites Result: "+ JSON.stringify(result))
                       res.send(200, JSON.stringify(result))
                       r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
                         connection, function (err, res) {
                           if (err){
-                            console.log("Error favorites: "+ err.message)
                             throw err
                             }
-                          console.log("RESULT "+ JSON.stringify(res))
                           Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
-                            console.log("res.title: " + res.title)
                             email.sendToUser(res.userId,
                                 user[0].name + " favorited your post!",
-                                "Your friend " + user[0].name + " favorited your post " + res.title + "!", res)
+                                "Your friend " + user[0].name +
+                                " favorited your post " + res.title + "!", res)
                           }).error(function(err){
-                            console.log(err)
                             throw(err)
                           })
                         }
@@ -76,21 +71,17 @@ function handleGetUserFavoritesRequest(req,res) {
 
   //Pass in userId in URL query
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
-    console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
     if (postIds.length === 0){
         res.status(200).send([])
         return
     }
-    console.log(postIds)
     Post.getAll.apply(Post, postIds).getJoin({user:true}).run().then(function(result){
-          console.log(JSON.stringify(result, null, 2))
           res.send(200, JSON.stringify(result, null, 2))
     })
 
   }).error(function (error) {
     // something went wrong
-    console.log("Error: "+ error.message)
     res.send(500, {error: error.message})
   })
 }
@@ -133,7 +124,6 @@ function handleGetFavoritesRequest (req, res) {
 }
 
 function handleUpdateFavoritesRequest (req, res) {
-  console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
   if (req.query.hasOwnProperty("userId")){  r.db(config.rethinkdb.db).table("favorites").filter({"userId": req.headers.userid}).update(req.body).run(
            connection, function(err, cursor){
             if (err) throw err
@@ -159,7 +149,6 @@ function handleDeleteFavoritesRequest (req, res) {
     r.db(config.rethinkdb.db).table('favorites').filter(queryObj).delete().run(
          connection, function(err, cursor){
           if (err) {throw err
-            console.log("Error message: "+ err.message())}
         }).then(function(result) {
            res.json({
                result: result
