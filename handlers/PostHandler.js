@@ -48,7 +48,8 @@ function handleCreatePostRequest (req, res) {
       email.sendToFriends(
         req.headers.userid,
         result + " posted a new recipe!",
-        "<img src='" + req.body.imageLink + "'>"
+        "<img src='" + req.body.imageLink + "'>",
+        result
       )
     })
   }).error(function (error) {

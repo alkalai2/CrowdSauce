@@ -37,7 +37,8 @@ function handleCreateFavoritesRequest (req, res) {
                 res.send(500, {error: "Duplicate favorite on post"})
               else{
                     // create Favorites object
-                    var favorites = new Favorites({userId: parseInt(req.headers.userid), postId: req.body.postId})
+                    var favorites = new Favorites({userId: parseInt(req.headers.userid),
+                                                  postId: req.body.postId})
 
                     console.log("PostId: "+ req.body.postId)
                     // use Thinky to save Favorites data
@@ -49,10 +50,16 @@ function handleCreateFavoritesRequest (req, res) {
                           if (err){
                             console.log("Error favorites: "+ err.message)
                             throw err
-
-                            } 
+                            }
                           console.log("RESULT "+ JSON.stringify(res))
-                          email.sendToUser(res.userId, "Someone favorited your post", "YOU ARE POPULAR")
+                          Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
+                            console.log("res.title: " + res.title)
+                            email.sendToUser(res.userId, user[0].name + " favorited your post!",
+                                "Your friend " + user[0].name + " favorited your post " + res.title + "!", res)
+                          }).error(function(err){
+                            console.log(err)
+                            throw(err)
+                          })
                         }
                       )
                     }).error(function (error) {
@@ -146,7 +153,7 @@ function handleDeleteFavoritesRequest (req, res) {
   queryObj = false
   userId = req.body.userId
   postId = req.body.postId
-  
+
   if (userId && postId)
     queryObj = {"userId": parseInt(userId), "postId": postId}
   else if (userId)
@@ -164,7 +171,7 @@ function handleDeleteFavoritesRequest (req, res) {
                result: result
            })
        })
-  
+
 }
 
 
