@@ -385,14 +385,14 @@ var PostList = React.createClass({
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
     // add search bar 
-    var searchBar = this.props.searchBar ? 
-      <SearchBar handleSearch={this.props.handleSearch}/> : ""
+    // var searchBar = this.props.searchBar ? 
+    //   <SearchBar handleSearch={this.props.handleSearch}/> : ""
 
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
         <div>
           <div>
-            {searchBar}
+            
           </div>
           {
             (this.props.data).map(function(post_data) {

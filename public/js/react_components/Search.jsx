@@ -14,7 +14,7 @@ var SearchBar = React.createClass({
 	handleSubmit: function(e) {
 		e.preventDefault()
 		var query = this.state.value.toLowerCase(this.state.value)
-		this.setState({value: ''})
+		//this.setState({value: ''})
 
 		// handle in FeedController
 		this.props.handleSearch(query)
@@ -44,7 +44,6 @@ var SearchBar = React.createClass({
 		},
 
 		componentDidMount: function() {
-			alert("componentDidMount search")
 			var self = this
 			getFacebookDetails().then(function(fbDetails) {
 				self.loadSearchResults(fbDetails)
@@ -64,7 +63,7 @@ var SearchBar = React.createClass({
 	            'numposts': '10'
 	          },
 	          data: {
-	          	'tagName': this.props.query
+	          	'tagNames': this.props.query
 	          },
 	          dataType: 'json',
 	          timeout : 30000,

@@ -43,7 +43,7 @@ var Feed = React.createClass({
             'numposts': '10'
           },
           dataType: 'json',
-          timeout : 10000,
+          timeout : 100000,
           success: function(data) {
             console.log("setting state with data ... ")
             console.log(data)

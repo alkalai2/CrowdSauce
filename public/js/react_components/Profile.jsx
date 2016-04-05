@@ -58,7 +58,9 @@ var Profile = React.createClass({
           success: function(data) {
             console.log("setting state with data ... ")
             console.log(data)
-            this.setState({data: data});
+            if(data.length){
+              this.setState({data: data});
+            }
           }.bind(this),
           error: function(xhr, status, err) {
             console.error(this.props.source, status, err.toString());
