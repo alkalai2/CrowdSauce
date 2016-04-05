@@ -29,7 +29,6 @@ function handleCreateFavoritesRequest (req, res) {
 
   r.db(config.rethinkdb.db).table('favorites').filter({userId: parseInt(req.headers.userid), postId: req.body.postId}).run(
     connection, function (err, cursor) {
-
       if (err) throw err
             cursor.toArray(function (err, result) {
               if (err) throw err
@@ -39,7 +38,6 @@ function handleCreateFavoritesRequest (req, res) {
                     // create Favorites object
                     var favorites = new Favorites({userId: parseInt(req.headers.userid),
                                                   postId: req.body.postId})
-
                     console.log("PostId: "+ req.body.postId)
                     // use Thinky to save Favorites data
                     favorites.save().then(function (result) {
@@ -54,7 +52,8 @@ function handleCreateFavoritesRequest (req, res) {
                           console.log("RESULT "+ JSON.stringify(res))
                           Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
                             console.log("res.title: " + res.title)
-                            email.sendToUser(res.userId, user[0].name + " favorited your post!",
+                            email.sendToUser(res.userId,
+                                user[0].name + " favorited your post!",
                                 "Your friend " + user[0].name + " favorited your post " + res.title + "!", res)
                           }).error(function(err){
                             console.log(err)
@@ -66,10 +65,7 @@ function handleCreateFavoritesRequest (req, res) {
                       // something went wrong
                       res.send(500, {error: error.message})
                     })
-
-
               }
-
           })
     })
 
@@ -160,8 +156,6 @@ function handleDeleteFavoritesRequest (req, res) {
     queryObj = {"userId": parseInt(userId)}
   else if (postId)
     queryObj = {"postId": postId}
-
-  console.log('handleDeleteAccountRequest called with ' + JSON.stringify(req.route))
     r.db(config.rethinkdb.db).table('favorites').filter(queryObj).delete().run(
          connection, function(err, cursor){
           if (err) {throw err

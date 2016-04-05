@@ -24,13 +24,13 @@ var poolConfig = {
 }
 var transporter = nodemailer.createTransport(poolConfig)
 
-function send(address, subject, message, post) {
-  console.log("IN SEND message " + message + " post: " + post)
+function send(address, subject, message, post, userId) {
+  console.log("IN SEND message " + message + " post: " + post + " userid " + userId)
   fs.readFile('./emailtemplate.html', function(err,htmlemail){
     if (err){
       throw err
     }
-    Account.filter({"userId": post.userId}).run().then(function(user){
+    Account.filter({"userId": parseInt(userId)}).run().then(function(user){
       console.log("post " + post.title)
       emailString = String(htmlemail)
       emailString = format(emailString, post, user[0], message)
@@ -59,7 +59,8 @@ function sendToUser(user, subject, message, post){
       var notification = result.notification
       var name = result.name
       if (notification){
-        send(emailAddress, subject, message, post)
+        console.log("THIS SHOULD BE GOING OFF")
+        send(emailAddress, subject, message, post, user)
       }
     }
   })
@@ -75,13 +76,14 @@ function sendToFriends(user, subject, message, post) {
     }
     for (i = 0; i < response.data.length; i++) {
       if (!response.data[i].email) continue
+        var userId = response.data[i].id
         r.db(config.rethinkdb.db).table('users').get(parseInt(response.data[i].id)).run(connection, function (err, result) {
           if (result) {
             var emailAddress = result.email
             var notification = result.notification
             var name = result.name
             if (notification){
-              send(emailAddress, subject, message, post)
+              send(emailAddress, subject, message, post, userId)
             }
           }
         })
