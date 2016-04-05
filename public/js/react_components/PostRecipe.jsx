@@ -312,10 +312,10 @@ var RecipeLinkForm = React.createClass({
           wrapperClassName="col-xs-15"
           bsStyle={this.state.link.length > 0 ? 'success' : 'error'}
           value={this.state.link}
-          onChange={this.handleLinkChange}
-        />
+          onChange={this.handleLinkChange}/>
     );
   }
 });
 
-ReactDOM.render(<PostRecipe/>, content);
+// render postrecipe in FeedController
+// ReactDOM.render(<PostRecipe/>, content);
