@@ -30,8 +30,8 @@ module.exports = function(grunt) {
             'public/js/react_components/Feed.jsx', 
             'public/js/react_components/Search.jsx',
             'public/js/react_components/Profile.jsx',
+            'public/js/react_components/PostRecipe.jsx',
             'public/js/react_components/FeedController.jsx',
-            'public/js/react_components/PostRecipe.jsx'
           ]
         }
       },
@@ -53,7 +53,6 @@ module.exports = function(grunt) {
             'public/js/react_components/PostRenderer.jsx' ,
             'public/js/react_components/Favorites.jsx',
             'public/js/react_components/Profile.jsx'
-
           ]
         }
       },
