@@ -70,13 +70,19 @@ function handleCreatePostRequest (req, res) {
 function handleGetPostRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
+  var query_obj = {}
+  console.log("Req.query: "+ JSON.stringify(req.query))
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
       to_query_db = req.query[q]
       if(!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
-      r.db(config.rethinkdb.db).table('posts').filter(r.row(q).eq(to_query_db)).run(
+
+      query_obj[q] = to_query_db
+    }
+  }
+      r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(
           connection, function (err, cursor) {
             if (err) throw err
             cursor.toArray(function (err, result) {
@@ -84,8 +90,7 @@ function handleGetPostRequest (req, res) {
               res.send(200, JSON.stringify(result, null, 2))
           })
       })
-    }
-  }
+
   if(!queried){
     r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
         if (err) throw err;
