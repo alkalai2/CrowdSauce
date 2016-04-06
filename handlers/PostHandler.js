@@ -5,11 +5,8 @@ var r = require('rethinkdb')
 var util = require('util')
 var email = require('../email')
 var auth = require('../auth.js')
-<<<<<<< HEAD
 var http = require('http')
-=======
 var Account = require('../models/Account.js')
->>>>>>> 59f40da9f62d514f98c2ebdf31559fcacd9643fd
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
