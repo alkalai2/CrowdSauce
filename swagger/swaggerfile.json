@@ -215,7 +215,7 @@
         },
         "parameters": [
           {
-            "required": false,
+            "required": true,
             "type": "string",
             "description": "AUTHENTICATION: The facebook userId to be authenticated.",
             "in": "header",
@@ -237,7 +237,7 @@
             }
           }
         ],
-        "description": "Delete posts"
+        "description": "Delete a post by postId (userId is required to make sure it's your post). All favorites on the post are also deleted, all tagHistory on the post are also deleted, and if any tagHistory on this post is the last of that tag, the tag object itself is also deleted"
       }
     },
     "/swagger": {
@@ -392,7 +392,7 @@
             "name": "accesstoken"
           }
         ],
-        "description": "Delete account"
+        "description": "Delete account by userid, all posts made by the user are deleted, all favorites made by the user are deleted, all favorites on the deleted posts are deleted, all tagHistory on the deleted posts are deleted, and if any of these tagHistory is the last of that tag, the tag object itself is also deleted"
       }
     },
     "/api/tags/": {
@@ -506,7 +506,7 @@
             }
           }
         ],
-        "description": "If a postId and a tagName are specified in the body of the request only tagHistory matching those two parameters will be removed. If exclusively one of them is specified it will delete all tagHistory matching that specified field"
+        "description": "If a postId and a tagName are specified in the body of the request only tagHistory matching those two parameters will be removed. If exclusively one of them is specified it will delete all tagHistory matching that specified field. Also if a tagHistory is the last of a tag, that tag is also deleted. "
       }
     },
     "/api/tags/post/": {
