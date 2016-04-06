@@ -89,7 +89,7 @@ var Favorites = React.createClass({
          {this.state.data &&
             <PostList 
               data={this.state.data} 
-              favoriteAble={false}
+              favoriteAble={true}
               errorMsg = {"You have no Favorites at the moment"}
             />
           } 

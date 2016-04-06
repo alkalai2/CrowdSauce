@@ -30,8 +30,10 @@
     "fb": "1.0.2",
     "file-stream-rotator": "0.0.6",
     "jquery": "^2.2.0",
+    "minimist": "*",
     "mocha": "^2.4.5",
     "morgan": "^1.7.0",
+    "nodemailer": "2.3.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
     "react-dnd": "^2.1.2",
@@ -43,10 +45,8 @@
     "require": "^2.4.20",
     "rethinkdb": "^2.2.1",
     "standard": "^6.0.7",
+    "string-format": "^0.5.0",
     "swagger-node-express": "~2.0",
-    "thinky": "^2.2.4",
-    "fb": "1.0.2",
-    "minimist": "*",
-    "nodemailer": "2.3.0"
+    "thinky": "^2.2.4"
   }
 }

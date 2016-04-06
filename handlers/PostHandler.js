@@ -5,7 +5,11 @@ var r = require('rethinkdb')
 var util = require('util')
 var email = require('../email')
 var auth = require('../auth.js')
+<<<<<<< HEAD
 var http = require('http')
+=======
+var Account = require('../models/Account.js')
+>>>>>>> 59f40da9f62d514f98c2ebdf31559fcacd9643fd
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -44,14 +48,22 @@ function handleCreatePostRequest (req, res) {
   post.save().then(function (result) {
     res.status(200).send(JSON.stringify(result))
 
-    // send notifications to friends
-    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
-      email.sendToFriends(
-        req.headers.userid,
-        result + " posted a new recipe!",
-        "<img src='" + req.body.imageLink + "'>"
-      )
+    Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
+      email.sendToFriends(req.headers.userid,
+          user[0].name + " posted a new post!",
+          "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
+    }).error(function(err){
+      console.log(err)
+      throw(err)
     })
+    // send notifications to friends
+//    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
+//      email.sendToFriends(
+//        req.headers.userid,
+//        result + " posted a new recipe!",
+//        "Your friend " + result + " posted a new Post!",
+//        result)
+//    })
   }).error(function (error) {
     console.log(error.message)
     res.status(500).send({error: error.message})
@@ -92,7 +104,6 @@ function handleUpdatePostRequest (req, res) {
 
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
-  console.log('handleUpdatePostRequest called with ' + JSON.stringify(req.route))
   if (req.body.hasOwnProperty("postId")){
     r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).update(req.body).run(
            connection, function(err, cursor){

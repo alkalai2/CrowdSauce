@@ -15,8 +15,8 @@ var Input = ReactBootstrap.Input,
     PanelGroup = ReactBootstrap.PanelGroup,
     Image = ReactBootstrap.Image,
     Tooltip = ReactBootstrap.Tooltip,  
-    OverlayTrigger = ReactBootstrap.OverlayTrigger
-
+    OverlayTrigger = ReactBootstrap.OverlayTrigger,
+    Modal = ReactBootstrap.Modal
 
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
@@ -89,20 +89,49 @@ var CustomRecipe = React.createClass({
   }
 });
 
+
 var RecipeLink = React.createClass({
+  getInitialState: function() {
+    return {
+      showModal: false
+    };
+  }, 
+
+  openModal: function() {
+    this.setState({showModal: true})
+  },
+
+  closeModal: function() {
+    this.setState({showModal: false})
+  }, 
+
   navigateToPage: function() {
     var win = window.open(this.props.url, '_blank');
     win.focus();
   },
 
   render: function() {
+    var Iframe = 'Iframe'
+    var url = this.props.url
+
     return (
-      <Panel className="recipe-link">
-        <a onClick={this.navigateToPage}>{this.props.url}</a>
-      </Panel>
+      <div>
+        <Panel className="recipe-link">
+          <a onClick={this.openModal}>{url}</a>
+        </Panel>
+        <Modal className="recipe-link-modal" show={this.state.showModal} onHide={this.closeModal}>
+          <Modal.Body>
+            <div>
+              <Iframe className="recipe-iframe" src={url}/>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
     );
   }
 });
+
+
 
 var ImageThumbnail = React.createClass({
   render: function() {
@@ -385,14 +414,14 @@ var PostList = React.createClass({
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
 
     // add search bar 
-    var searchBar = this.props.searchBar ? 
-      <SearchBar handleSearch={this.props.handleSearch}/> : ""
+    // var searchBar = this.props.searchBar ? 
+    //   <SearchBar handleSearch={this.props.handleSearch}/> : ""
 
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
         <div>
           <div>
-            {searchBar}
+            
           </div>
           {
             (this.props.data).map(function(post_data) {

@@ -1,8 +1,6 @@
 // Master Controller for feed. Handles changing of displays, data on /feed page. 
 
 
-
-
 var FeedController = React.createClass({
 		getInitialState: function() {
 			return {
@@ -66,8 +64,6 @@ var FeedController = React.createClass({
 			})	
 		},
 
-		
-		
 		// a Search has come in
 		// pass query onto Search to load results
 		// change display to show search results
@@ -107,11 +103,16 @@ var FeedController = React.createClass({
     		case('feed'):
     			console.log("setting display for feed")
     			mainDisplay = 
-    				<Feed 
-    					fbDetails = {this.state.fbDetails}
-	    				source={"http://localhost:3000/api/posts/feed/"}
-	    				handleSearch = {this.handleSearchQuery}
-	    				profileNavigation={this.handleProfileNavigation}/>
+                    <div>
+                        <SearchBar handleSearch={this.handleSearchQuery}/>
+                        <div>
+            				<Feed 
+            					fbDetails = {this.state.fbDetails}
+        	    				source={"http://localhost:3000/api/posts/feed/"}
+        	    				handleSearch = {this.handleSearchQuery}
+        	    				profileNavigation={this.handleProfileNavigation}/>
+                        </div>
+                    </div>
 
     			break;
 
@@ -144,7 +145,7 @@ var FeedController = React.createClass({
     	}
 
       return (	
-    
+        <div className="row">
     	  <div> 	
 
     			<div className="col-md-3">
@@ -161,6 +162,8 @@ var FeedController = React.createClass({
     			<div className="col-md-3">
     			</div>
     	  </div>
+          <div> <PostRecipe/></div>
+        </div>
       );    
     },
 });
