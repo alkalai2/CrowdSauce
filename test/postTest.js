@@ -99,7 +99,7 @@ describe('Post Endpoint Tests', function() {
 	            request.del(deleteOptions, function (err, res, body) {
 	              assert.equal(200, res.statusCode, "response was not a 200")
 	              var val = JSON.parse(res.body)
-	              assert.equal("1", val.result.deleted)
+	              assert.equal(postId, val.postId)
 	              var deleteOptions = {
 		            url: "http://localhost:3000/api/accounts/",
 		            headers: {

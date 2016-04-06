@@ -117,7 +117,7 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-    if (!auth.assertHasUser(req)) return
+    //if (!auth.assertHasUser(req)) return
     
     Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
         post.deleteAll({favorites: true}).then(function(result){
@@ -139,7 +139,7 @@ function handleDeletePostRequest (req, res) {
             })
             requ.write(data)
             requ.end()
-            res.send(200).send(JSON.stringify(result))
+            res.status(200).send(JSON.stringify(result))
         })
     })
 }

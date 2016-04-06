@@ -110,19 +110,6 @@ describe('Tag Endpoint Tests', function() {
               assert.equal(200, res.statusCode, "response was not a 200")
               var val = JSON.parse(res.body)
               assert.equal("1", val.result.deleted)
-              var deletePostBody = {"postId": postId}
-
-              var deletePostOptions = {
-                url: "http://localhost:3000/api/posts/?postId="+postId,
-                headers: {
-                    'userid' : testUserId,
-                    'Content-Type' : 'application/json',
-                    'accesstoken' : testAccessToken
-                },
-
-                body: JSON.stringify(deletePostBody)   
-              }
-                request.del(deletePostOptions)
                 var deleteOptions = {
                   url: "http://localhost:3000/api/accounts/",
                   headers: {
@@ -134,11 +121,11 @@ describe('Tag Endpoint Tests', function() {
                }
               request.del(deleteOptions, function (err, res, body) {
                 assert.equal(200, res.statusCode, "response was not a 200")
-                var val = JSON.parse(res.body)
                 done()
               });
       
-            });
+
+          })
 
         }); 
       }); 

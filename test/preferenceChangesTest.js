@@ -78,8 +78,6 @@ var assert = require('assert')
 		          			}
 				          request.del(deleteOptions, function (err, res, body) {
 				            assert.equal(200, res.statusCode, "response was not a 200")
-				            var val = JSON.parse(res.body)
-				            assert.equal("1", val.result.deleted)
 				            done()
 				          })
 				     })

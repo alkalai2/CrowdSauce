@@ -35,15 +35,29 @@ function handleAddTagRequest (req, res) {
               else{
                     var tag = new Tag({tagName: req.body.tagName})
                     // use Thinky to save Tag data
-                    tag.save()
-                    var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
-                    // use Thinky to save TagHistory data
-                    tagHistory.save().then(function (result) {
-                      res.send(200, JSON.stringify(result))
-                    }).error(function (error) {
-                      // something went wrong
-                      res.send(500, {error: error.message})
+                    tag.save().then(function(s){
+                      var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
+                      // use Thinky to save TagHistory data
+                      tagHistory.save().then(function (result) {
+                        res.send(200, JSON.stringify(result))
+                      }).error(function (error) {
+                        // something went wrong
+                        res.send(500, {error: error.message})
                     })
+                  }).error(function(error){
+                    //Will show error if tag already exists in db. Will still add tag to post
+                    console.log(error.message)
+                    var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
+                      // use Thinky to save TagHistory data
+                      tagHistory.save().then(function (result) {
+                        res.send(200, JSON.stringify(result))
+                      }).error(function (error) {
+                        // something went wrong
+                        res.send(500, {error: error.message})
+                    })
+
+                  })
+
               }
           })
     })

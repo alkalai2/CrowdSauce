@@ -126,7 +126,7 @@ function handleDeleteAccountRequest (req, res) {
                           },
                         function(err){
                          user.deleteAll({posts: true, favorites: true}).then(function(result){
-                            res.status(200).send("Deleted: " + JSON.stringify(result))
+                            res.status(200).send(JSON.stringify(result))
                           })
                         }
              )
@@ -134,7 +134,7 @@ function handleDeleteAccountRequest (req, res) {
       }
       else{
           user.deleteAll({posts: true, favorites: true}).then(function(result){
-            res.status(200).send("Deleted: " + JSON.stringify(result))
+            res.status(200).send(JSON.stringify(result))
           })
       }
   })

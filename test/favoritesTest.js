@@ -90,19 +90,6 @@ describe('Favorite Endpoint Tests', function() {
               assert.equal("1", val.result.deleted)
 
               request.del(accountOptions, function (err, res, body) {
-
-                var deletePostBody = {"postId": postId}
-                var deletePostOptions = {
-                  url: "http://localhost:3000/api/posts/",
-                  headers: {
-                  'userid' : testUserId,
-                  'Content-Type' : 'application/json',
-                  'accesstoken' : testAccessToken
-                  },
-
-                  body: JSON.stringify(deletePostBody)   
-              }
-              request.del(deletePostOptions)
               done()
       
             });
