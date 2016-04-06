@@ -5,6 +5,7 @@ var r = require('rethinkdb')
 var util = require('util')
 var email = require('../email')
 var auth = require('../auth.js')
+var http = require('http')
 
 var PostHandler = function () {
   this.createPost = handleCreatePostRequest
@@ -108,21 +109,47 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
-  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
-         connection, function(err, cursor){
-          if (err) throw err
-        }).then(function(result) {
-           res.json({
-               result: result
-           })
-       })
-
-  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.body.postId}).delete().run(
-         connection, function(err, cursor){
-          if (err) throw err
+    if (!auth.assertHasUser(req)) return
+    
+    Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
+        post.deleteAll({favorites: true}).then(function(result){
+            var data = JSON.stringify({postId: post.postId})
+            var options = {
+                port: 3000,
+                path: '/api/tags',
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                }
+            }
+            var requ = http.request(options, function (res) {
+                        res.setEncoding('utf8');
+                        res.on('data', function (chunk) {
+                            console.log('Response: ' + chunk);
+                        })
+            })
+            requ.write(data)
+            requ.end()
+            res.send(200).send(JSON.stringify(result))
         })
+    })
 }
+    
+//  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
+//  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
+//         connection, function(err, cursor){
+//          if (err) throw err
+//        }).then(function(result) {
+//           res.json({
+//               result: result
+//           })
+//       })
+//
+//  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.body.postId}).delete().run(
+//         connection, function(err, cursor){
+//          if (err) throw err
+//        })
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return

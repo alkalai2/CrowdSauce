@@ -6,6 +6,7 @@ var config = require('../config.js')
 var r = require('rethinkdb')
 var auth = require('../auth.js')
 var FB = require('fb')
+var async = require('async')
 
 var TagHandler = function () {
   this.addTag = handleAddTagRequest
@@ -143,14 +144,46 @@ function handleDeleteTagRequest (req, res) {
   //Pass in both tagName and postId to body to delete tag from given post in db
 
   console.log('handleDeleteTagRequest called with ' + JSON.stringify(req.route))
-    r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
-         connection, function(err, cursor){
+  r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).run(connection, function(err, cursor){
+      if (err) throw err
+      cursor.toArray(function(err, result){
           if (err) throw err
-        }).then(function(result) {
-           res.json({
-               result: result
-           })
-       })
+          async.each(result,
+            function(history, callback){
+                TagHistory.get(history.id).then(function(taghistory){
+                    console.log("first" + JSON.stringify(taghistory))
+                    taghistory.delete().then(function(result){
+                        console.log("first delete" + JSON.stringify(result))
+                        console.log(history.tagName)
+                      TagHistory.filter({tagName: history.tagName}).then(function(num){
+                          console.log("num" + JSON.stringify(num))
+                          if (num.length === 0){
+                              Tag.get(history.tagName).then(function(tag){
+                                  tag.delete().then(function(result){
+                                      callback(result)
+                                  })
+                              })
+                          }
+                          else
+                          {callback(result)}
+                      })
+                    })
+                })
+            },
+            function(err){
+              res.status(200).send("Done")
+            }
+          )
+      })
+  })
+//    r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
+//         connection, function(err, cursor){
+//          if (err) throw err
+//        }).then(function(result) {
+//           res.json({
+//               result: result
+//           })
+//       })
 
 }
 
