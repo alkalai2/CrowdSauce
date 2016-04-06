@@ -55,23 +55,36 @@ var assert = require('assert')
 		            		assert.equal("1", val.result.replaced)
 		            	else
 		            		assert.equal("0", val.result.replaced)
-		            	var deleteOptions = {
-				            url: "http://localhost:3000/api/accounts/",
-				            headers: {
-				            'userid' : testUserId,
-				            'Content-Type' : 'application/json',
-				            'accesstoken' : testAccessToken
-				        	}   
+		            	var getOptions = {
+					          url: "http://localhost:3000/api/accounts/?userId="+testUserId,
+					          headers: {
+					          'userid' : testUserId,
+					          'Content-Type' : 'application/json',
+					          'accesstoken' : testAccessToken
+					        }
+					     }
+				        request.get(getOptions, function (err, res, body) {
+	          				var result = JSON.parse(res.body)
+	          				if (shouldReplace)
+	          					assert.equal(change['input']['field'], result[change['field']])
+			            	var deleteOptions = {
+					            url: "http://localhost:3000/api/accounts/",
+					            headers: {
+					            'userid' : testUserId,
+					            'Content-Type' : 'application/json',
+					            'accesstoken' : testAccessToken
+					        	}   
 
-	          			}
-			          request.del(deleteOptions, function (err, res, body) {
-			            assert.equal(200, res.statusCode, "response was not a 200")
-			            var val = JSON.parse(res.body)
-			            assert.equal("1", val.result.deleted)
-			            done()
-			          })
+		          			}
+				          request.del(deleteOptions, function (err, res, body) {
+				            assert.equal(200, res.statusCode, "response was not a 200")
+				            var val = JSON.parse(res.body)
+				            assert.equal("1", val.result.deleted)
+				            done()
+				          })
+				     })
 
-            	})
+	            	})
 
 		       });  
 		    });		
