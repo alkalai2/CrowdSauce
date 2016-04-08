@@ -158,3 +158,11 @@ background: #ECECEC;
 	padding-right: 6px;
 }
 
+.profile-link {
+	margin-right: 3px;
+}
+
+.edit-buttons {
+	float: right;
+	margin: 4px;
+}

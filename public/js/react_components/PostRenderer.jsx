@@ -16,7 +16,9 @@ var Input = ReactBootstrap.Input,
     Image = ReactBootstrap.Image,
     Tooltip = ReactBootstrap.Tooltip,  
     OverlayTrigger = ReactBootstrap.OverlayTrigger,
-    Modal = ReactBootstrap.Modal
+    Modal = ReactBootstrap.Modal,
+    ButtonToolbar = ReactBootstrap.ButtonToolbar,
+    Button = ReactBootstrap.Button
 
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
@@ -219,6 +221,37 @@ var Tags = React.createClass ({
   }
 });
 
+var EditButtons = React.createClass({
+
+  render: function() {
+    toDisplay = 
+      <button 
+        className="btn btn-primary btn-xs edit-buttons" 
+        type="button" 
+        onClick={this.props.startEditing}> Edit </button>;
+
+    if(this.props.editing) {
+      toDisplay = 
+        <span> 
+          <button className="btn btn-default btn-xs edit-buttons" 
+            type="button" 
+            onClick={this.props.cancelEditing}> Cancel </button>
+
+          <button 
+            className="btn btn-primary btn-xs edit-buttons" 
+            type="button" 
+            onClick={this.props.saveEditions}> Save </button>
+        </span>;
+    }
+
+    return (
+      <span>
+          {toDisplay}
+      </span>
+    ) 
+  }  
+})
+
 var FavoriteStar = React.createClass ({
   getInitialState: function() {
     return {favorited: false};
@@ -357,6 +390,23 @@ var NoPostsDisplay = React.createClass({
 
 var Post = React.createClass({
 
+  getInitialState: function() {
+    return {editing: false}
+  },
+
+  startEditing: function() {
+    this.setState({editing: true})
+    // TO DO - display a new set of input fields 
+  },
+
+  cancelEditing: function() {
+    this.setState({editing: false})
+  },
+
+  saveEditions: function() {
+    // TO DO submit new post data to API
+  },
+
   checkForLink: function(){
     if(this.props.data.ingredients.length === 0){
       return <RecipeLink url={this.props.data.recipeLink} />
@@ -366,17 +416,32 @@ var Post = React.createClass({
     }
   },
   render : function() {
-    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
     var recipe = this.checkForLink();
+    var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
+    var editable = this.props.editable ? 
+      <EditButtons 
+        startEditing={this.startEditing}
+        cancelEditing={this.cancelEditing}
+        saveEditions={this.saveEditions}
+        editing={this.state.editing}/> 
+      : "";
+    var addNames = this.props.addNames ?
+        <span>
+          <ProfileLink 
+            profileNavigation={this.props.profileNavigation}
+            userId={this.props.data.userId}
+            userName={this.props.data.name}/> 
+           posted a new recipe
+        </span>
+      : <span> &nbsp; </span>;
+
     return (
       <div className="post-full">
         <Panel className="post-panel">
           <div> 
             <span> 
-              <ProfileLink 
-                profileNavigation={this.props.profileNavigation}
-                userId={this.props.data.userId}
-                userName={this.props.data.name}/> posted a new recipe
+              {addNames}
+              {editable}
             </span>
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
@@ -409,6 +474,8 @@ var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
     var profileNavigation=this.props.profileNavigation
+    var editable=this.props.editable
+    var addNames=this.props.addNames
     
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
@@ -429,6 +496,8 @@ var PostList = React.createClass({
                 <Post 
                   data={post_data} 
                   favoriteAble={favoriteAble}
+                  editable={editable}
+                  addNames={addNames}
                   profileNavigation={profileNavigation}/>
               )
             })
