@@ -1,7 +1,8 @@
 var MyProfile = React.createClass({
     render : function() {
       return (
-       	<Profile />
+       	<Profile 
+       	editable={true}/>
       );    
     },
 });

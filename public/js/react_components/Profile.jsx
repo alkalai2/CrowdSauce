@@ -96,6 +96,8 @@ var Profile = React.createClass({
             <PostList 
               data={this.state.data} 
               favoriteAble={true}
+              addNames={false}
+              editable={this.props.editable}
               errorMsg={"Could not find any posts :( "}
             />
           } 

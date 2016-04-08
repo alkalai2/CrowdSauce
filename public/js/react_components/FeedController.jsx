@@ -139,6 +139,7 @@ var FeedController = React.createClass({
     					userId={this.state.profileUserId}
     					userName={this.state.profileUserName}
     					userDisplay={true}
+    					editable={false}
     					fbDetails={this.state.fbDetails}
     					backToFeed={this.handleBackToFeed} />
     			break;
