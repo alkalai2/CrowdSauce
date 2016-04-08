@@ -18,8 +18,8 @@ var PostHandler = function () {
 
 var connection = null;
 r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
-    if (err) throw err;
-    connection = conn
+  if (err) throw err;
+  connection = conn
 })
 
 
@@ -28,9 +28,9 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
-  // create Post object
-  var post = new Post(
-    {
+    // create Post object
+    var post = new Post(
+      {
       userId: parseInt(req.headers.userid),
       title: req.body.title,
       ingredients: req.body.ingredients,
@@ -41,30 +41,30 @@ function handleCreatePostRequest (req, res) {
       rating: req.body.rating
     })
 
-  // try to store in DB
-  post.save().then(function (result) {
-    res.status(200).send(JSON.stringify(result))
+    // try to store in DB
+    post.save().then(function (result) {
+      res.status(200).send(JSON.stringify(result))
 
-    Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
-      email.sendToFriends(req.headers.userid,
-          user[0].name + " posted a new post!",
-          "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
-    }).error(function(err){
-      console.log(err)
-      throw(err)
+      Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
+        email.sendToFriends(req.headers.userid,
+                            user[0].name + " posted a new post!",
+                            "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
+      }).error(function(err){
+        console.log(err)
+        throw(err)
+      })
+      // send notifications to friends
+      //    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
+      //      email.sendToFriends(
+      //        req.headers.userid,
+      //        result + " posted a new recipe!",
+      //        "Your friend " + result + " posted a new Post!",
+      //        result)
+      //    })
+    }).error(function (error) {
+      console.log(error.message)
+      res.status(500).send({error: error.message})
     })
-    // send notifications to friends
-//    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
-//      email.sendToFriends(
-//        req.headers.userid,
-//        result + " posted a new recipe!",
-//        "Your friend " + result + " posted a new Post!",
-//        result)
-//    })
-  }).error(function (error) {
-    console.log(error.message)
-    res.status(500).send({error: error.message})
-  })
 }
 
 function handleGetPostRequest (req, res) {
@@ -82,24 +82,26 @@ function handleGetPostRequest (req, res) {
       query_obj[q] = to_query_db
     }
   }
-      r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(
-          connection, function (err, cursor) {
-            if (err) throw err
-            cursor.toArray(function (err, result) {
-              if (err) throw err
-              res.send(200, JSON.stringify(result, null, 2))
-          })
+  r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(
+    connection, function (err, cursor) {
+    if (err) throw err
+      cursor.toArray(function (err, result) {
+        if (err) throw err
+          res.send(200, JSON.stringify(result, null, 2))
       })
+  })
 
-  if(!queried){
-    r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-          if (err) throw err;
-          res.send(200,JSON.stringify(result, null, 2))
-        })
-    })
-  }
+ // @panthap2 please confirm that this should be removed, I commented
+ // just in case but it was crashing the srver
+ // if(!queried){
+ //   r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
+ //     if (err) throw err;
+ //     cursor.toArray(function(err, result) {
+ //       if (err) throw err;
+ //       res.send(200,JSON.stringify(result, null, 2))
+ //     })
+ //   })
+ // }
 }
 
 function handleUpdatePostRequest (req, res) {
@@ -108,13 +110,13 @@ function handleUpdatePostRequest (req, res) {
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
   if (req.body.hasOwnProperty("postId")){
     r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).update(req.body).run(
-           connection, function(err, cursor){
-            if (err) throw err
-          }).then(function(result) {
-             res.json({
-                 result: result
-             })
-         })
+      connection, function(err, cursor){
+      if (err) throw err
+    }).then(function(result) {
+      res.json({
+        result: result
+      })
+    })
   }
   else{
     res.send(200,"Need to specify postId in query")
@@ -122,33 +124,33 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-    //if (!auth.assertHasUser(req)) return
-    
-    Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
-        post.deleteAll({favorites: true}).then(function(result){
-            var data = JSON.stringify({postId: post.postId})
-            var options = {
-                port: 3000,
-                path: '/api/tags',
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                }
-            }
-            var requ = http.request(options, function (res) {
-                        res.setEncoding('utf8');
-                        res.on('data', function (chunk) {
-                            console.log('Response: ' + chunk);
-                        })
-            })
-            requ.write(data)
-            requ.end()
-            res.status(200).send(JSON.stringify(result))
+  //if (!auth.assertHasUser(req)) return
+
+  Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
+    post.deleteAll({favorites: true}).then(function(result){
+      var data = JSON.stringify({postId: post.postId})
+      var options = {
+        port: 3000,
+        path: '/api/tags',
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+      }
+      var requ = http.request(options, function (res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+          console.log('Response: ' + chunk);
         })
+      })
+      requ.write(data)
+      requ.end()
+      res.status(200).send(JSON.stringify(result))
     })
+  })
 }
-    
+
 //  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
 //  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
 //         connection, function(err, cursor){
@@ -166,7 +168,7 @@ function handleDeletePostRequest (req, res) {
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
-  num_posts = +req.headers.numposts || 10
+    num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
@@ -184,22 +186,22 @@ function handleGetFeedRequest (req, res) {
       return friends.contains(post('userId'))
     }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
-      cursor.toArray(function(err, result) {
-        if (err) throw err;
+        cursor.toArray(function(err, result) {
+          if (err) throw err;
           function send_results () { res.status(200).send(JSON.stringify(result, null, 2)) }
           counter = 0
           result.forEach(function(elem, ind, arr){
-              r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
-                  if (err) throw err
-                  arr[ind].name = result
-                  counter ++
-                  if (counter === arr.length){
-                      send_results()
-                  }
-              })
+            r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
+              if (err) throw err
+                arr[ind].name = result
+              counter ++
+                if (counter === arr.length){
+                send_results()
+              }
+            })
           })
 
-      })
+        })
     })
   })
 }
