@@ -156,16 +156,10 @@ function handleDeleteFavoritesRequest (req, res) {
     queryObj = {"userId": parseInt(userId)}
   else if (postId)
     queryObj = {"postId": postId}
-    r.db(config.rethinkdb.db).table('favorites').filter(queryObj).delete().run(
-         connection, function(err, cursor){
-          if (err) {throw err
-            console.log("Error message: "+ err.message())}
-        }).then(function(result) {
-           res.json({
-               result: result
-           })
-       })
-
+    
+    Favorites.filter(queryObj).delete().run().then(function(result){
+        res.status(200).send(JSON.stringify(result, null, 2))
+    })
 }
 
 
