@@ -46,18 +46,19 @@ var FeedController = React.createClass({
 							)
 						})
 						console.log("friends id", JSON.stringify(friendsID))
-						var friendsProfileURL = []
+						var friendsProfileURL = {}
 						friendsID.map(function (id) {
 							//console.log("/" + id + "/picture")
 							FB.api("/" + id + "/picture", function (response) {
 								if (response && !response.error) {
-									console.log("friends url", JSON.stringify(response["data"]["url"]))
-									friendsProfileURL.push(response["data"]["url"])
+									console.log("friend id ", id, " friends url", JSON.stringify(response["data"]["url"]))
+									friendsProfileURL[id] = response["data"]["url"]
 									self.setState({profileurls: friendsProfileURL})
+									console.log("friends url", JSON.stringify(friendsProfileURL))
 								}
 							});
 						})
-						console.log("friends url", JSON.stringify(friendsProfileURL))
+						//console.log("friends url", JSON.stringify(friendsProfileURL))
 					}
 				});
 				
