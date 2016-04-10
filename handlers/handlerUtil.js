@@ -1,10 +1,14 @@
 var config = require('../config.js')
 var r = require('rethinkdb')
 
-function sendCursorWithUser(res, cursor, connection) {
+function doCursorWithUser(res, cursor, connection, callback) {
   cursor.toArray(function(err, result) {
     if (err) throw err;
     feed_result = result
+    if (feed_result.length == 0) {
+      callback(feed_result)
+      return
+    }
     counter = 0
     result.forEach(function(elem, ind, arr){
       r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
@@ -12,11 +16,11 @@ function sendCursorWithUser(res, cursor, connection) {
         arr[ind].name = result
         counter++
         if (counter === arr.length) {
-          res.status(200).send(JSON.stringify(feed_result, null, 2))
+          callback(feed_result)
         }
       })
     })
   })
 }
 
-exports.sendCursorWithUser = sendCursorWithUser
+exports.doCursorWithUser = doCursorWithUser

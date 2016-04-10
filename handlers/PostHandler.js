@@ -181,13 +181,17 @@ function handleGetFeedRequest (req, res) {
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
-    console.log("friends " + friends)
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-      return friends.contains(post('userId'))
-    }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-      if (err) throw err
-      handlerUtil.sendCursorWithUser(res, cursor, connection)
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
+      blocked = r(blocked)
+      r.db(config.rethinkdb.db).table('posts').filter(function (post) {
+        return friends.contains(post('userId')) && !blocked.contains(post('userId'))
+      }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
+        if (err) throw err
+        handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
+          res.status(200).send(JSON.stringify(posts, null, 2))
+        })
+      })
     })
   })
 }

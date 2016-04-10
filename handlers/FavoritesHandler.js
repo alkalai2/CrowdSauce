@@ -74,10 +74,8 @@ function handleCreateFavoritesRequest (req, res) {
 
 function handleGetUserFavoritesRequest(req,res) {
   if (!auth.assertHasUser(req)) return
-
   num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
-
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
     console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
@@ -89,7 +87,9 @@ function handleGetUserFavoritesRequest(req,res) {
     r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
         limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
-      handlerUtil.sendCursorWithUser(res, cursor, connection)
+      handlerUtil.doCursorWithUser(res, cursor, connection, function(result) {
+        res.status(200).send(JSON.stringify(result, null, 2))
+      })
     })
   }).error(function (error) {
     // something went wrong
