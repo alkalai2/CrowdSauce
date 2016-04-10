@@ -72,9 +72,18 @@ module.exports = function(grunt) {
             'public/js/react_components/PostQuickView.jsx'
           ]
         }
+      },
+      build_my_settings: {
+        files: {
+          'public/js/react_build/mysettings.build.js': [
+            'public/js/react_components/Settings.jsx'
+          ]
+        }
       }
     },
 
+
+  
     // Configure a mochaTest task 
     mochaTest: {
       test: {
