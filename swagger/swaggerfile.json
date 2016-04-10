@@ -716,6 +716,20 @@
             "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
             "in": "header",
             "name": "accesstoken"
+          },
+          {
+            "in": "header",
+            "default": 10,
+            "name": "numposts",
+            "type": "integer",
+            "description": "Number of posts to provide"
+          },
+          {
+            "in": "header",
+            "default": 0,
+            "name": "offset",
+            "type": "integer",
+            "description": "Number of posts to skip"
           }
         ],
         "description": "This will return favorite objects containing postId and userId of a given user."

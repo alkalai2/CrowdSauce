@@ -74,7 +74,9 @@ function handleCreateFavoritesRequest (req, res) {
 function handleGetUserFavoritesRequest(req,res) {
   if (!auth.assertHasUser(req)) return
 
-  //Pass in userId in URL query
+  num_posts = +req.headers.numposts || 10
+  offset    = +req.headers.offset   || 0
+
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
     console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
@@ -83,7 +85,7 @@ function handleGetUserFavoritesRequest(req,res) {
         return
     }
     console.log(postIds)
-    Post.getAll.apply(Post, postIds).getJoin({user:true}).run().then(function(result){
+    Post.getAll.apply(Post, postIds).getJoin({user:true}).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run().then(function(result){
           console.log(JSON.stringify(result, null, 2))
           res.send(200, JSON.stringify(result, null, 2))
     })
