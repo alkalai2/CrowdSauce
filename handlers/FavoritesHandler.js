@@ -88,7 +88,18 @@ function handleGetUserFavoritesRequest(req,res) {
     r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
         limit(num_posts).run(connection, function (err, cursor) {
       cursor.toArray(function(err, result) {
-        res.send(200, JSON.stringify(result, null, 2))
+        counter = 0
+        result_posts = result
+        result.forEach(function(elem, ind, arr){
+          r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
+            if (err) throw err
+            arr[ind].name = result
+            counter ++
+            if (counter === arr.length){
+              res.send(200, JSON.stringify(result_posts, null, 2))
+            }
+          })
+        })
       })
     })
 
