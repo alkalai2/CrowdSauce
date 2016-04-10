@@ -13,6 +13,8 @@ var AccountHandler = function () {
   this.getAccount = handleGetAccountRequest
   this.updateAccount = handleUpdateAccountRequest
   this.deleteAccount = handleDeleteAccountRequest
+  this.blockAccount = handleAddBlockRequest
+  this.unblockAccount = handleRemoveBlockRequest
 }
 
 var connection = null;
@@ -76,15 +78,45 @@ function handleGetAccountRequest (req, res) {
 
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
-    r.db(config.rethinkdb.db).table('users').filter({"userId": parseInt(req.headers.userid)}).update(req.body).run(
-           connection, function(err, cursor){
-            if (err) throw err
-          }).then(function(result) {
-             res.json({
-                 result: result
-             })
-         })
+  r.db(config.rethinkdb.db).table('users').filter({"userId": parseInt(req.headers.userid)}).update(req.body).run(
+      connection, function(err, cursor) {
+    if (err) throw err
+  }).then(function(result) {
+    res.json({result: result})
+  })
+}
 
+function handleAddBlockRequest(req, res) {
+  if (!auth.assertHasUser(req)) return
+  user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
+  user('blocked').append(req.body.userid).run(connection, function(err, result) {
+    if (err) throw err
+    user.update({blocked: result}).run(connection, function(err, r) {
+      if (err) throw err
+      res.status(200).send(JSON.stringify(result))
+    })
+  })
+}
+function handleRemoveBlockRequest(req, res) {
+  if (!auth.assertHasUser(req)) return
+  user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
+  user('blocked').run(connection, function(err, cursor) {
+    if (err) throw err
+    cursor.toArray(function(err, result) {
+      if (err) throw err
+      for (i = 0; i < result.length; i++) {
+        if (result[i] == req.body.userid) {
+          user('blocked').deleteAt(i).run(connection, function(err, result) {
+            user.update({blocked: result}).run(connection, function(err, r) {
+              if (err) throw err
+              res.status(200).send(JSON.stringify(result))
+            })
+          })
+          break
+        }
+      }
+    })
+  })
 }
 
 function handleDeleteAccountRequest (req, res) {
