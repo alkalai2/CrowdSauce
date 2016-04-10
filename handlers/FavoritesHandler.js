@@ -94,7 +94,7 @@ function handleGetUserFavoritesRequest(req,res) {
           r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
             if (err) throw err
             arr[ind].name = result
-            counter ++
+            counter++
             if (counter === arr.length){
               res.send(200, JSON.stringify(result_posts, null, 2))
             }
@@ -102,7 +102,6 @@ function handleGetUserFavoritesRequest(req,res) {
         })
       })
     })
-
   }).error(function (error) {
     // something went wrong
     console.log("Error: "+ error.message)

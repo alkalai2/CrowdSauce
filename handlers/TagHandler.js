@@ -77,7 +77,7 @@ function handleGetPostTagsRequest(req,res) {
 
 var search_tags = []
 var post_search_tags = {}
-function handleGetTagFeedRequest(req,res) {
+function handleGetTagFeedRequest(req, res) {
 
   //Pass in tagName in URL query
   num_posts = +req.headers.numposts || 10
@@ -101,21 +101,21 @@ function handleGetTagFeedRequest(req,res) {
     post_search_tags = {}
     Post.getJoin({tags: true}).run().then(function(posts) {
       var postIds = []
-      for (i = 0; i < posts.length; i++){
+      for (i = 0; i < posts.length; i++) {
         var post_tags = posts[i].tags
         var post_tag_names = []
-        for (j = 0; j < post_tags.length; j++){
+        for (j = 0; j < post_tags.length; j++) {
           var tagName = post_tags[j]['tagName']
-          if (search_tags.indexOf(tagName) >= 0){
-            if (!(posts[i].postId in post_search_tags)){
+          if (search_tags.indexOf(tagName) >= 0) {
+            if (!(posts[i].postId in post_search_tags)) {
               post_search_tags[posts[i].postId] = []
               postIds.push(posts[i].postId)
             }
-            if (post_search_tags[posts[i].postId].indexOf(tagName) < 0)
+            if (post_search_tags[posts[i].postId].indexOf(tagName) < 0) {
               post_search_tags[posts[i].postId].push(tagName)
+            }
           }
         }
-
       }
 
       var posts = r(postIds)
@@ -123,7 +123,7 @@ function handleGetTagFeedRequest(req,res) {
       r.db(config.rethinkdb.db).table('posts').filter(function(post) {
         return friends.contains(post('userId')).and(posts.contains(post('postId')))
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-      if (err) throw err
+        if (err) throw err
         cursor.toArray(function(err, result) {
           if (err) throw err;
           var unordered_posts = result
@@ -143,31 +143,26 @@ function handleGetTagFeedRequest(req,res) {
 
           keep_post_search_tags_list.sort(function(a, b) { return a.matchingTags - b.matchingTags; }).reverse()
           var ordered_posts = [] 
-          for(m = 0; m < unordered_posts.length; m++){
-              for (n = 0; n < keep_post_search_tags_list.length; n++){
-                if (unordered_posts[m]["postId"] == keep_post_search_tags_list[n]["postId"]){
-                  ordered_posts[n] = unordered_posts[m]
-                  break
-                }
+          for (m = 0; m < unordered_posts.length; m++){
+            for (n = 0; n < keep_post_search_tags_list.length; n++) {
+              if (unordered_posts[m]["postId"] == keep_post_search_tags_list[n]["postId"]) {
+                ordered_posts[n] = unordered_posts[m]
+                break
               }
+            }
           }
 
           res.status(200).send(JSON.stringify(ordered_posts, null, 2))
 
         })
       }).error(function (error) {
-      // something went wrong
-      console.log("Error: "+ error.message)
-      res.send(500, {error: error.message})
+        // something went wrong
+        console.log("Error: "+ error.message)
+        res.send(500, {error: error.message})
+      })
     })
-
-    })
-
-
-
-    })
-
-  }
+  })
+}
 
 function handleGetTagsRequest (req, res) {
   r.db(config.rethinkdb.db).table('tags').run(

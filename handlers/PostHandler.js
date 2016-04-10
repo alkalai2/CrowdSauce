@@ -186,22 +186,21 @@ function handleGetFeedRequest (req, res) {
       return friends.contains(post('userId'))
     }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
-        cursor.toArray(function(err, result) {
-          if (err) throw err;
-          function send_results () { res.status(200).send(JSON.stringify(result, null, 2)) }
-          counter = 0
-          result.forEach(function(elem, ind, arr){
-            r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
-              if (err) throw err
-                arr[ind].name = result
-              counter ++
-                if (counter === arr.length){
-                send_results()
-              }
-            })
+      cursor.toArray(function(err, result) {
+        if (err) throw err;
+        function send_results () { res.status(200).send(JSON.stringify(result, null, 2)) }
+        counter = 0
+        result.forEach(function(elem, ind, arr){
+          r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
+            if (err) throw err
+            arr[ind].name = result
+            counter++
+            if (counter === arr.length) {
+              res.status(200).send(JSON.stringify(feed_result, null, 2))
+            }
           })
-
         })
+      })
     })
   })
 }
