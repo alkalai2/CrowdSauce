@@ -396,11 +396,13 @@ var Post = React.createClass({
 
   startEditing: function() {
     this.setState({editing: true})
+	this.forceUpdate();
     // TO DO - display a new set of input fields 
   },
 
   cancelEditing: function() {
     this.setState({editing: false})
+	this.forceUpdate();
   },
 
   saveEditions: function() {
@@ -435,7 +437,43 @@ var Post = React.createClass({
         </span>
       : <span> &nbsp; </span>;
 
-    return (
+    
+	if (this.state.editing) {
+		return(
+      <div className="post-full">
+        <Panel className="post-panel">
+          <div> 
+            <span> 
+              {addNames}
+              {editable}
+            </span>
+            <RatingStars rating={this.props.data.rating}/>
+            <hr></hr>   
+            <input type="text" className = "post-title" defaultValue={this.props.data.title}/>
+          </div>
+          <ImageThumbnail src={this.props.data.imageLink}/>
+          <div>
+            <input type="text" className = "recipe-notes" defaultValue={this.props.data.notes}/>
+          </div>
+            {recipe}
+
+          <div className = "post-footer">
+            <div>
+              <Tags className = "tagset" postId={this.props.data.postId}/>
+              {favoriteHeart}
+            </div>
+            <Comment id={this.props.data.postId}/>
+          </div>
+        </Panel>
+      </div>		
+		
+		
+		);
+	
+	}
+	else {
+	
+	return (
       <div className="post-full">
         <Panel className="post-panel">
           <div> 
@@ -467,6 +505,8 @@ var Post = React.createClass({
         </Panel>
       </div>
     );
+	
+	}
   },
 });
 
