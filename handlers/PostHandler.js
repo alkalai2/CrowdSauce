@@ -169,7 +169,7 @@ function handleDeletePostRequest (req, res) {
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
-    num_posts = +req.headers.numposts || 10
+  num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
@@ -185,7 +185,7 @@ function handleGetFeedRequest (req, res) {
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
       blocked = r(blocked)
       r.db(config.rethinkdb.db).table('posts').filter(function (post) {
-        return friends.contains(post('userId')) && !blocked.contains(post('userId'))
+        return friends.contains(post('userId')).and(blocked.contains(post('userId')).not())
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
         if (err) throw err
         handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
