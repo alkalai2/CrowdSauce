@@ -16,6 +16,7 @@ var bodyParser = require('body-parser')
 var FB = require('fb')
 var swagger = require('swagger-node-express')
 var util = require('util')
+var Toggle = require('react-toggle')
 
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
@@ -121,6 +122,10 @@ function init() {
 
   app.get('/profile', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/profile.html'))
+  })
+
+  app.get('/settings', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/settings.html'))
   })
 
   app.get('/qview', function(req, res) {
