@@ -7,6 +7,7 @@ var r = require('rethinkdb')
 var auth = require('../auth.js')
 var email = require('../email.js')
 var util = require('util')
+var handlerUtil = require('./handlerUtil.js')
 
 var FavoritesHandler = function () {
   this.createFavorites = handleCreateFavoritesRequest
@@ -87,20 +88,8 @@ function handleGetUserFavoritesRequest(req,res) {
     console.log(postIds)
     r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
         limit(num_posts).run(connection, function (err, cursor) {
-      cursor.toArray(function(err, result) {
-        feed_result = result
-        counter = 0
-        result.forEach(function(elem, ind, arr){
-          r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
-            if (err) throw err
-            arr[ind].name = result
-            counter++
-            if (counter === arr.length) {
-              res.status(200).send(JSON.stringify(feed_result, null, 2))
-            }
-          })
-        })
-      })
+      if (err) throw err
+      handlerUtil.sendCursorWithUser(res, cursor, connection)
     })
   }).error(function (error) {
     // something went wrong
