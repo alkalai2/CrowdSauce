@@ -9,6 +9,8 @@ function setup (app, handlers) {
   app.get('/api/accounts/', handlers.account.getAccount)
   app.put('/api/accounts/', handlers.account.updateAccount)
   app.delete('/api/accounts/', handlers.account.deleteAccount)
+  app.post('/api/accounts/block/', handlers.account.blockAccount)
+  app.delete('/api/accounts/block/', handlers.account.unblockAccount)
   // Add a new post for given userId
   app.post('/api/posts/', handlers.post.createPost)
   app.get('/api/posts/', handlers.post.getPost)

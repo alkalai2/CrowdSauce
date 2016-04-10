@@ -395,6 +395,78 @@
         "description": "Delete account by userid, all posts made by the user are deleted, all favorites made by the user are deleted, all favorites on the deleted posts are deleted, all tagHistory on the deleted posts are deleted, and if any of these tagHistory is the last of that tag, the tag object itself is also deleted"
       }
     },
+    "/api/accounts/block/": {
+      "post": {
+        "operationId": "block",
+        "tags": [ "accounts" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "integer",
+            "description": "UserID for the account doing the blocking",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "description": "Contains the user to block",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/BlockUser"
+            }
+          }
+        ],
+        "description": "Block a user"
+      },
+      "delete": {
+        "operationId": "unblock",
+        "tags": [ "accounts" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "integer",
+            "description": "UserID for the account doing the unblocking",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "description": "Contains the user to unblock",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/BlockUser"
+            }
+          }
+        ],
+        "description": "Unblock a user"
+      }
+    },
     "/api/tags/": {
       "get": {
         "operationId": "add a tag",
@@ -1026,6 +1098,13 @@
           },
           "postId": {
             "type": "string"
+          }
+        }
+      },
+      "BlockUser": {
+        "properties": {
+          "userid": {
+            "type": "integer"
           }
         }
       }
