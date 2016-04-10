@@ -4,6 +4,8 @@ var Input = ReactBootstrap.Input
 var Button = ReactBootstrap.Button
 var Image = ReactBootstrap.Image
 var Thumbnail = ReactBootstrap.Thumbnail
+
+
 var Settings = React.createClass ({
 
 	getInitialState() {

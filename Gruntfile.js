@@ -79,6 +79,13 @@ module.exports = function(grunt) {
             'public/js/react_components/Settings.jsx'
           ]
         }
+      },
+      build_navbar: {
+        files: {
+          'public/js/react_build/navbar.build.js': [
+            'public/js/react_components/Navbar.jsx'
+          ]
+        }
       }
     },
 
