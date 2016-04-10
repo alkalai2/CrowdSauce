@@ -28,6 +28,8 @@ var Settings = React.createClass ({
 		  img: img,
 		  email: email,
 		  name: name,
+		  notification: true
+
 		};
 		
 		var heads = {
