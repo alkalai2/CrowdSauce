@@ -391,7 +391,27 @@ var NoPostsDisplay = React.createClass({
 var Post = React.createClass({
 
   getInitialState: function() {
-    return {editing: false}
+    return {
+	
+		editing: false,
+	
+		// TODO: Add states to save
+		title: this.props.data.title,
+		notes: this.props.data.notes,
+		
+		currenttitle: this.props.data.title,
+		currentnotes: this.props.data.notes,
+	
+	
+	}
+  },
+  
+  handleTitleChange: function(event) {
+	this.setState({currenttitle: event.target.value});
+  },
+  
+  handleNotesChange: function(event) {
+	this.setState({currentnotes: event.target.value});
   },
 
   startEditing: function() {
@@ -407,9 +427,16 @@ var Post = React.createClass({
 
   saveEditions: function() {
     // TO DO submit new post data to API
+	
+	// somehow save the current input values
+	this.setState({title: this.state.currenttitle})
+	this.setState({notes: this.state.currentnotes})
+	
+	this.setState({editing: false})
+	this.forceUpdate();
   },
 
-  checkForLink: function(){
+  checkForLink: function(editing){
     if(this.props.data.ingredients.length === 0){
       return <RecipeLink url={this.props.data.recipeLink} />
     } else {
@@ -418,7 +445,7 @@ var Post = React.createClass({
     }
   },
   render : function() {
-    var recipe = this.checkForLink();
+    var recipe = this.checkForLink(this.state.editing);
     var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
     var editable = this.props.editable ? 
       <EditButtons 
@@ -449,11 +476,11 @@ var Post = React.createClass({
             </span>
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
-            <input type="text" className = "post-title" defaultValue={this.props.data.title}/>
+            <input type="text" className = "post-title" defaultValue={this.state.title} onChange={this.handleTitleChange}/>
           </div>
           <ImageThumbnail src={this.props.data.imageLink}/>
           <div>
-            <input type="text" className = "recipe-notes" defaultValue={this.props.data.notes}/>
+            <input type="text" className = "recipe-notes" defaultValue={this.state.notes} onChange={this.handleNotesChange}/>
           </div>
             {recipe}
 
@@ -484,13 +511,13 @@ var Post = React.createClass({
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
             <h3 className = "post-title">
-              {this.props.data.title}
+              {this.state.title}
             </h3>
           </div>
           <ImageThumbnail src={this.props.data.imageLink}/>
           <div>
             <blockquote className = "recipe-notes">
-              {this.props.data.notes}
+              {this.state.notes}
             </blockquote>
           </div>
             {recipe}
