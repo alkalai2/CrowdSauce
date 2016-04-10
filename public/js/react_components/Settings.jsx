@@ -10,7 +10,8 @@ var Settings = React.createClass ({
 
 	getInitialState() {
 		return{
-			value: '',
+			name: '',
+			email:'',
 			imgsrc: 'https://s-media-cache-ak0.pinimg.com/736x/1a/39/55/1a39555080409fad4d86b94a9af46b97.jpg',
 		};
 	},
@@ -18,13 +19,6 @@ var Settings = React.createClass ({
   	changeImgSrc: function(e) {
       this.setState({imgsrc: e.target.value});
   	},
-
-	handleEmailChange() {
-		this.setState({
-			value:this.refs.input.getValue()
-		});
-	},
-
     render: function() {
 
     	var imgStyle = {
@@ -35,7 +29,7 @@ var Settings = React.createClass ({
 
     		<div>
 		      <Thumbnail className="settingsThumb" src={this.state.imgsrc} alt="Enter a valid Picture link">
-
+		      <form>
 			  <Input
 			    type="text"
 			    label="Change Profile Picture"
@@ -45,26 +39,16 @@ var Settings = React.createClass ({
 			    value={this.state.imgsrc}
 			  />
 	          <Input 
-				type="text"
-				value={this.state.value}
+				type="email"
 				placeholder="Enter new email"
 				label="Change Email Address"
-				onChange={this.handleEmailChange}
-				ref="input"
-        		groupClassName="group-class"
-        		labelClassName="label-class"
 	          />
 	          <Input 
 				type="text"
-				value={this.state.value}
 				placeholder="Enter new Username"
 				label="Change Username"
-				onChange={this.handleEmailChange}
-				ref="input"
-        		groupClassName="group-class"
-        		labelClassName="label-class"
 	          />
-
+	          </form>
 
 		      <span className="setting_label">Allow email notifications?</span> 
 	          <label className="switch">
@@ -72,7 +56,6 @@ var Settings = React.createClass ({
 	            <span className="switch-label" data-on="On" data-off="Off"></span>
 	            <span className="switch-handle"></span> 
 	          </label>
-
 		      </Thumbnail>
          	<p>
 	          <Button bsStyle="primary">Save</Button>&nbsp;
