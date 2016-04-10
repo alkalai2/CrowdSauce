@@ -166,3 +166,23 @@ background: #ECECEC;
 	float: right;
 	margin: 4px;
 }
+
+.edit-image-link {
+	margin-bottom: 10px 
+}
+
+.edit-notes {
+	width: 70%
+}
+
+.edit-notes-label {
+	padding-left: 1%
+}
+
+.edit-title {
+	margin-bottom: 4%
+}
+
+.edit-notes-label {
+	padding-left: 1%
+}

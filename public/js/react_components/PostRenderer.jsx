@@ -392,48 +392,87 @@ var Post = React.createClass({
 
   getInitialState: function() {
     return {
-	
-		editing: false,
-	
-		// TODO: Add states to save
-		title: this.props.data.title,
-		notes: this.props.data.notes,
-		
-		currenttitle: this.props.data.title,
-		currentnotes: this.props.data.notes,
-	
-	
-	}
+  		editing: false,
+  		title: this.props.data.title,
+  		notes: this.props.data.notes,
+      imageLink : this.props.data.imageLink,
+
+  		currenttitle: this.props.data.title,
+  		currentnotes: this.props.data.notes,
+      currentImageLink: this.props.data.imageLink
+  	}
   },
   
   handleTitleChange: function(event) {
-	this.setState({currenttitle: event.target.value});
+    this.setState({currenttitle: event.target.value});
   },
   
   handleNotesChange: function(event) {
-	this.setState({currentnotes: event.target.value});
+    this.setState({currentnotes: event.target.value});
   },
+
+  handleImageLinkChange: function(event) {
+    this.setState({currentImageLink: event.target.value});
+  },  
 
   startEditing: function() {
     this.setState({editing: true})
-	this.forceUpdate();
-    // TO DO - display a new set of input fields 
+    this.forceUpdate();
   },
 
   cancelEditing: function() {
     this.setState({editing: false})
-	this.forceUpdate();
+    this.forceUpdate();
   },
 
   saveEditions: function() {
-    // TO DO submit new post data to API
-	
-	// somehow save the current input values
-	this.setState({title: this.state.currenttitle})
-	this.setState({notes: this.state.currentnotes})
-	
-	this.setState({editing: false})
-	this.forceUpdate();
+
+    // check that we actually need to update
+    if (this.state.currenttitle != this.state.title || 
+        this.state.currentnotes != this.state.notes ||
+        this.state.currentImageLink != this.state.imageLink
+      ) {
+
+      newTitle = this.state.currenttitle
+      newNotes = this.state.currentnotes
+      newImageLink = this.state.currentImageLink
+
+      newData = this.props.data
+      newData['title'] = newTitle
+      newData['notes'] = newNotes
+      newData['imageLink'] = newImageLink
+
+      // submit changes to API
+      jQuery.ajax({
+        url: 'http://localhost:3000/api/posts/',
+        type: 'PUT',
+        headers: {
+          'accessToken': fbAccessToken,
+          'userId': fbUserID
+        },
+        data: newData,
+        dataType: 'json',
+        timeout : 10000,
+        success: function(data) {
+          console.log("updated post " + this.props.data.postId)
+          console.log(data);
+        }.bind(this),
+        error: function(xhr, status, err) {
+           console.log("failed updating post " + this.props.data.postId)
+          console.error(this.props.source, status, err.toString());
+        }.bind(this)
+      });
+
+      // set post states to display change immediately
+      this.setState({title: newTitle})
+      this.setState({notes: newNotes})
+      this.setState({imageLink: newImageLink})
+    } else {
+      console.log("Nothing to save. No updating needed")
+    }
+
+    this.setState({editing: false})
+    this.forceUpdate();
   },
 
   checkForLink: function(editing){
@@ -474,13 +513,34 @@ var Post = React.createClass({
               {addNames}
               {editable}
             </span>
-            <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
-            <input type="text" className = "post-title" defaultValue={this.state.title} onChange={this.handleTitleChange}/>
+            <Input
+              className="edit-title"
+              type="text"
+              wrapperClassName="col-xs-7 "
+              label="Title"
+              labelClassName="col-xs-12 edit-title-label"
+              value={this.state.currenttitle}
+              onChange={this.handleTitleChange}/>
           </div>
-          <ImageThumbnail src={this.props.data.imageLink}/>
+          <ImageThumbnail src={this.state.currentImageLink}/>
+          <Input
+            className="edit-image-link"
+            type="text"
+            wrapperClassName="col-xs-8 col-sm-offset-2"
+            label="Image Source"
+            labelClassName="col-xs-8 col-sm-offset-2"
+            onChange={this.handleImageLinkChange}
+            value={this.state.currentImageLink}/>
           <div>
-            <input type="text" className = "recipe-notes" defaultValue={this.state.notes} onChange={this.handleNotesChange}/>
+            <Input
+              className="edit-notes"
+              type="text"
+              label="Notes"
+              labelClassName="col-xs-12 edit-notes-label"
+
+              value={this.state.currentnotes}
+              onChange={this.handleNotesChange}/>
           </div>
             {recipe}
 
