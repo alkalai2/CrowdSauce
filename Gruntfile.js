@@ -62,6 +62,16 @@ module.exports = function(grunt) {
             'public/js/react_components/PostRecipe.jsx'
           ]
         }
+      },
+      build_quickview: {
+        files: {
+          'public/js/react_build/quickview.build.js': [
+            'public/js/react_components/Comments.jsx',
+            'public/js/react_components/PostRenderer.jsx', 
+            'public/js/react_components/Profile.jsx',
+            'public/js/react_components/PostQuickView.jsx'
+          ]
+        }
       }
     },
 

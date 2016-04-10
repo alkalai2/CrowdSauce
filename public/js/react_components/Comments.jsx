@@ -1,9 +1,10 @@
 
 
 var Comment = React.createClass({
-	  componentDidMount : function() {
+	/*
+	componentDidMount : function() {
 	
-	/*  
+	
   	window.fbAsyncInit = function() {
   	FB.init({
   		appId      : '563086800536760',
@@ -29,14 +30,14 @@ var Comment = React.createClass({
   		//alert("load sdk");
   	});
 	
-	*/
+	
       },
   	
   	componentDidUpdate : function() {
-      //FB.XFBML.parse();
+      FB.XFBML.parse();
   	//alert("parsed");
   	},
-  	
+  	*/
   	render : function() {
   		return (
   		<div>

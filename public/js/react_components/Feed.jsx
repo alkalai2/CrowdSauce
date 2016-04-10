@@ -9,25 +9,39 @@ var Feed = React.createClass({
         data: []
       }
     },
-    componentDidMount: function() {
-      // var self = this
-      // getFacebookDetails().then(function(fbDetails) {
-      //   console.log("Getting facebook details : ")
-      //   console.log(fbDetails)	
-      //   self.loadPostsFromServer(fbDetails)
-      // }, function(error) {
-      //   console.log("Error : " + error)
-      // })
-      // fbDetails =  {
-      //   'fbUserID': fbUserID,
-      //   'fbAccessToken': fbAccessToken
-      // }
-      // if(this.props.fbDetails) {
-      //  this.loadPostsFromServer(this.props.fbDetails)
-      // } else {
-      //   console.log("Could not load Feed posts. No access to Facebook Details")
-      // }
-    },
+	componentDidMount : function() {
+	
+	
+  	window.fbAsyncInit = function() {
+  	FB.init({
+  		appId      : '563086800536760',
+  		cookie     : true,  // enable cookies to allow the server to access the session
+  		xfbml      : true,  // parse social plugins on this page
+  		version    : 'v2.5'
+  	});
+  	
+  	}.bind(this);
+  	// Load the SDK asynchronously
+  	(function(d, s, id) {
+  	var js, fjs = d.getElementsByTagName(s)[0];
+  	if (d.getElementById(id)) return;
+  	js = d.createElement(s); js.id = id;
+  	js.src = "//connect.facebook.net/en_US/sdk.js";
+  	fjs.parentNode.insertBefore(js, fjs);
+  	}(document, 'script', 'facebook-jssdk'));
+  	
+  	$(document).on(
+      'fbload', 
+  	 function(){
+  		FB.XFBML.parse();
+  	});
+	
+	
+      },
+  	
+  	componentDidUpdate : function() {
+      FB.XFBML.parse();
+  	},
 
     loadPostsFromServer : function(fbDetails) {
 
@@ -74,6 +88,8 @@ var Feed = React.createClass({
             data={this.state.data} 
             favoriteAble={true}
             searchBar = {true}
+            addNames={true}
+            editable={false}
             handleSearch={this.props.handleSearch}
             profileNavigation={this.props.profileNavigation}
             errorMsg={"Oops! Your friends have not posted anything "}/>

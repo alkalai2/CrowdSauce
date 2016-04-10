@@ -123,6 +123,10 @@ function init() {
     res.sendFile(path.join(__dirname + '/public/views/profile.html'))
   })
 
+  app.get('/qview', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/quickview.html'))
+  })
+
   // Generic error handling middleware.
   app.use(handleError)
 

@@ -39,7 +39,7 @@ var FriendsList = React.createClass({
 			(friends["data"]).map(function(friend_data) {
 				console.log("onefriend " + JSON.stringify(friend_data, null, 4))
 				if (urls) {
-					url = urls[i]
+					url = urls[friend_data.id]
 					i++
 				} else {
 					url = "https://cdn0.iconfinder.com/data/icons/duesseldorf/32/process.png"

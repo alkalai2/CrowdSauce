@@ -67,13 +67,10 @@ function handleGetAccountRequest (req, res) {
     }
   }
   if(!queried){
-    r.db(config.rethinkdb.db).table('users').run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-          if (err) throw err;
-          res.send(200,JSON.stringify(result, null, 2))
-        })
-    })
+      Account.run().then(function(users){
+          console.log(users)
+          res.status(200).send(JSON.stringify(users, null, 2))
+      })
   }
 }
 
@@ -126,7 +123,7 @@ function handleDeleteAccountRequest (req, res) {
                           },
                         function(err){
                          user.deleteAll({posts: true, favorites: true}).then(function(result){
-                            res.status(200).send(JSON.stringify(result))
+                            res.status(200).send(JSON.stringify(result, null, 2))
                           })
                         }
              )
@@ -134,7 +131,7 @@ function handleDeleteAccountRequest (req, res) {
       }
       else{
           user.deleteAll({posts: true, favorites: true}).then(function(result){
-            res.status(200).send(JSON.stringify(result))
+            res.status(200).send(JSON.stringify(result, null, 2))
           })
       }
   })
