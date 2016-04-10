@@ -217,7 +217,15 @@ var PostRecipe = React.createClass({
 			  </Input>
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
-			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
+			    	<Input
+					  type="text"
+					  label="Link"
+					  placeholder="http://allrecipes.com/..."
+					  labelClassName="col-xs-2"
+					  wrapperClassName="col-xs-15"
+					  bsStyle={this.state.link.length > 0 ? 'success' : 'error'}
+					  value={this.state.link}
+					  onChange={this.handleLinkChange}/>
 		    	</Panel>
 			    <Panel eventKey="2" header="Post the Recipe Yourself">
 			    	<RecipeCustomForm onDirectionsChange={this.onDirectionsChange}
@@ -290,29 +298,6 @@ var RecipeCustomForm = React.createClass({
 		    <input onChange={this.onDirsChange} value={this.state.dirstext} />
 		    <button onClick={this.addDirs} >{'Add #' + (this.state.dirs.length + 1)}</button>
       </div>
-    );
-  }
-});
-
-var RecipeLinkForm = React.createClass({
-  getInitialState: function() {
-    return {link: ''};
-  },
-  handleLinkChange: function(e) {
-    this.setState({link: e.target.value});
-    this.props.handleLinkChange(e);
-  },
-  render: function () {
-    return (
-        <Input
-          type="text"
-          label="Link"
-          placeholder="http://allrecipes.com/..."
-          labelClassName="col-xs-2"
-          wrapperClassName="col-xs-15"
-          bsStyle={this.state.link.length > 0 ? 'success' : 'error'}
-          value={this.state.link}
-          onChange={this.handleLinkChange}/>
     );
   }
 });

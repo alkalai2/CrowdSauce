@@ -58,8 +58,8 @@ function handleGetAccountRequest (req, res) {
       to_query_db = req.query[q]
       if(!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
-      console.log({[q]: to_query_db})
-        Account.filter({[q]: to_query_db}).run().then(function(user){
+      console.log({q: to_query_db})
+        Account.filter({q: to_query_db}).run().then(function(user){
             res.status(200).send(JSON.stringify(user, null, 2))
         }).error(function(err){
                 res.status(500).send({error: err.message})
