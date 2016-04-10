@@ -1,23 +1,68 @@
 
 
 var Input = ReactBootstrap.Input
-var Button = ReactBootstrap.Button
+var ButtonInput = ReactBootstrap.ButtonInput
 var Image = ReactBootstrap.Image
 var Thumbnail = ReactBootstrap.Thumbnail
+var fbDetails = getFacebookDetails();
 
 
 var Settings = React.createClass ({
 
 	getInitialState() {
 		return{
-			name: '',
+			username: '',
 			email:'',
 			imgsrc: 'https://s-media-cache-ak0.pinimg.com/736x/1a/39/55/1a39555080409fad4d86b94a9af46b97.jpg',
 		};
 	},
 
+
+
+	handleSave(){
+		var img = this.state.imgsrc.trim();
+		var name = this.state.username.trim();
+		var email = this.state.email.trim();
+
+		var data = {
+		  img: img,
+		  email: email,
+		  name: name,
+		};
+		
+		var heads = {
+            'userid': fbDetails['fbUserID'],
+            'accesstoken': fbDetails['fbAccessToken']
+		};
+		
+		var url = 'http://localhost:3000/api/accounts/';
+		jQuery.ajax({
+		  url: url,
+		  dataType: 'json',
+		  type: 'PUT',
+		  data: data,
+		  headers: heads,
+		  success: function(responsedata) {
+		    console.log(responsedata)
+		    console.log("SUCCESSFUL SAVE")
+		    console.log(heads)
+		  }.bind(this),
+		  error: function(xhr, status, err) {
+		    console.log(err.toString());
+		    console.log("BAD SAVE")
+		  }.bind(this)
+		});		
+	},
+
+
   	changeImgSrc: function(e) {
       this.setState({imgsrc: e.target.value});
+  	},
+  	changeEmail: function(e) {
+      this.setState({email: e.target.value});
+  	},
+  	changeUsername: function(e) {
+      this.setState({username: e.target.value});
   	},
     render: function() {
 
@@ -42,11 +87,15 @@ var Settings = React.createClass ({
 				type="email"
 				placeholder="Enter new email"
 				label="Change Email Address"
+			    onChange={this.changeEmail}
+				value={this.state.email}
 	          />
 	          <Input 
 				type="text"
 				placeholder="Enter new Username"
 				label="Change Username"
+			    onChange={this.changeUsername}
+				value={this.state.username}
 	          />
 	          </form>
 
@@ -57,9 +106,7 @@ var Settings = React.createClass ({
 	            <span className="switch-handle"></span> 
 	          </label>
 		      </Thumbnail>
-         	<p>
-	          <Button bsStyle="primary">Save</Button>&nbsp;
-	        </p>
+	          <ButtonInput bsStyle="primary" className="save_button" onClick={this.handleSave}>Save</ButtonInput>&nbsp;
 
         	</div>
     		);

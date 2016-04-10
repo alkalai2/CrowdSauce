@@ -1,6 +1,8 @@
-#settings {
-}
 
+.save_button{
+  display: inline-block;
+  float: right;
+}
 
 .switch {
   position: relative;
