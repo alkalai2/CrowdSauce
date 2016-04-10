@@ -80,14 +80,16 @@ function handleGetUserFavoritesRequest(req,res) {
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
     console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
-    if (postIds.length === 0){
+    if (postIds.length === 0) {
         res.status(200).send([])
         return
     }
     console.log(postIds)
-    Post.getAll.apply(Post, postIds).getJoin({user:true}).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run().then(function(result){
-          console.log(JSON.stringify(result, null, 2))
-          res.send(200, JSON.stringify(result, null, 2))
+    r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
+        limit(num_posts).run(connection, function (err, cursor) {
+      cursor.toArray(function(err, result) {
+        res.send(200, JSON.stringify(result, null, 2))
+      })
     })
 
   }).error(function (error) {
