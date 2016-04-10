@@ -31,7 +31,7 @@ function handleAddTagRequest (req, res) {
             cursor.toArray(function (err, result) {
               if (err) throw err
               if (result.length > 0)
-                res.send(500, {error: "Duplicate tag on post"})
+                res.status(500).send({error: "Duplicate tag on post"})
               else{
                     var tag = new Tag({tagName: req.body.tagName})
                     // use Thinky to save Tag data
@@ -39,10 +39,10 @@ function handleAddTagRequest (req, res) {
                       var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
                       // use Thinky to save TagHistory data
                       tagHistory.save().then(function (result) {
-                        res.send(200, JSON.stringify(result))
+                        res.status(200).send(JSON.stringify(result))
                       }).error(function (error) {
                         // something went wrong
-                        res.send(500, {error: error.message})
+                        res.status(500).send({error: error.message})
                     })
                   }).error(function(error){
                     //Will show error if tag already exists in db. Will still add tag to post
@@ -50,10 +50,10 @@ function handleAddTagRequest (req, res) {
                     var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
                       // use Thinky to save TagHistory data
                       tagHistory.save().then(function (result) {
-                        res.send(200, JSON.stringify(result))
+                        res.status(200).send(JSON.stringify(result))
                       }).error(function (error) {
                         // something went wrong
-                        res.send(500, {error: error.message})
+                        res.status(500).send({error: error.message})
                     })
 
                   })
@@ -67,11 +67,11 @@ function handleGetPostTagsRequest(req,res) {
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
     console.log("Result: "+ JSON.stringify(post.tags))
-    res.send(200, JSON.stringify(post.tags, null, 2))
+    res.status(200).send(JSON.stringify(post, tags, null, 2))
   }).error(function (error) {
     // something went wrong
     console.log("Error: "+ error.message)
-    res.send(500, {error: error.message})
+    res.status(500).send({error: error.message})
   })
 }
 
@@ -158,7 +158,7 @@ function handleGetTagFeedRequest(req, res) {
       }).error(function (error) {
         // something went wrong
         console.log("Error: "+ error.message)
-        res.send(500, {error: error.message})
+        res.status(500).send({error: error.message})
       })
     })
   })
@@ -170,7 +170,7 @@ function handleGetTagsRequest (req, res) {
             if (err) throw err
             cursor.toArray(function (err, result) {
               if (err) throw err
-              res.send(200, JSON.stringify(result, null, 2))
+              res.status(200).send(JSON.stringify(result, null, 2))
           })
   })
 

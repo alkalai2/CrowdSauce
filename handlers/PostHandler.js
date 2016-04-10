@@ -87,7 +87,7 @@ function handleGetPostRequest (req, res) {
     if (err) throw err
       cursor.toArray(function (err, result) {
         if (err) throw err
-          res.send(200, JSON.stringify(result, null, 2))
+          res.status(200).send(JSON.stringify(result, null, 2))
       })
   })
 
@@ -188,7 +188,7 @@ function handleGetFeedRequest (req, res) {
       if (err) throw err
       cursor.toArray(function(err, result) {
         if (err) throw err;
-        function send_results () { res.status(200).send(JSON.stringify(result, null, 2)) }
+        feed_result = result
         counter = 0
         result.forEach(function(elem, ind, arr){
           r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){

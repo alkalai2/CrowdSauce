@@ -40,10 +40,10 @@ function handleCreateAccountRequest (req, res) {
     })
     // use Thinky to save Account data
     account.save().then(function (result) {
-      res.send(200, JSON.stringify(result))
+      res.status(200).send(JSON.stringify(result))
     }).error(function (error) {
       // something went wrong
-      res.send(500, {error: error.message})
+      res.status(500).send({error: error.message})
     })
   })
 }

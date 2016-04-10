@@ -33,7 +33,7 @@ function handleCreateFavoritesRequest (req, res) {
             cursor.toArray(function (err, result) {
               if (err) throw err
               if (result.length > 0)
-                res.send(500, {error: "Duplicate favorite on post"})
+                res.status(500).send({error: "Duplicate favorite on post"})
               else{
                     // create Favorites object
                     var favorites = new Favorites({userId: parseInt(req.headers.userid),
@@ -41,7 +41,7 @@ function handleCreateFavoritesRequest (req, res) {
                     console.log("PostId: "+ req.body.postId)
                     // use Thinky to save Favorites data
                     favorites.save().then(function (result) {
-                      res.send(200, JSON.stringify(result))
+                      res.status(200).send(JSON.stringify(result))
                       r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
                         connection, function (err, res) {
                           if (err){
@@ -63,7 +63,7 @@ function handleCreateFavoritesRequest (req, res) {
                       )
                     }).error(function (error) {
                       // something went wrong
-                      res.send(500, {error: error.message})
+                      res.status(500).send({error: error.message})
                     })
               }
           })
@@ -88,15 +88,15 @@ function handleGetUserFavoritesRequest(req,res) {
     r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
         limit(num_posts).run(connection, function (err, cursor) {
       cursor.toArray(function(err, result) {
+        feed_result = result
         counter = 0
-        result_posts = result
         result.forEach(function(elem, ind, arr){
           r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
             if (err) throw err
             arr[ind].name = result
             counter++
-            if (counter === arr.length){
-              res.send(200, JSON.stringify(result_posts, null, 2))
+            if (counter === arr.length) {
+              res.status(200).send(JSON.stringify(feed_result, null, 2))
             }
           })
         })
@@ -105,17 +105,17 @@ function handleGetUserFavoritesRequest(req,res) {
   }).error(function (error) {
     // something went wrong
     console.log("Error: "+ error.message)
-    res.send(500, {error: error.message})
+    res.status(500).send({error: error.message})
   })
 }
 
 function handleGetPostFavoritesRequest(req,res) {
   //Pass in postId in URL query
   Post.get(req.query["postId"]).getJoin({favorites: true}).run().then(function(post) {
-      res.send(200, JSON.stringify(post.favorites, null, 2))
+      res.status(200).send(JSON.stringify(post.favorites, null, 2))
     }).error(function (error) {
     // something went wrong
-    res.send(500, {error: error.message})
+    res.status(500).send({error: error.message})
   })
 }
 
@@ -130,7 +130,7 @@ function handleGetFavoritesRequest (req, res) {
             if (err) throw err
             cursor.toArray(function (err, result) {
               if (err) throw err
-              res.send(200, JSON.stringify(result, null, 2))
+              res.status(200).send(JSON.stringify(result, null, 2))
           })
       })
     }
