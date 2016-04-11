@@ -35,14 +35,17 @@ var Profile = React.createClass({
     },
 
     loadPostsFromServer : function(fbDetails) {
+        userId = this.props.userId
+        if (this.props.myprofile) {
+          
+          userId = fbDetails['fbUserID']
+          console.log("setting my own profile " + userId)
+        }
+
         console.log("getting posts from server..."); 
         var url = "http://localhost:3000/api/posts/"
         var data = {}
-        if(this.props.userId) {
-          data = {
-            'userId': this.props.userId
-          }
-        }
+          
         jQuery.ajax({
           url:  url,
           type: 'GET',
@@ -53,7 +56,9 @@ var Profile = React.createClass({
             'numposts': '10'
           },
           dataType: 'json',
-          data: data,
+          data: {
+            'userId': userId
+          },
           timeout : 10000,
           success: function(data) {
             console.log("setting state with data ... ")
