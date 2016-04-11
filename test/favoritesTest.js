@@ -68,9 +68,13 @@ describe('Favorite Endpoint Tests', function() {
             request.get(getUserFavsOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var result = JSON.parse(res.body)
-              assert.equal(1, result.length)
-              assert.equal(postId, result[0].postId)
-              assert.equal(testUserId, result[0].user.userId)
+              var cond = false
+              for (i = 0; i < result.length; i++){
+                if (result[i]["postId"] == postId && result[i]["userId"] == testUserId)
+                  cond = true
+              }
+              console.log("RESULT: "+ JSON.stringify(result[0]))
+              assert.equal(true, cond)
 
               var deleteBody = {"userId": testUserId}
               var deleteOptions = {
@@ -87,7 +91,7 @@ describe('Favorite Endpoint Tests', function() {
             request.del(deleteOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var val = JSON.parse(res.body)
-              assert.equal("1", val.result.deleted)
+              assert.equal("1", val.deleted)
 
               request.del(accountOptions, function (err, res, body) {
               done()

@@ -7,6 +7,7 @@ var r = require('rethinkdb')
 var auth = require('../auth.js')
 var FB = require('fb')
 var async = require('async')
+var handlerUtil = require('./handlerUtil.js')
 
 var TagHandler = function () {
   this.addTag = handleAddTagRequest
@@ -32,32 +33,26 @@ function handleAddTagRequest (req, res) {
               if (err) throw err
               if (result.length > 0)
                 res.status(500).send({error: "Duplicate tag on post"})
-              else{
-                    var tag = new Tag({tagName: req.body.tagName})
-                    // use Thinky to save Tag data
-                    tag.save().then(function(s){
-                      var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
-                      // use Thinky to save TagHistory data
-                      tagHistory.save().then(function (result) {
-                        res.status(200).send(JSON.stringify(result))
-                      }).error(function (error) {
-                        // something went wrong
-                        res.status(500).send({error: error.message})
-                    })
-                  }).error(function(error){
-                    //Will show error if tag already exists in db. Will still add tag to post
-                    console.log(error.message)
-                    var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
-                      // use Thinky to save TagHistory data
-                      tagHistory.save().then(function (result) {
-                        res.status(200).send(JSON.stringify(result))
-                      }).error(function (error) {
-                        // something went wrong
-                        res.status(500).send({error: error.message})
-                    })
-
+              else {
+                function saveTagHistory() {
+                  var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
+                  // use Thinky to save TagHistory data
+                  tagHistory.save().then(function (result) {
+                    res.status(200).send(JSON.stringify(result))
+                  }).error(function (error) {
+                    // something went wrong
+                    res.status(500).send({error: error.message})
                   })
-
+                }
+                var tag = new Tag({tagName: req.body.tagName})
+                // use Thinky to save Tag data
+                tag.save().then(function(s) {
+                  saveTagHistory()
+                }).error(function(error){
+                  //Will show error if tag already exists in db. Will still add tag to post
+                  console.log(error.message)
+                  saveTagHistory()
+                })
               }
           })
     })
@@ -67,7 +62,7 @@ function handleGetPostTagsRequest(req,res) {
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
     console.log("Result: "+ JSON.stringify(post.tags))
-    res.status(200).send(JSON.stringify(post, tags, null, 2))
+    res.status(200).send(JSON.stringify(post.tags, null, 2))
   }).error(function (error) {
     // something went wrong
     console.log("Error: "+ error.message)
@@ -165,15 +160,10 @@ function handleGetTagFeedRequest(req, res) {
 }
 
 function handleGetTagsRequest (req, res) {
-  r.db(config.rethinkdb.db).table('tags').run(
-          connection, function (err, cursor) {
-            if (err) throw err
-            cursor.toArray(function (err, result) {
-              if (err) throw err
-              res.status(200).send(JSON.stringify(result, null, 2))
-          })
+  r.db(config.rethinkdb.db).table('tags').run(connection, function (err, cursor) {
+    if (err) throw err
+    handlerUtil.sendCursor(res, cursor)
   })
-
 }
 
 function handleUpdateTagsRequest (req, res) {

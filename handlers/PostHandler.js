@@ -83,13 +83,9 @@ function handleGetPostRequest (req, res) {
       query_obj[q] = to_query_db
     }
   }
-  r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(
-    connection, function (err, cursor) {
+  r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(connection, function (err, cursor) {
     if (err) throw err
-      cursor.toArray(function (err, result) {
-        if (err) throw err
-          res.status(200).send(JSON.stringify(result, null, 2))
-      })
+    handlerUtil.sendCursor(res, cursor)
   })
 
  // @panthap2 please confirm that this should be removed, I commented
@@ -169,7 +165,7 @@ function handleDeletePostRequest (req, res) {
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
-    num_posts = +req.headers.numposts || 10
+  num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
@@ -177,17 +173,21 @@ function handleGetFeedRequest (req, res) {
     if (!response || response.error) {
       throw response.error
     }
-    friends = []
+    friends = [+req.headers.userid]
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
-    console.log("friends " + friends)
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-      return friends.contains(post('userId'))
-    }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-      if (err) throw err
-      handlerUtil.sendCursorWithUser(res, cursor, connection)
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
+      blocked = r(blocked)
+      r.db(config.rethinkdb.db).table('posts').filter(function (post) {
+        return friends.contains(post('userId')).and(blocked.contains(post('userId')).not())
+      }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
+        if (err) throw err
+        handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
+          res.status(200).send(JSON.stringify(posts, null, 2))
+        })
+      })
     })
   })
 }

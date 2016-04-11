@@ -14,6 +14,7 @@ var Settings = React.createClass ({
 			username: '',
 			email:'',
 			imgsrc: 'https://s-media-cache-ak0.pinimg.com/736x/1a/39/55/1a39555080409fad4d86b94a9af46b97.jpg',
+			notification: true
 		};
 	},
 
@@ -28,6 +29,7 @@ var Settings = React.createClass ({
 		  img: img,
 		  email: email,
 		  name: name,
+		  notification: this.state.notification
 		};
 		
 		var heads = {
@@ -63,6 +65,9 @@ var Settings = React.createClass ({
   	},
   	changeUsername: function(e) {
       this.setState({username: e.target.value});
+  	},
+  	changeNotification: function(e) {
+      this.setState({notification: e.target.checked});
   	},
     render: function() {
 
@@ -101,7 +106,7 @@ var Settings = React.createClass ({
 
 		      <span className="setting_label">Allow email notifications?</span> 
 	          <label className="switch">
-	            <input className="switch-input" type="checkbox"/>
+	            <input className="switch-input" type="checkbox" checked={this.state.notification} onChange={this.changeNotification} />
 	            <span className="switch-label" data-on="On" data-off="Off"></span>
 	            <span className="switch-handle"></span> 
 	          </label>

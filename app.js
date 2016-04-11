@@ -16,7 +16,6 @@ var bodyParser = require('body-parser')
 var FB = require('fb')
 var swagger = require('swagger-node-express')
 var util = require('util')
-var Toggle = require('react-toggle')
 
 // Config file containing server and port information
 var config = require(path.join(__dirname, '/config.js'))
