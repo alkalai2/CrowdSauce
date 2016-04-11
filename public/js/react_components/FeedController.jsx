@@ -28,58 +28,53 @@ var FeedController = React.createClass({
 		componentDidMount: function() {
 			var self = this
 			getFacebookDetails().then(function(fbDetails) {
-			console.log("Getting facebook details : ")
-			console.log(fbDetails)
+				console.log("Getting facebook details : ")
+				console.log(fbDetails)
 
-			FB.api( "/me/friends", function (response) {
-				if (response && !response.error) {
-					//handle the result 
-					console.log("friends: " + JSON.stringify(response, null, 4))
-					// pass data to <FriendsList>
-					self.setState({friends: response})
-					console.log("set respond to friends")
-					self.setState({fbDetails: fbDetails})
-					friendsID = response["data"].map(function(friend_data) {
-						//console.log("getting profile id for:  " + JSON.stringify(friend_data.name, null, 4))
-						return (
-							friend_data.id
-						)
-					})
-					console.log("friends id", JSON.stringify(friendsID))
-					var friendsProfileURL = {}
-					friendsID.map(function (id) {	
+				FB.api( "/me/friends", function (response) {
+					if (response && !response.error) {
+						//handle the result 
+						console.log("friends: " + JSON.stringify(response, null, 4))
+						// pass data to <FriendsList>
+						self.setState({friends: response})
+						console.log("set respond to friends")
+						self.setState({fbDetails: fbDetails})
+						friendsID = response["data"].map(function(friend_data) {
+							return (
+								friend_data.id
+							)
+						})
+						console.log("friends id", JSON.stringify(friendsID))
+						var friendsProfileURL = {}
+						friendsID.map(function (id) {	
 
-
-						// add ajax call
-						var url =
-						jQuery.ajax({
-							url:  'http://localhost:3000/api/accounts/',
-							type: 'GET',
+							// query database for each friends profile picture
+							var url =
+							jQuery.ajax({
+								url:  'http://localhost:3000/api/accounts/',
+								type: 'GET',
 								headers: {
-								'Accept': 'text/html',
-								'userid': fbDetails['fbUserID'],
-								'accesstoken': fbDetails['fbAccessToken'],
-							},
-							dataType: 'json',
-							data: {
-								'userId': id
-							},
-							timeout : 100000,
-							success: function(data) {
-								console.log("saving friends picture ... ")
-								console.log(data[0].picture)
-								friendsProfileURL[id] = data[0].picture
-								self.setState({profileurls: friendsProfileURL})
-							}.bind(this),
-							error: function(xhr, status, err) {
-							console.error('http://localhost:3000/api/accounts/', status, err.toString());
-							}.bind(this)
-						}); 
-						
-					
-				})
-						//console.log("friends url", JSON.stringify(friendsProfileURL))
-			}
+									'Accept': 'text/html',
+									'userid': fbDetails['fbUserID'],
+									'accesstoken': fbDetails['fbAccessToken'],
+								},
+								dataType: 'json',
+								data: {
+									'userId': id
+								},
+								timeout : 100000,
+								success: function(data) {
+									console.log("saving friends picture ... ")
+									console.log(data[0].picture)
+									friendsProfileURL[id] = data[0].picture
+									self.setState({profileurls: friendsProfileURL})
+								}.bind(this),
+								error: function(xhr, status, err) {
+								console.error('http://localhost:3000/api/accounts/', status, err.toString());
+								}.bind(this)
+							}); 											
+					})
+				}
 			});
 				
 			})	
