@@ -177,7 +177,7 @@ function handleGetFeedRequest (req, res) {
     if (!response || response.error) {
       throw response.error
     }
-    friends = []
+    friends = [+req.headers.userid]
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
