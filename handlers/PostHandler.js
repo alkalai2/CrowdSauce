@@ -179,7 +179,7 @@ function handleGetFeedRequest (req, res) {
     }
     friends = r(friends)
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
-      blocked = r(blocked)
+      blocked = r(blocked || [])
       r.db(config.rethinkdb.db).table('posts').filter(function (post) {
         return friends.contains(post('userId')).and(blocked.contains(post('userId')).not())
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
