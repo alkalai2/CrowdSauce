@@ -1,10 +1,9 @@
-
-
 var Input = ReactBootstrap.Input
 var Button = ReactBootstrap.Button
 var Image = ReactBootstrap.Image
 var Thumbnail = ReactBootstrap.Thumbnail
 
+var fbDetails = getFacebookDetails();
 
 var Settings = React.createClass ({
 
@@ -22,6 +21,28 @@ var Settings = React.createClass ({
 	handleEmailChange() {
 		this.setState({
 			value:this.refs.input.getValue()
+		});
+	},
+	
+	deleteHandler: function(e) {
+	  	var heads = {
+            'userid': fbDetails['fbUserID'],
+            'accesstoken': fbDetails['fbAccessToken']
+		};
+		
+		var url = 'http://localhost:3000/api/accounts';
+		jQuery.ajax({
+		  url: url,
+		  dataType: 'json',
+		  type: 'DELETE',
+		  data: {},
+		  headers: heads,
+		  success: function(responsedata) {
+			console.log(responsedata)
+		  }.bind(this),
+		  error: function(xhr, status, err) {
+			console.log(err.toString());
+		  }.bind(this)
 		});
 	},
 
@@ -72,6 +93,10 @@ var Settings = React.createClass ({
 	            <span className="switch-label" data-on="On" data-off="Off"></span>
 	            <span className="switch-handle"></span> 
 	          </label>
+	          
+	          <p>
+	          <Button next onClick={this.deleteHandler} bsStyle="danger">DELETE ALL POSTS</Button>
+	          </p>
 
 		      </Thumbnail>
          	<p>
