@@ -61,6 +61,7 @@ function handleGetAccountRequest (req, res) {
       if(!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
       console.log({[q]: to_query_db})
+      console.log("query is " + q)
         Account.filter({[q]: to_query_db}).run().then(function(user){
             res.status(200).send(JSON.stringify(user, null, 2))
         }).error(function(err){
@@ -78,6 +79,12 @@ function handleGetAccountRequest (req, res) {
 
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
+  if(req.body.notification === "true") {
+    req.body.notification = true;
+  }
+  else if (req.body.notification === "false") {
+    req.body.notification = false;
+  }
   r.db(config.rethinkdb.db).table('users').filter({"userId": parseInt(req.headers.userid)}).update(req.body).run(
       connection, function(err, cursor) {
     if (err) throw err

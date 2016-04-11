@@ -14,6 +14,7 @@ var Settings = React.createClass ({
 			username: '',
 			email:'',
 			imgsrc: 'https://s-media-cache-ak0.pinimg.com/736x/1a/39/55/1a39555080409fad4d86b94a9af46b97.jpg',
+			notification:true
 		};
 	},
 
@@ -28,8 +29,7 @@ var Settings = React.createClass ({
 		  img: img,
 		  email: email,
 		  name: name,
-		  notification: true
-
+		  notification: false
 		};
 		
 		var heads = {
