@@ -33,8 +33,6 @@ function send(address, subject, message, post, userId) {
     Account.filter({"userId": parseInt(userId)}).run().then(function(user){
       emailString = String(htmlemail)
       emailString = format(emailString, post, user[0], message)
-      console.log("post: " + JSON.stringify(post.title))
-      console.log("user" + JSON.stringify(user))
       var mailOptions = {
         from: 'sandbox7f347118c7b442168631b62f2b9c82b2.mailgun.org',
         to: address,
