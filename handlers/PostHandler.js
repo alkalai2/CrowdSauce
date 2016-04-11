@@ -83,13 +83,9 @@ function handleGetPostRequest (req, res) {
       query_obj[q] = to_query_db
     }
   }
-  r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(
-    connection, function (err, cursor) {
+  r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(connection, function (err, cursor) {
     if (err) throw err
-      cursor.toArray(function (err, result) {
-        if (err) throw err
-          res.status(200).send(JSON.stringify(result, null, 2))
-      })
+    handlerUtil.sendCursor(res, cursor)
   })
 
  // @panthap2 please confirm that this should be removed, I commented

@@ -23,4 +23,12 @@ function doCursorWithUser(res, cursor, connection, callback) {
   })
 }
 
+function sendCursor(res, cursor) {
+  cursor.toArray(function(err, result) {
+    if (err) throw err
+    res.status(200).send(JSON.stringify(result, null, 2))
+  })
+}
+
 exports.doCursorWithUser = doCursorWithUser
+exports.sendCursor = sendCursor

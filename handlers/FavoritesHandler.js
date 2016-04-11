@@ -115,22 +115,17 @@ function handleGetFavoritesRequest (req, res) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
       r.db(config.rethinkdb.db).table('favorites').filter(r.row(q).eq(req.query[q])).run(
-          connection, function (err, cursor) {
-            if (err) throw err
-            cursor.toArray(function (err, result) {
-              if (err) throw err
-              res.status(200).send(JSON.stringify(result, null, 2))
-          })
-      })
+        connection, function (err, cursor) {
+          if (err) throw err
+          handlerUtil.sendCursor(res, cursor)
+        }
+      )
     }
   }
-  if(!queried){
+  if (!queried) {
     r.db(config.rethinkdb.db).table('users').run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-          if (err) throw err;
-          res.send(200,JSON.stringify(result, null, 2))
-        })
+      if (err) throw err;
+      handlerUtil.sendCursor(res, cursor)
     })
   }
 }
