@@ -4,7 +4,7 @@ var request = require('request')
 var testUserId = '112186842507184'
 var testAccessToken = 'CAAIAH9y5RLgBAKtjhOYDJwpJNcglmjXExqn7MtnaE4vZAHH3Q80AyoEOp71aKZBdxRPGjALstG2vRDhnZAvtXJIpyU4CafM0heYflHIFNK6ZBEt3wJdMZBNKNJMRAKuVSvPZCCh9pkwUjCtwKF5p3jHFDAnHYJXkYJUYG7ThjXm33SCql0lMTUZCy3kgMC6zgEWJLZBlEUt5HwZDZD';
 var MailListener = require("mail-listener2");
-
+var mail = "CrowdSauce Favorite"
 var crowdsaucetestuser = "crowdsaucetestuser"
 var crowdsaucetest = "crowdsaucetest"
 
@@ -25,6 +25,10 @@ var mailListener = new MailListener({
 mailListener.start(); // start listening
 mailListener.on("server:connected", function(){
   console.log("imapConnected");
+});
+
+mailListener.on("mail", function(mail, seqno, attributes){
+  console.log("emailParsed", mail);
 });
 
 mailListener.on("server:disconnected", function(){
@@ -85,6 +89,8 @@ describe('Email Functionality Tests', function() {
         }
 
         request.post(favPostOptions, function (err, res, body) {
+          assert.equal(true, mail.indexOf("Favorite") > 0)
+          console.log("emailParsed", mail);
           done()
         });
       });
