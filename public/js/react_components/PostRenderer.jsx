@@ -29,7 +29,7 @@ var Input = ReactBootstrap.Input,
 //   "ingredients": ["ingredient 1",  "ingredient 2",  "ingredient 3"],
 //   "directions" : ["mix two eggs", "fry bacon", "toast bread"], 
 //   "recipeLink" : "http://iamafoodblog.com/ivan-ramen-toasted-rye-ramen-noodles/",
-//   "imageLink" : "http://i.imgur.com/SyZyVmN.jpg", 
+//   "images" : ["http://i.imgur.com/SyZyVmN.jpg"],
 //   "tags" : ["chicken", "dinner", "spicy", "orange"],
 //   "notes": "This was everything I wanted. Nice texture to the chicken with the high stove heat, and the added spices really gave it a nice kick. I would recommend using cayenne to taste for those that like it less hot! Delicious! Okay!",
 //   "rating": 4,
@@ -395,11 +395,11 @@ var Post = React.createClass({
   		editing: false,
   		title: this.props.data.title,
   		notes: this.props.data.notes,
-      imageLink : this.props.data.imageLink,
+      images : this.props.data.images,
 
   		currenttitle: this.props.data.title,
   		currentnotes: this.props.data.notes,
-      currentImageLink: this.props.data.imageLink
+      currentImages: this.props.data.images
   	}
   },
   
@@ -411,8 +411,8 @@ var Post = React.createClass({
     this.setState({currentnotes: event.target.value});
   },
 
-  handleImageLinkChange: function(event) {
-    this.setState({currentImageLink: event.target.value});
+  handleImagesChange: function(event) {
+    this.setState({currentimages: event.target.value});
   },  
 
   startEditing: function() {
@@ -430,17 +430,17 @@ var Post = React.createClass({
     // check that we actually need to update
     if (this.state.currenttitle != this.state.title || 
         this.state.currentnotes != this.state.notes ||
-        this.state.currentImageLink != this.state.imageLink
+        this.state.currentimages != this.state.images
       ) {
 
-      newTitle = this.state.currenttitle
-      newNotes = this.state.currentnotes
-      newImageLink = this.state.currentImageLink
+      newTitle  = this.state.currenttitle
+      newNotes  = this.state.currentnotes
+      newImages = this.state.currentImages
 
       newData = this.props.data
       newData['title'] = newTitle
       newData['notes'] = newNotes
-      newData['imageLink'] = newImageLink
+      newData['images'] = newImages
 
       // submit changes to API
       jQuery.ajax({
@@ -466,7 +466,7 @@ var Post = React.createClass({
       // set post states to display change immediately
       this.setState({title: newTitle})
       this.setState({notes: newNotes})
-      this.setState({imageLink: newImageLink})
+      this.setState({images: newImages})
     } else {
       console.log("Nothing to save. No updating needed")
     }
@@ -523,15 +523,15 @@ var Post = React.createClass({
               value={this.state.currenttitle}
               onChange={this.handleTitleChange}/>
           </div>
-          <ImageThumbnail src={this.state.currentImageLink}/>
+          <ImageThumbnail src={this.state.currentImages}/>
           <Input
             className="edit-image-link"
             type="text"
             wrapperClassName="col-xs-8 col-sm-offset-2"
             label="Image Source"
             labelClassName="col-xs-8 col-sm-offset-2"
-            onChange={this.handleImageLinkChange}
-            value={this.state.currentImageLink}/>
+            onChange={this.handleImagesChange}
+            value={this.state.currentImages}/>
           <div>
             <Input
               className="edit-notes"
@@ -574,7 +574,7 @@ var Post = React.createClass({
               {this.state.title}
             </h3>
           </div>
-          <ImageThumbnail src={this.props.data.imageLink}/>
+          <ImageThumbnail src={this.props.data.images}/>
           <div>
             <blockquote className = "recipe-notes">
               {this.state.notes}

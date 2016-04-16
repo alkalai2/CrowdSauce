@@ -61,7 +61,6 @@ function handleAddTagRequest (req, res) {
 function handleGetPostTagsRequest(req,res) {
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
-    console.log("Result: "+ JSON.stringify(post.tags))
     res.status(200).send(JSON.stringify(post.tags, null, 2))
   }).error(function (error) {
     // something went wrong

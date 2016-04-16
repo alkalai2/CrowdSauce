@@ -86,7 +86,7 @@ var PostRecipe = React.createClass({
 		var data = {
 		  recipeLink: this.state.link,
 		  title: this.state.title,
-		  imageLink: this.state.imgsrc.trim(),
+		  images: [this.state.imgsrc.trim()],
 		  notes: this.state.description,
 		  rating: this.state.activePage
 		};
@@ -118,7 +118,7 @@ var PostRecipe = React.createClass({
 		  ingredients: this.state.ings,
 		  title: this.state.title,
 		  directions: this.state.directions,
-		  imageLink: this.state.imgsrc.trim(),
+		  images: [this.state.imgsrc.trim()],
 		  notes: this.state.description,
 		  rating: this.state.activePage
 		};		

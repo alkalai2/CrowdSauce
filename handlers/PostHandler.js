@@ -37,7 +37,7 @@ function handleCreatePostRequest (req, res) {
       ingredients: req.body.ingredients,
       directions: req.body.directions,
       recipeLink: req.body.recipeLink,
-      imageLink: req.body.imageLink,
+      images: req.body.images,
       notes: req.body.notes,
       rating: req.body.rating
     })
