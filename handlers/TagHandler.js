@@ -1,6 +1,7 @@
 // Well need the model of account
 var Tag = require('../models/Tag')
 var Post = require('../models/Post')
+var Account = require('../models/Account')
 var TagHistory = require('../models/TagHistory')
 var config = require('../config.js')
 var r = require('rethinkdb')
@@ -90,6 +91,13 @@ function handleGetTagFeedRequest(req, res) {
 
     // get tags from query, remove whitespace
     search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    console.log("Search tags: "+ search_tags.length)
+
+    //Add searched tags to search history
+    for (m = 0; m < search_tags.length; m++){
+      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
+
+    }
 
     //Keep track of all the search tags that a post has
     post_search_tags = {}
