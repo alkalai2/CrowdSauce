@@ -184,9 +184,9 @@
           {
             "required": false,
             "type": "string",
-            "description": "QUERY: imageLink to filter the response on.",
+            "description": "QUERY: images to filter the response on.",
             "in": "query",
-            "name": "imageLink"
+            "name": "images"
           },
           {
             "required": false,
@@ -888,8 +888,11 @@
             },
             "type": "array"
           },
-          "imageLink": {
-            "type": "string"
+          "images": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "postId": {
             "type": "string"
@@ -925,7 +928,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "postId": {
@@ -959,7 +962,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "notes": {
@@ -1061,7 +1064,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "notes": {

@@ -77,7 +77,6 @@ function handleGetUserFavoritesRequest(req,res) {
   num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
-    console.log("Result: "+ JSON.stringify(account))
     var postIds = account.favorites.map(function(a) {return a.postId})
     if (postIds.length === 0) {
         res.status(200).send([])

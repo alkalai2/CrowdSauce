@@ -13,7 +13,8 @@ var Account = thinky.createModel("users", {
     email: type.string().default(""),
     picture: type.string().default("https://pbs.twimg.com/profile_images/619573624903761920/EGZ2I6wG.jpg"),
     blocked: type.array().default([]),
-    notification: type.boolean().default(true)
+    notification: type.boolean().default(true),
+    searchHistory: type.array().default([])
 }, {pk: "userId"} );
 
 module.exports = Account   
