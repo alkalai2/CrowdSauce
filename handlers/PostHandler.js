@@ -178,7 +178,7 @@ function handleGetFeedRequest (req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('searchHistory').run(connection, function (err, searchHistory){
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
     var str = String(searchHistory.toString())
     var options = {
       port: 3000,
