@@ -876,6 +876,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -916,6 +923,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -949,6 +963,13 @@
           },
           "rating": {
             "type": "number"
+          },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
           },
           "directions": {
             "items": {
@@ -1051,6 +1072,13 @@
         "properties": {
           "rating": {
             "type": "number"
+          },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
           },
           "directions": {
             "items": {
