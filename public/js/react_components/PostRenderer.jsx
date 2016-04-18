@@ -523,7 +523,7 @@ var Post = React.createClass({
               value={this.state.currenttitle}
               onChange={this.handleTitleChange}/>
           </div>
-          <ImageThumbnail src={this.state.currentImages}/>
+          <ImageThumbnail src={this.state.currentImages[0]}/>
           <Input
             className="edit-image-link"
             type="text"
@@ -531,7 +531,7 @@ var Post = React.createClass({
             label="Image Source"
             labelClassName="col-xs-8 col-sm-offset-2"
             onChange={this.handleImagesChange}
-            value={this.state.currentImages}/>
+            value={this.state.currentImages[0]}/>
           <div>
             <Input
               className="edit-notes"
@@ -574,7 +574,7 @@ var Post = React.createClass({
               {this.state.title}
             </h3>
           </div>
-          <ImageThumbnail src={this.props.data.images}/>
+          <ImageThumbnail src={this.props.data.images[0]}/>
           <div>
             <blockquote className = "recipe-notes">
               {this.state.notes}

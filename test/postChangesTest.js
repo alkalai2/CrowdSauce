@@ -39,7 +39,7 @@ var assert = require('assert')
     var changesList = []
 	var changeTitle = {"testName": "Change Post Title Only", "fields": ["title"], "input": {"title": "New Name"}}
 	var changeRatingNotes = {"testName": "Change Post Rating and Notes", "fields": ["rating", "notes"], "input": {"rating": 3, "notes": "new note"}}
-	var changeDirectionsImagesRecipeLink = {"testName": "Change Post Directions, Image Link, and Recipe Link", "fields": ["directions", "images", "recipeLink"], "input": {"directions": ["microwave"], "images": "test.com", "recipeLink": "testRecipes.com"}}
+	var changeDirectionsImagesRecipeLink = {"testName": "Change Post Directions, Image Link, and Recipe Link", "fields": ["directions", "images", "recipeLink"], "input": {"directions": ["microwave"], "images": ["test.com"], "recipeLink": "testRecipes.com"}}
 	var changeDirectionsIngredients = {"testName": "Change Post Directions and Ingredients", "fields": ["directions", "ingredients"], "input": {"directions": ["testing"], "ingredients": ["test"]}}
 	var changePostId = {"testName": "Change Post PostId", "fields": ["postId"], "input": {"postId": 0}}
 
