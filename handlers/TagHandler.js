@@ -90,7 +90,13 @@ function handleGetTagFeedRequest(req, res) {
     friends = r(friends)
 
     // get tags from query, remove whitespace
-    search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    var search_tags = []
+    for (z=0; z < temp_search_tags.length; z++){
+      if (temp_search_tags[z] != "")
+        search_tags.push(temp_search_tags[z])
+    }
+
     console.log("Search tags: "+ search_tags.length)
 
     //Add searched tags to search history

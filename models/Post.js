@@ -17,7 +17,9 @@ var Post = thinky.createModel('posts', {
   images: type.array().default([]),
   timePosted: type.date().default(r.now()),
   notes: type.string().default(''),
-  rating: type.number().default(0)
+  rating: type.number().default(0),
+  prepTime: type.number().default(0),
+  difficulty: type.string().enum(["easy", "medium", "hard"]).default("easy")
 }, {pk: "postId"}
 )
 

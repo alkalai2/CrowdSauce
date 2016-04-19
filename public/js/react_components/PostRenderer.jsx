@@ -437,9 +437,10 @@ var Post = React.createClass({
       newNotes  = this.state.currentnotes
       newImages = this.state.currentImages
 
-      newData = this.props.data
+      newData = {}
       newData['title'] = newTitle
       newData['notes'] = newNotes
+      newData['postId'] = this.props.data.postId
       newData['images'] = newImages
 
       // submit changes to API

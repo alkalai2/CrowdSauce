@@ -33,17 +33,18 @@ function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
     // create Post object
-    var post = new Post(
-      {
-      userId: parseInt(req.headers.userid),
-      title: req.body.title,
-      ingredients: req.body.ingredients,
-      directions: req.body.directions,
-      recipeLink: req.body.recipeLink,
-      images: req.body.images,
-      notes: req.body.notes,
-      rating: req.body.rating
-    })
+  var post = new Post({
+    userId: parseInt(req.headers.userid),
+    title: req.body.title,
+    ingredients: req.body.ingredients,
+    directions: req.body.directions,
+    recipeLink: req.body.recipeLink,
+    images: req.body.images,
+    notes: req.body.notes,
+    rating: req.body.rating,
+    prepTime: req.body.prepTime,
+    difficulty: req.body.difficulty
+  })
 
     // try to store in DB
     post.save().then(function (result) {
@@ -178,7 +179,7 @@ function handleGetFeedRequest (req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('searchHistory').run(connection, function (err, searchHistory){
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
     var str = String(searchHistory.toString())
     var options = {
       port: 3000,
