@@ -190,3 +190,43 @@ background: #ECECEC;
 .tag-link {
 	color: white;
 }
+
+.carousel-full {
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
+}
+
+.carousel-full > .carousel-control.right {
+	border-top-right-radius: .5em;
+	border-bottom-right-radius: .5em;
+	background-image: linear-gradient(to right,rgba(0,0,0,.0001) 0,rgba(0,0,0,.1) 100%);
+}
+
+.carousel-full > .carousel-control.left {
+	border-top-left-radius: .5em;
+	border-bottom-left-radius: .5em;
+	background-image: linear-gradient(to right,rgba(0,0,0,.1) 0,rgba(0,0,0,.0001) 100%);
+}
+
+
+.glyphicon-chevron-left {
+	color: white;
+	font-size: 40px;
+	font-weight: bold;
+}
+
+.glyphicon-chevron-right {
+	color: white;
+	font-size: 40px;
+	font-weight: bold;
+}
+
+.glyphicon-chevron-right:before {
+	content: ">";
+}
+
+.glyphicon-chevron-left:before {
+	content: "<";
+}
+

@@ -18,7 +18,9 @@ var Input = ReactBootstrap.Input,
     OverlayTrigger = ReactBootstrap.OverlayTrigger,
     Modal = ReactBootstrap.Modal,
     ButtonToolbar = ReactBootstrap.ButtonToolbar,
-    Button = ReactBootstrap.Button
+    Button = ReactBootstrap.Button,
+    Carousel = ReactBootstrap.Carousel,
+    CarouselItem = ReactBootstrap.CarouselItem
 
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
@@ -136,9 +138,23 @@ var RecipeLink = React.createClass({
 
 
 var ImageThumbnail = React.createClass({
+
   render: function() {
+    imageLinks = this.props.imageLinks
+
+    if (imageLinks.length == 1) {
+      return <Image className = "recipeImage" src={imageLinks[0]} rounded />
+    }
     return (
-      <Image className = "recipeImage" src={this.props.src} rounded />
+      <Carousel className="carousel-full">
+        {imageLinks.map(function(image) {
+            return (
+              <CarouselItem>
+                <Image className = "recipeImage" src={image} rounded />
+              </CarouselItem>
+            );
+        })}
+      </Carousel>
     );
   }
 });
@@ -534,7 +550,7 @@ var Post = React.createClass({
               value={this.state.currenttitle}
               onChange={this.handleTitleChange}/>
           </div>
-          <ImageThumbnail src={this.state.currentImages[0]}/>
+          <ImageThumbnail imageLinks={this.state.currentImages}/>
           <Input
             className="edit-image-link"
             type="text"
@@ -585,7 +601,7 @@ var Post = React.createClass({
               {this.state.title}
             </h3>
           </div>
-          <ImageThumbnail src={this.props.data.images[0]}/>
+          <ImageThumbnail imageLinks={this.props.data.images}/>
           <div>
             <blockquote className = "recipe-notes">
               {this.state.notes}
