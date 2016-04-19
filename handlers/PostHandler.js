@@ -2,6 +2,8 @@ var Post = require('../models/Post')
 var FB = require('fb')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var thinky = require('thinky')(config.rethinkdb);
+var rt = thinky.r;
 var util = require('util')
 var email = require('../email')
 var auth = require('../auth.js')
@@ -15,6 +17,7 @@ var PostHandler = function () {
   this.updatePost = handleUpdatePostRequest
   this.deletePost = handleDeletePostRequest
   this.getFeed    = handleGetFeedRequest
+  this.getTrending = handleGetTrendingRequest
 }
 
 var connection = null;
@@ -148,20 +151,17 @@ function handleDeletePostRequest (req, res) {
   })
 }
 
-//  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
-//  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
-//         connection, function(err, cursor){
-//          if (err) throw err
-//        }).then(function(result) {
-//           res.json({
-//               result: result
-//           })
-//       })
-//
-//  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.body.postId}).delete().run(
-//         connection, function(err, cursor){
-//          if (err) throw err
-//        })
+function handleGetTrendingRequest(req, res){
+    num_posts = +req.headers.numposts || 3
+    Post.filter(function(post){
+        return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
+    }).getJoin({user: true, favorites: {
+        _apply: function(seq) {return seq.count()},
+        _array: false
+    }}).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function(posts){
+        res.status(200).send(JSON.stringify(posts, null, 2))
+    })
+}
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return

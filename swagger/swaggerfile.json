@@ -4,6 +4,53 @@
     "title": "CrowdSauce"
   },
   "paths": {
+  "/api/posts/trending/": {
+      "get": {
+        "operationId": "get trending",
+        "tags": [ "posts" ],
+        "responses": {
+          "default": {
+            "description": "Error"
+          },
+          "200": {
+            "description": "Success",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/PostTrending"
+              },
+              "type": "array"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "parameters": [
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook userId to be authenticated.",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "in": "header",
+            "default": 3,
+            "name": "numposts",
+            "type": "integer",
+            "description": "Number of posts to provide"
+          }
+        ],
+        "description": "Get the top X most favorited posts in the past week (not necessarily made by friends)"
+      }
+    },
     "/api/posts/feed/": {
       "get": {
         "operationId": "get feed",
@@ -908,6 +955,49 @@
           }
         }
       },
+      "PostTrending": {
+        "properties": {
+          "title":{
+            "type": "string"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "favorites":{
+            "type": "number"
+          },
+          "directions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ingredients": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "images": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "postId": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "recipeLink": {
+            "type": "string"
+          }
+        }
+      },
       "PostUpdate": {
         "properties": {
           "title":{
@@ -963,7 +1053,10 @@
             "type": "array"
           },
           "images": {
-            "type": "string"
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
           },
           "notes": {
             "type": "string"
