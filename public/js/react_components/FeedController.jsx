@@ -139,7 +139,8 @@ var FeedController = React.createClass({
     					<SearchBar handleSearch={this.handleSearchQuery}/>
     					<div>
     						<SearchResults 
-    							query={this.state.query} 
+    							query={this.state.query}
+    							handleSearch={this.handleSearchQuery} 
     							backToFeed={this.handleBackToFeed}
     							fbDetails={this.state.fbDetails}/>
     					</div>

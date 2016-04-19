@@ -186,3 +186,7 @@ background: #ECECEC;
 .edit-notes-label {
 	padding-left: 1%
 }
+
+.tag-link {
+	color: white;
+}
