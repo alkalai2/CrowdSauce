@@ -17,6 +17,7 @@ var SearchBar = React.createClass({
 		//this.setState({value: ''})
 
 		// handle in FeedController
+		alert("Searching for " + query)
 		this.props.handleSearch(query)
 	},
 
@@ -88,14 +89,14 @@ var SearchBar = React.createClass({
 
 			// Jank - necessary to get data from FeedController
 			var fbDetails = this.props.fbDetails
-      if(this.props.fbDetails && !this.state.data.length) {
-        this.loadSearchResults(this.props.fbDetails)
-      } 
+		      if(this.props.fbDetails && !this.state.data.length) {
+		        this.loadSearchResults(this.props.fbDetails)
+		      } 
 
 			return (
 				<div> 
 					<div className="search-banner">
-						Search results for <i> {this.props.query}...</i>
+						Recipes related to <i> {this.props.query}...</i>
 						<span className="back-to-feed"> 
 							<a href="#" onClick={this.props.backToFeed}> back to feed </a> 
 						</span>
@@ -105,6 +106,7 @@ var SearchBar = React.createClass({
 					  data={this.state.data} 
 					  favoriteAble={true}
 					  searchBar = {false}
+					  handleSearch={this.props.handleSearch}
 					  errorMsg={"Oops! Could not find any posts related to " + this.props.query}/>
 					 </div>
 				</div>

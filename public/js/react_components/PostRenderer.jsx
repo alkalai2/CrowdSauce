@@ -206,14 +206,24 @@ var Tags = React.createClass ({
     });
   },
 
+  hangleClick : function(e) {
+    tagName = e.target.text
+    
+    if (this.props.handleSearch) {
+      console.log("Tag click. Navigating to posts with " + tagName)
+      this.props.handleSearch(tagName)
+    }
+  },
+
   render: function() {
+    var self = this
     if(!this.state.tags) {
       return <span></span>
     } else {
       return (
         <span>
         {this.state.tags.map(function(tag) {
-          return <span className="tag label label-info">{tag}</span>
+          return <span className="tag label label-info"><a className="tag-link" onClick={self.hangleClick}>{tag}</a></span>
         })}
         </span>
       );
@@ -547,7 +557,7 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" postId={this.props.data.postId}/>
+              <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>
@@ -585,7 +595,7 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" postId={this.props.data.postId}/>
+              <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>
@@ -602,8 +612,10 @@ var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
     var profileNavigation=this.props.profileNavigation
+    var handleSearch=this.props.handleSearch
     var editable=this.props.editable
     var addNames=this.props.addNames
+
     
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
@@ -626,6 +638,7 @@ var PostList = React.createClass({
                   favoriteAble={favoriteAble}
                   editable={editable}
                   addNames={addNames}
+                  handleSearch={handleSearch}
                   profileNavigation={profileNavigation}/>
               )
             })
