@@ -93,17 +93,23 @@ function handleGetTagFeedRequest(req, res) {
     temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
     var search_tags = []
     for (z=0; z < temp_search_tags.length; z++){
-      if (temp_search_tags[z] != "")
+      if (temp_search_tags[z] != "" && search_tags.indexOf(temp_search_tags[z]) < 0)
         search_tags.push(temp_search_tags[z])
     }
 
     console.log("Search tags: "+ search_tags.length)
 
-    //Add searched tags to search history
-    for (m = 0; m < search_tags.length; m++){
-      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
 
-    }
+    //Add searched tags to search history
+    
+      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function(err, curr_list){
+        for (m = 0; m < search_tags.length; m++){
+          //Keeping entries in the searchHistory list unique
+            if (curr_list.indexOf(search_tags[m]) < 0)
+              r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
+        }
+
+      })
 
     //Keep track of all the search tags that a post has
     post_search_tags = {}
