@@ -28,8 +28,8 @@ var FeedController = React.createClass({
 		componentDidMount: function() {
 			var self = this
 			getFacebookDetails().then(function(fbDetails) {
-			console.log("Getting facebook details : ")
-			console.log(fbDetails)
+				console.log("Getting facebook details : ")
+				console.log(fbDetails)
 
 				FB.api( "/me/friends", function (response) {
 					if (response && !response.error) {
@@ -40,27 +40,42 @@ var FeedController = React.createClass({
 						console.log("set respond to friends")
 						self.setState({fbDetails: fbDetails})
 						friendsID = response["data"].map(function(friend_data) {
-							//console.log("getting profile id for:  " + JSON.stringify(friend_data.name, null, 4))
 							return (
 								friend_data.id
 							)
 						})
 						console.log("friends id", JSON.stringify(friendsID))
 						var friendsProfileURL = {}
-						friendsID.map(function (id) {
-							//console.log("/" + id + "/picture")
-							FB.api("/" + id + "/picture", function (response) {
-								if (response && !response.error) {
-									console.log("friend id ", id, " friends url", JSON.stringify(response["data"]["url"]))
-									friendsProfileURL[id] = response["data"]["url"]
+						friendsID.map(function (id) {	
+
+							// query database for each friends profile picture
+							var url =
+							jQuery.ajax({
+								url:  'http://localhost:3000/api/accounts/',
+								type: 'GET',
+								headers: {
+									'Accept': 'text/html',
+									'userid': fbDetails['fbUserID'],
+									'accesstoken': fbDetails['fbAccessToken'],
+								},
+								dataType: 'json',
+								data: {
+									'userId': id
+								},
+								timeout : 100000,
+								success: function(data) {
+									console.log("saving friends picture ... ")
+									console.log(data[0].picture)
+									friendsProfileURL[id] = data[0].picture
 									self.setState({profileurls: friendsProfileURL})
-									console.log("friends url", JSON.stringify(friendsProfileURL))
-								}
-							});
-						})
-						//console.log("friends url", JSON.stringify(friendsProfileURL))
-					}
-				});
+								}.bind(this),
+								error: function(xhr, status, err) {
+								console.error('http://localhost:3000/api/accounts/', status, err.toString());
+								}.bind(this)
+							}); 											
+					})
+				}
+			});
 				
 			})	
 		},

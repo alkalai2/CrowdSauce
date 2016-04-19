@@ -30,17 +30,18 @@ function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
     // create Post object
-    var post = new Post(
-      {
-      userId: parseInt(req.headers.userid),
-      title: req.body.title,
-      ingredients: req.body.ingredients,
-      directions: req.body.directions,
-      recipeLink: req.body.recipeLink,
-      imageLink: req.body.imageLink,
-      notes: req.body.notes,
-      rating: req.body.rating
-    })
+  var post = new Post({
+    userId: parseInt(req.headers.userid),
+    title: req.body.title,
+    ingredients: req.body.ingredients,
+    directions: req.body.directions,
+    recipeLink: req.body.recipeLink,
+    images: req.body.images,
+    notes: req.body.notes,
+    rating: req.body.rating,
+    prepTime: req.body.prepTime,
+    difficulty: req.body.difficulty
+  })
 
     // try to store in DB
     post.save().then(function (result) {
@@ -178,16 +179,45 @@ function handleGetFeedRequest (req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
-      blocked = r(blocked)
-      r.db(config.rethinkdb.db).table('posts').filter(function (post) {
-        return friends.contains(post('userId')).and(blocked.contains(post('userId')).not())
-      }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-        if (err) throw err
-        handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
-          res.status(200).send(JSON.stringify(posts, null, 2))
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
+    var str = String(searchHistory.toString())
+    var options = {
+      port: 3000,
+      path: '/api/tags/feed/?tagNames='+ str,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'userid': req.headers.userid
+      }
+    }
+      var requ = http.request(options, function (rq) {
+        rq.setEncoding('utf8');
+        rq.on('data', function (chunk) {
+          var suggested_posts = JSON.parse(chunk)
+          var suggested_post_ids = []
+          for (n = 0; n < suggested_posts.length; n++){
+            var p = suggested_posts[n]
+            suggested_post_ids.push(p['postId'])
+          }
+          console.log("Suggested post ids: "+ suggested_post_ids)
+          suggested_post_ids = r (suggested_post_ids)
+          r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
+          blocked = r(blocked || [])
+          r.db(config.rethinkdb.db).table('posts').filter(function (post) {
+            return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
+          }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
+            if (err) throw err
+            handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
+              var feedPosts = suggested_posts.concat(posts)
+              res.status(200).send(JSON.stringify(feedPosts, null, 2))
+            })
+          })
+        })
+
         })
       })
+      requ.end()
+
     })
   })
 }

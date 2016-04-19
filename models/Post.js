@@ -14,10 +14,12 @@ var Post = thinky.createModel('posts', {
   ingredients: type.array().default([]),
   directions: type.array().default([]),
   recipeLink: type.string().default(''),
-  imageLink: type.string().default(''),
+  images: type.array().default([]),
   timePosted: type.date().default(r.now()),
   notes: type.string().default(''),
-  rating: type.number().default(0)
+  rating: type.number().default(0),
+  prepTime: type.number().default(0),
+  difficulty: type.string().enum(["easy", "medium", "hard"]).default("easy")
 }, {pk: "postId"}
 )
 

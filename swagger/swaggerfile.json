@@ -184,9 +184,9 @@
           {
             "required": false,
             "type": "string",
-            "description": "QUERY: imageLink to filter the response on.",
+            "description": "QUERY: images to filter the response on.",
             "in": "query",
-            "name": "imageLink"
+            "name": "images"
           },
           {
             "required": false,
@@ -876,6 +876,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -888,8 +895,11 @@
             },
             "type": "array"
           },
-          "imageLink": {
-            "type": "string"
+          "images": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "postId": {
             "type": "string"
@@ -913,6 +923,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -925,7 +942,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "postId": {
@@ -947,6 +964,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -959,7 +983,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "notes": {
@@ -1049,6 +1073,13 @@
           "rating": {
             "type": "number"
           },
+          "prepTime": {
+            "type": "number"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"]
+          },
           "directions": {
             "items": {
               "type": "string"
@@ -1061,7 +1092,7 @@
             },
             "type": "array"
           },
-          "imageLink": {
+          "images": {
             "type": "string"
           },
           "notes": {

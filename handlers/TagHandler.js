@@ -1,6 +1,7 @@
 // Well need the model of account
 var Tag = require('../models/Tag')
 var Post = require('../models/Post')
+var Account = require('../models/Account')
 var TagHistory = require('../models/TagHistory')
 var config = require('../config.js')
 var r = require('rethinkdb')
@@ -61,7 +62,6 @@ function handleAddTagRequest (req, res) {
 function handleGetPostTagsRequest(req,res) {
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
-    console.log("Result: "+ JSON.stringify(post.tags))
     res.status(200).send(JSON.stringify(post.tags, null, 2))
   }).error(function (error) {
     // something went wrong
@@ -83,14 +83,27 @@ function handleGetTagFeedRequest(req, res) {
     if (!response || response.error) {
       throw response.error
     }
-    friends = []
+    friends = [+req.headers.userid]
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
 
     // get tags from query, remove whitespace
-    search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    var search_tags = []
+    for (z=0; z < temp_search_tags.length; z++){
+      if (temp_search_tags[z] != "")
+        search_tags.push(temp_search_tags[z])
+    }
+
+    console.log("Search tags: "+ search_tags.length)
+
+    //Add searched tags to search history
+    for (m = 0; m < search_tags.length; m++){
+      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
+
+    }
 
     //Keep track of all the search tags that a post has
     post_search_tags = {}
