@@ -234,3 +234,13 @@ background: #ECECEC;
 	float: right;
 }
 
+.ingr-image-holder {
+	float: right;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.ingr-ok-icon {
+	width: 55%;
+}
+
