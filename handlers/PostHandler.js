@@ -12,11 +12,11 @@ var Account = require('../models/Account.js')
 var handlerUtil = require('./handlerUtil.js')
 
 var PostHandler = function () {
-  this.createPost = handleCreatePostRequest
-  this.getPost    = handleGetPostRequest
-  this.updatePost = handleUpdatePostRequest
-  this.deletePost = handleDeletePostRequest
-  this.getFeed    = handleGetFeedRequest
+  this.createPost  = handleCreatePostRequest
+  this.getPost     = handleGetPostRequest
+  this.updatePost  = handleUpdatePostRequest
+  this.deletePost  = handleDeletePostRequest
+  this.getFeed     = handleGetFeedRequest
   this.getTrending = handleGetTrendingRequest
 }
 
@@ -31,7 +31,6 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
-
     // create Post object
     var post = new Post({
       userId: parseInt(req.headers.userid),
@@ -45,7 +44,6 @@ function handleCreatePostRequest (req, res) {
       prepTime: req.body.prepTime,
       difficulty: req.body.difficulty
     })
-
     // try to store in DB
     post.save().then(function (result) {
       res.status(200).send(JSON.stringify(result))
@@ -58,14 +56,6 @@ function handleCreatePostRequest (req, res) {
         console.log(err)
         throw(err)
       })
-      // send notifications to friends
-      //    r.db(config.rethinkdb.db).table('users').get(req.headers.userid).getField('name').run(connection, function (err, result){
-      //      email.sendToFriends(
-      //        req.headers.userid,
-      //        result + " posted a new recipe!",
-      //        "Your friend " + result + " posted a new Post!",
-      //        result)
-      //    })
     }).error(function (error) {
       console.log(error.message)
       res.status(500).send({error: error.message})
@@ -83,7 +73,6 @@ function handleGetPostRequest (req, res) {
       to_query_db = req.query[q]
       if(!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
-
       query_obj[q] = to_query_db
     }
   }
@@ -91,18 +80,6 @@ function handleGetPostRequest (req, res) {
     if (err) throw err
       handlerUtil.sendCursor(res, cursor)
   })
-
-  // @panthap2 please confirm that this should be removed, I commented
-  // just in case but it was crashing the srver
-  // if(!queried){
-  //   r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
-  //     if (err) throw err;
-  //     cursor.toArray(function(err, result) {
-  //       if (err) throw err;
-  //       res.send(200,JSON.stringify(result, null, 2))
-  //     })
-  //   })
-  // }
 }
 
 function handleUpdatePostRequest (req, res) {
@@ -125,8 +102,6 @@ function handleUpdatePostRequest (req, res) {
 }
 
 function handleDeletePostRequest (req, res) {
-  //if (!auth.assertHasUser(req)) return
-
   Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
     post.deleteAll({favorites: true}).then(function(result){
       var data = JSON.stringify({postId: post.postId})

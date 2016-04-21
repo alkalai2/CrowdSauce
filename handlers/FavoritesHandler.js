@@ -37,36 +37,36 @@ function handleCreateFavoritesRequest (req, res) {
               res.status(500).send({error: "Duplicate favorite on post"})
           else{
             // create Favorites object
-            var favorites = new Favorites(
-              <`2`>{userId: parseInt(req.headers.userid),
-                postId: req.body.postId})
-                console.log("PostId: "+ req.body.postId)
-                // use Thinky to save Favorites data
-                favorites.save().then(function (result) {
-                  res.status(200).send(JSON.stringify(result))
-                  r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
-                    connection, function (err, res) {
-                    if (err){
-                      console.log("Error favorites: "+ err.message)
-                      throw err
-                    }
-                    console.log("RESULT "+ JSON.stringify(res))
-                    Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
-                      console.log("res.title: " + res.title)
-                      email.sendToUser(res.userId,
-                                       user[0].name + " favorited your post!",
-                                       "Your friend " + user[0].name +
-                                         " favorited your post " + res.title + "!", res)
-                    }).error(function(err){
-                      console.log(err)
-                      throw(err)
-                    })
+            var favorites = new Favorites({
+              userId: parseInt(req.headers.userid),
+              postId: req.body.postId})
+              console.log("PostId: "+ req.body.postId)
+              // use Thinky to save Favorites data
+              favorites.save().then(function (result) {
+                res.status(200).send(JSON.stringify(result))
+                r.db(config.rethinkdb.db).table('posts').get(req.body.postId).run(
+                  connection, function (err, res) {
+                  if (err){
+                    console.log("Error favorites: "+ err.message)
+                    throw err
                   }
-                  )
-                }).error(function (error) {
-                  // something went wrong
-                  res.status(500).send({error: error.message})
-                })
+                  console.log("RESULT "+ JSON.stringify(res))
+                  Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
+                    console.log("res.title: " + res.title)
+                    email.sendToUser(res.userId,
+                                     user[0].name + " favorited your post!",
+                                     "Your friend " + user[0].name +
+                                       " favorited your post " + res.title + "!", res)
+                  }).error(function(err){
+                    console.log(err)
+                    throw(err)
+                  })
+                }
+                )
+              }).error(function (error) {
+                // something went wrong
+                res.status(500).send({error: error.message})
+              })
           }
         })
     })

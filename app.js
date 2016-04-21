@@ -90,7 +90,7 @@ function init() {
     account: new AccountHandler(),
     post: new PostHandler(),
     favorites: new FavoritesHandler(),
-    tag: new TagHandler()
+    tag: new TagHandler(),
     shoppinglist: new ShoppinglistHandler()
   }
   // ============================== Page Routing ================================

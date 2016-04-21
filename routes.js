@@ -28,8 +28,8 @@ function setup (app, handlers) {
 
   // Shopping List
   app.get('/api/shoppinglist', handlers.shoppinglist.getShoppinglist)
-  app.post('/api/shoppinglist/', handlers.shoppinglist.postShoppinglist)
-  app.delete('/api/shoppinglist/', handlers.shoppinglist.deleteShoppinglist)
+  app.post('/api/shoppinglist/', handlers.shoppinglist.postItemsToShoppinglist)
+  app.delete('/api/shoppinglist/', handlers.shoppinglist.deleteItemsFromShoppinglist)
 
   //Add tag to a post
   app.post('/api/tags/', handlers.tag.addTag)
