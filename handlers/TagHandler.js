@@ -22,41 +22,41 @@ var TagHandler = function () {
 
 var connection = null;
 r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
-    if (err) throw err;
-    connection = conn
+  if (err) throw err;
+  connection = conn
 })
 
 function handleAddTagRequest (req, res) {
   r.db(config.rethinkdb.db).table('tagHistory').filter({tagName: req.body.tagName, postId: req.body.postId}).run(
-          connection, function (err, cursor) {
-            if (err) throw err
-            cursor.toArray(function (err, result) {
-              if (err) throw err
-              if (result.length > 0)
-                res.status(500).send({error: "Duplicate tag on post"})
-              else {
-                function saveTagHistory() {
-                  var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
-                  // use Thinky to save TagHistory data
-                  tagHistory.save().then(function (result) {
-                    res.status(200).send(JSON.stringify(result))
-                  }).error(function (error) {
-                    // something went wrong
-                    res.status(500).send({error: error.message})
-                  })
-                }
-                var tag = new Tag({tagName: req.body.tagName})
-                // use Thinky to save Tag data
-                tag.save().then(function(s) {
-                  saveTagHistory()
-                }).error(function(error){
-                  //Will show error if tag already exists in db. Will still add tag to post
-                  console.log(error.message)
-                  saveTagHistory()
-                })
-              }
+    connection, function (err, cursor) {
+    if (err) throw err
+      cursor.toArray(function (err, result) {
+        if (err) throw err
+          if (result.length > 0)
+            res.status(500).send({error: "Duplicate tag on post"})
+        else {
+          function saveTagHistory() {
+            var tagHistory = new TagHistory({tagName: req.body.tagName, postId: req.body.postId})
+            // use Thinky to save TagHistory data
+            tagHistory.save().then(function (result) {
+              res.status(200).send(JSON.stringify(result))
+            }).error(function (error) {
+              // something went wrong
+              res.status(500).send({error: error.message})
+            })
+          }
+          var tag = new Tag({tagName: req.body.tagName})
+          // use Thinky to save Tag data
+          tag.save().then(function(s) {
+            saveTagHistory()
+          }).error(function(error){
+            //Will show error if tag already exists in db. Will still add tag to post
+            console.log(error.message)
+            saveTagHistory()
           })
-    })
+        }
+      })
+  })
 }
 
 function handleGetPostTagsRequest(req,res) {
@@ -88,10 +88,8 @@ function handleGetTagFeedRequest(req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
-
     // get tags from query, remove whitespace
     temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
-
     //removing all empty tags from the search tags and removing all repetitions
     var search_tags = []
     for (z=0; z < temp_search_tags.length; z++){
@@ -100,18 +98,14 @@ function handleGetTagFeedRequest(req, res) {
     }
 
     console.log("Search tags: "+ search_tags.length)
-
-
     //Add searched tags to search history
-    
-      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function(err, curr_list){
-        for (m = 0; m < search_tags.length; m++){
-          //Keeping entries in the searchHistory list unique
-            if (curr_list.indexOf(search_tags[m]) < 0)
-              r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
-        }
-
-      })
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function(err, curr_list){
+      for (m = 0; m < search_tags.length; m++){
+        //Keeping entries in the searchHistory list unique
+        if (curr_list.indexOf(search_tags[m]) < 0)
+          r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
+      }
+    })
 
     //Keep track of all the search tags that a post has
     post_search_tags = {}
@@ -142,38 +136,38 @@ function handleGetTagFeedRequest(req, res) {
         return friends.contains(post('userId')).and(posts.contains(post('postId')))
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
         if (err) throw err
-        cursor.toArray(function(err, result) {
-          if (err) throw err;
-          var unordered_posts = result
-          var unordered_postIds = []
-          for (j = 0; j < unordered_posts.length; j++){ 
-            unordered_postIds.push(unordered_posts[j]["postId"])
-          }
-
-          //Posts based on relevance (number of matching search tags)
-          var keep_post_search_tags_list = []
-          for (var postId in post_search_tags){
-            if (post_search_tags.hasOwnProperty(postId)){
-              if (unordered_postIds.indexOf(postId) >= 0)
-                keep_post_search_tags_list.push({"postId": postId, "matchingTags": post_search_tags[postId].length})    
+          cursor.toArray(function(err, result) {
+            if (err) throw err;
+            var unordered_posts = result
+            var unordered_postIds = []
+            for (j = 0; j < unordered_posts.length; j++){
+              unordered_postIds.push(unordered_posts[j]["postId"])
             }
-          }
 
-          //Order posts based on relevance (number of matching search tags)
-          keep_post_search_tags_list.sort(function(a, b) { return a.matchingTags - b.matchingTags; }).reverse()
-          var ordered_posts = [] 
-          for (m = 0; m < unordered_posts.length; m++){
-            for (n = 0; n < keep_post_search_tags_list.length; n++) {
-              if (unordered_posts[m]["postId"] == keep_post_search_tags_list[n]["postId"]) {
-                ordered_posts[n] = unordered_posts[m]
-                break
+            //Posts based on relevance (number of matching search tags)
+            var keep_post_search_tags_list = []
+            for (var postId in post_search_tags){
+              if (post_search_tags.hasOwnProperty(postId)){
+                if (unordered_postIds.indexOf(postId) >= 0)
+                  keep_post_search_tags_list.push({"postId": postId, "matchingTags": post_search_tags[postId].length})
               }
             }
-          }
 
-          res.status(200).send(JSON.stringify(ordered_posts, null, 2))
+            //Order posts based on relevance (number of matching search tags)
+            keep_post_search_tags_list.sort(function(a, b) { return a.matchingTags - b.matchingTags; }).reverse()
+            var ordered_posts = []
+            for (m = 0; m < unordered_posts.length; m++){
+              for (n = 0; n < keep_post_search_tags_list.length; n++) {
+                if (unordered_posts[m]["postId"] == keep_post_search_tags_list[n]["postId"]) {
+                  ordered_posts[n] = unordered_posts[m]
+                  break
+                }
+              }
+            }
 
-        })
+            res.status(200).send(JSON.stringify(ordered_posts, null, 2))
+
+          })
       }).error(function (error) {
         // something went wrong
         console.log("Error: "+ error.message)
@@ -186,7 +180,7 @@ function handleGetTagFeedRequest(req, res) {
 function handleGetTagsRequest (req, res) {
   r.db(config.rethinkdb.db).table('tags').run(connection, function (err, cursor) {
     if (err) throw err
-    handlerUtil.sendCursor(res, cursor)
+      handlerUtil.sendCursor(res, cursor)
   })
 }
 
@@ -201,64 +195,55 @@ function handleDeleteTagRequest (req, res) {
 
   console.log('handleDeleteTagRequest called with ' + JSON.stringify(req.route))
   r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).run(connection, function(err, cursor){
-      if (err) throw err
+    if (err) throw err
       cursor.toArray(function(err, result){
-          if (err) throw err
+        if (err) throw err
           async.each(result,
-            function(history, callback){
-                TagHistory.get(history.id).then(function(taghistory){
-                    console.log("first" + JSON.stringify(taghistory))
-                    taghistory.delete().then(function(result){
-                        console.log("first delete" + JSON.stringify(result))
-                        console.log(history.tagName)
-                      TagHistory.filter({tagName: history.tagName}).then(function(num){
-                          console.log("num" + JSON.stringify(num))
-                          if (num.length === 0){
-                              Tag.get(history.tagName).then(function(tag){
-                                  tag.delete().then(function(result){
-                                      callback(result)
-                                  })
-                              })
-                          }
-                          else
-                          {callback(result)}
-                      })
-                    })
-                })
-            },
-            function(err){
-              res.status(200).send("Done")
-            }
-          )
+                     function(history, callback){
+                       TagHistory.get(history.id).then(function(taghistory){
+                         console.log("first" + JSON.stringify(taghistory))
+                         taghistory.delete().then(function(result){
+                           console.log("first delete" + JSON.stringify(result))
+                           console.log(history.tagName)
+                           TagHistory.filter({tagName: history.tagName}).then(function(num){
+                             console.log("num" + JSON.stringify(num))
+                             if (num.length === 0){
+                               Tag.get(history.tagName).then(function(tag){
+                                 tag.delete().then(function(result){
+                                   callback(result)
+                                 })
+                               })
+                             }
+                             else
+                               {callback(result)}
+                           })
+                         })
+                       })
+                     },
+                     function(err){
+                       res.status(200).send("Done")
+                     }
+                    )
       })
   })
-//    r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
-//         connection, function(err, cursor){
-//          if (err) throw err
-//        }).then(function(result) {
-//           res.json({
-//               result: result
-//           })
-//       })
-
 }
 
 function handleDeleteTagNameRequest(req,res){
-    console.log('handleDeleteTagNameRequest called with ' + JSON.stringify(req.route))
-    r.db(config.rethinkdb.db).table('tags').filter(req.body).delete().run(
-         connection, function(err, cursor){
-          if (err)
-            throw err
+  console.log('handleDeleteTagNameRequest called with ' + JSON.stringify(req.route))
+  r.db(config.rethinkdb.db).table('tags').filter(req.body).delete().run(
+    connection, function(err, cursor){
+    if (err)
+      throw err
   })
-    r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
-          connection, function(err, cursor){
-            if (err)
-              throw err
-          }).then(function(result) {
-            res.json({
-               result: result
-           })
-       })
+  r.db(config.rethinkdb.db).table('tagHistory').filter(req.body).delete().run(
+    connection, function(err, cursor){
+    if (err)
+      throw err
+  }).then(function(result) {
+    res.json({
+      result: result
+    })
+  })
 
 }
 

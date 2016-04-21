@@ -11,6 +11,7 @@ function setup (app, handlers) {
   app.delete('/api/accounts/', handlers.account.deleteAccount)
   app.post('/api/accounts/block/', handlers.account.blockAccount)
   app.delete('/api/accounts/block/', handlers.account.unblockAccount)
+
   // Add a new post for given userId
   app.post('/api/posts/', handlers.post.createPost)
   app.get('/api/posts/', handlers.post.getPost)
@@ -24,6 +25,11 @@ function setup (app, handlers) {
   app.post('/api/favorites/', handlers.favorites.createFavorites)
   app.put('/api/favorites/', handlers.favorites.updateFavorites)
   app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
+
+  // Shopping List
+  app.get('/api/shoppinglist', handlers.shoppinglist.getShoppinglist)
+  app.post('/api/shoppinglist/', handlers.shoppinglist.postItemsToShoppinglist)
+  app.delete('/api/shoppinglist/', handlers.shoppinglist.deleteItemsFromShoppinglist)
 
   //Add tag to a post
   app.post('/api/tags/', handlers.tag.addTag)

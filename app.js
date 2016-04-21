@@ -3,6 +3,7 @@
 var path = require('path')
 var routes = require('./routes')
 var AccountHandler = require('./handlers/AccountHandler')
+var ShoppinglistHandler = require('./handlers/ShoppinglistHandler')
 var PostHandler = require('./handlers/PostHandler')
 var FavoritesHandler = require('./handlers/FavoritesHandler')
 var TagHandler = require('./handlers/TagHandler')
@@ -89,7 +90,8 @@ function init() {
     account: new AccountHandler(),
     post: new PostHandler(),
     favorites: new FavoritesHandler(),
-    tag: new TagHandler()
+    tag: new TagHandler(),
+    shoppinglist: new ShoppinglistHandler()
   }
   // ============================== Page Routing ================================
   /*

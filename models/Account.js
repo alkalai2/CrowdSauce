@@ -17,7 +17,7 @@ var Account = thinky.createModel("users", {
     searchHistory: type.array().default([])
 }, {pk: "userId"} );
 
-module.exports = Account   
+module.exports = Account
 
 // this line has to be here otherwise the circular import will not work
 // Post requires Account and Account requires Post
