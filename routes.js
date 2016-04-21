@@ -15,6 +15,7 @@ function setup (app, handlers) {
   app.post('/api/posts/', handlers.post.createPost)
   app.get('/api/posts/', handlers.post.getPost)
   app.get('/api/posts/feed/', handlers.post.getFeed)
+  app.get('/api/posts/trending', handlers.post.getTrending)
   app.put('/api/posts/', handlers.post.updatePost)
   app.delete('/api/posts/', handlers.post.deletePost)
 

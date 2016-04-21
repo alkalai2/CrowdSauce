@@ -2,6 +2,8 @@ var Post = require('../models/Post')
 var FB = require('fb')
 var config = require('../config.js')
 var r = require('rethinkdb')
+var thinky = require('thinky')(config.rethinkdb);
+var rt = thinky.r;
 var util = require('util')
 var email = require('../email')
 var auth = require('../auth.js')
@@ -15,6 +17,7 @@ var PostHandler = function () {
   this.updatePost = handleUpdatePostRequest
   this.deletePost = handleDeletePostRequest
   this.getFeed    = handleGetFeedRequest
+  this.getTrending = handleGetTrendingRequest
 }
 
 var connection = null;
@@ -30,17 +33,18 @@ function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
     // create Post object
-    var post = new Post(
-      {
-      userId: parseInt(req.headers.userid),
-      title: req.body.title,
-      ingredients: req.body.ingredients,
-      directions: req.body.directions,
-      recipeLink: req.body.recipeLink,
-      images: req.body.images,
-      notes: req.body.notes,
-      rating: req.body.rating
-    })
+  var post = new Post({
+    userId: parseInt(req.headers.userid),
+    title: req.body.title,
+    ingredients: req.body.ingredients,
+    directions: req.body.directions,
+    recipeLink: req.body.recipeLink,
+    images: req.body.images,
+    notes: req.body.notes,
+    rating: req.body.rating,
+    prepTime: req.body.prepTime,
+    difficulty: req.body.difficulty
+  })
 
     // try to store in DB
     post.save().then(function (result) {
@@ -148,20 +152,17 @@ function handleDeletePostRequest (req, res) {
   })
 }
 
-//  console.log('handleDeletePostRequest called with ' + JSON.stringify(req.route))
-//  r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).delete().run(
-//         connection, function(err, cursor){
-//          if (err) throw err
-//        }).then(function(result) {
-//           res.json({
-//               result: result
-//           })
-//       })
-//
-//  r.db(config.rethinkdb.db).table('favorites').filter({"postId": req.body.postId}).delete().run(
-//         connection, function(err, cursor){
-//          if (err) throw err
-//        })
+function handleGetTrendingRequest(req, res){
+    num_posts = +req.headers.numposts || 3
+    Post.filter(function(post){
+        return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
+    }).getJoin({user: true, favorites: {
+        _apply: function(seq) {return seq.count()},
+        _array: false
+    }}).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function(posts){
+        res.status(200).send(JSON.stringify(posts, null, 2))
+    })
+}
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
@@ -178,7 +179,7 @@ function handleGetFeedRequest (req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
-    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('searchHistory').run(connection, function (err, searchHistory){
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
     var str = String(searchHistory.toString())
     var options = {
       port: 3000,

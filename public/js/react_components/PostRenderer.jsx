@@ -18,7 +18,9 @@ var Input = ReactBootstrap.Input,
     OverlayTrigger = ReactBootstrap.OverlayTrigger,
     Modal = ReactBootstrap.Modal,
     ButtonToolbar = ReactBootstrap.ButtonToolbar,
-    Button = ReactBootstrap.Button
+    Button = ReactBootstrap.Button,
+    Carousel = ReactBootstrap.Carousel,
+    CarouselItem = ReactBootstrap.CarouselItem
 
 // Example data to simulate what we will get from API
 // will be used to display a post on the site
@@ -36,8 +38,47 @@ var Input = ReactBootstrap.Input,
 //   "timestamp": "Feb 24, 2016"
 // }
 
+var SingleIngredient = React.createClass({
+  getInitialState : function() {
+    return {added: false, hover: false}
+  },
+
+  onShoppingClick: function() {
+    // if adding to list, make server call
+    this.setState({added: !this.state.added})
+    this.forceUpdate();
+  },
+
+  addIngredientToList: function(name) {
+
+  },
+
+  mouseOver: function () {
+      this.setState({hover: true});
+  },
+  
+  mouseOut: function () {
+      this.setState({hover: false});
+  },
+
+  render: function() {
+    var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
+
+    button = this.state.added ? 
+      <span className="tag label label-success ingr-image-holder"><img className="ingr-ok-icon" src="img/glyphicons/png/glyphicons-207-ok.png"></img></span>:
+      <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>add to shopping list</Button>
+
+      return (
+          <td onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}><span>{this.props.ingrName} {button} </span> </td>
+      );
+  }
+});
+
 var Ingredients = React.createClass({
+    // add shopping list buttons
+
     render: function() {
+        
         return (
           <Table responsive>
             <thead>
@@ -47,8 +88,8 @@ var Ingredients = React.createClass({
             </thead>
 
             <tbody>
-              {(this.props.items).map(function(i) {
-                 return <tr><td>{i}</td> </tr>
+              {(this.props.items).map(function(ingrName) {
+                 return <tr><SingleIngredient ingrName={ingrName}/> </tr>
               })}
             </tbody>
           </Table>
@@ -136,9 +177,23 @@ var RecipeLink = React.createClass({
 
 
 var ImageThumbnail = React.createClass({
+
   render: function() {
+    imageLinks = this.props.imageLinks
+
+    if (imageLinks.length == 1) {
+      return <Image className = "recipeImage" src={imageLinks[0]} rounded />
+    }
     return (
-      <Image className = "recipeImage" src={this.props.src} rounded />
+      <Carousel className="carousel-full">
+        {imageLinks.map(function(image) {
+            return (
+              <CarouselItem>
+                <Image className = "recipeImage" src={image} rounded />
+              </CarouselItem>
+            );
+        })}
+      </Carousel>
     );
   }
 });
@@ -206,14 +261,24 @@ var Tags = React.createClass ({
     });
   },
 
+  hangleClick : function(e) {
+    tagName = e.target.text
+    
+    if (this.props.handleSearch) {
+      console.log("Tag click. Navigating to posts with " + tagName)
+      this.props.handleSearch(tagName)
+    }
+  },
+
   render: function() {
+    var self = this
     if(!this.state.tags) {
       return <span></span>
     } else {
       return (
         <span>
         {this.state.tags.map(function(tag) {
-          return <span className="tag label label-info">{tag}</span>
+          return <span className="tag label label-info"><a className="tag-link" onClick={self.hangleClick}>{tag}</a></span>
         })}
         </span>
       );
@@ -437,9 +502,10 @@ var Post = React.createClass({
       newNotes  = this.state.currentnotes
       newImages = this.state.currentImages
 
-      newData = this.props.data
+      newData = {}
       newData['title'] = newTitle
       newData['notes'] = newNotes
+      newData['postId'] = this.props.data.postId
       newData['images'] = newImages
 
       // submit changes to API
@@ -523,7 +589,7 @@ var Post = React.createClass({
               value={this.state.currenttitle}
               onChange={this.handleTitleChange}/>
           </div>
-          <ImageThumbnail src={this.state.currentImages[0]}/>
+          <ImageThumbnail imageLinks={this.state.currentImages}/>
           <Input
             className="edit-image-link"
             type="text"
@@ -546,7 +612,7 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" postId={this.props.data.postId}/>
+              <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>
@@ -574,7 +640,7 @@ var Post = React.createClass({
               {this.state.title}
             </h3>
           </div>
-          <ImageThumbnail src={this.props.data.images[0]}/>
+          <ImageThumbnail imageLinks={this.props.data.images}/>
           <div>
             <blockquote className = "recipe-notes">
               {this.state.notes}
@@ -584,7 +650,7 @@ var Post = React.createClass({
 
           <div className = "post-footer">
             <div>
-              <Tags className = "tagset" postId={this.props.data.postId}/>
+              <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>
@@ -601,8 +667,10 @@ var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
     var profileNavigation=this.props.profileNavigation
+    var handleSearch=this.props.handleSearch
     var editable=this.props.editable
     var addNames=this.props.addNames
+
     
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
@@ -625,6 +693,7 @@ var PostList = React.createClass({
                   favoriteAble={favoriteAble}
                   editable={editable}
                   addNames={addNames}
+                  handleSearch={handleSearch}
                   profileNavigation={profileNavigation}/>
               )
             })

@@ -90,14 +90,28 @@ function handleGetTagFeedRequest(req, res) {
     friends = r(friends)
 
     // get tags from query, remove whitespace
-    search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+    temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
+
+    //removing all empty tags from the search tags and removing all repetitions
+    var search_tags = []
+    for (z=0; z < temp_search_tags.length; z++){
+      if (temp_search_tags[z] != "" && search_tags.indexOf(temp_search_tags[z]) < 0)
+        search_tags.push(temp_search_tags[z])
+    }
+
     console.log("Search tags: "+ search_tags.length)
 
-    //Add searched tags to search history
-    for (m = 0; m < search_tags.length; m++){
-      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
 
-    }
+    //Add searched tags to search history
+    
+      r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function(err, curr_list){
+        for (m = 0; m < search_tags.length; m++){
+          //Keeping entries in the searchHistory list unique
+            if (curr_list.indexOf(search_tags[m]) < 0)
+              r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
+        }
+
+      })
 
     //Keep track of all the search tags that a post has
     post_search_tags = {}
@@ -108,11 +122,13 @@ function handleGetTagFeedRequest(req, res) {
         var post_tag_names = []
         for (j = 0; j < post_tags.length; j++) {
           var tagName = post_tags[j]['tagName']
+          //check if a tag of a post is in the search tags
           if (search_tags.indexOf(tagName) >= 0) {
             if (!(posts[i].postId in post_search_tags)) {
               post_search_tags[posts[i].postId] = []
               postIds.push(posts[i].postId)
             }
+            //For each post, keep track of the tags that it has that are also in the search tags
             if (post_search_tags[posts[i].postId].indexOf(tagName) < 0) {
               post_search_tags[posts[i].postId].push(tagName)
             }
@@ -120,7 +136,7 @@ function handleGetTagFeedRequest(req, res) {
         }
       }
 
-      var posts = r(postIds)
+      var posts = r(postIds)    //all the posts that have at least one tag that is in the search tags
       console.log("posts: " + posts)
       r.db(config.rethinkdb.db).table('posts').filter(function(post) {
         return friends.contains(post('userId')).and(posts.contains(post('postId')))
@@ -134,15 +150,16 @@ function handleGetTagFeedRequest(req, res) {
             unordered_postIds.push(unordered_posts[j]["postId"])
           }
 
-          //Order the posts based on relevance (number of matching search tags)
+          //Posts based on relevance (number of matching search tags)
           var keep_post_search_tags_list = []
           for (var postId in post_search_tags){
             if (post_search_tags.hasOwnProperty(postId)){
               if (unordered_postIds.indexOf(postId) >= 0)
-                keep_post_search_tags_list.push({"postId": postId, "matchingTags": post_search_tags[postId].length})
+                keep_post_search_tags_list.push({"postId": postId, "matchingTags": post_search_tags[postId].length})    
             }
           }
 
+          //Order posts based on relevance (number of matching search tags)
           keep_post_search_tags_list.sort(function(a, b) { return a.matchingTags - b.matchingTags; }).reverse()
           var ordered_posts = [] 
           for (m = 0; m < unordered_posts.length; m++){
