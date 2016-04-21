@@ -39,7 +39,38 @@ var Input = ReactBootstrap.Input,
 // }
 
 var Ingredients = React.createClass({
+    // add shopping list buttons
+    getInitialState : function() {
+      return {added: false, hover: false}
+    },
+
+    onShoppingClick: function() {
+      // if adding to list, make server call
+      this.setState({added: !this.state.added})
+      this.forceUpdate();
+    },
+
+    addIngredientToList: function(name) {
+
+    },
+
+    mouseOver: function () {
+        this.setState({hover: true});
+    },
+    
+    mouseOut: function () {
+        this.setState({hover: false});
+    },
+
     render: function() {
+        var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
+
+
+        button = this.state.added ? 
+          <Button style={style} className = "ingr-button" bsStyle="primary" bsSize="xsmall" onClick={this.onShoppingClick}>added!</Button> :
+          <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>add to shopping list</Button>
+
+        var self = this
         return (
           <Table responsive>
             <thead>
@@ -50,7 +81,7 @@ var Ingredients = React.createClass({
 
             <tbody>
               {(this.props.items).map(function(i) {
-                 return <tr><td>{i}</td> </tr>
+                 return <tr><td onMouseEnter={self.mouseOver} onMouseLeave={self.mouseOut}><span> {i} {button} </span></td> </tr>
               })}
             </tbody>
           </Table>

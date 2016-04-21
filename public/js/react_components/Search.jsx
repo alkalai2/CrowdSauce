@@ -17,7 +17,6 @@ var SearchBar = React.createClass({
 		//this.setState({value: ''})
 
 		// handle in FeedController
-		alert("Searching for " + query)
 		this.props.handleSearch(query)
 	},
 
