@@ -33,18 +33,18 @@ function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
     // create Post object
-  var post = new Post({
-    userId: parseInt(req.headers.userid),
-    title: req.body.title,
-    ingredients: req.body.ingredients,
-    directions: req.body.directions,
-    recipeLink: req.body.recipeLink,
-    images: req.body.images,
-    notes: req.body.notes,
-    rating: req.body.rating,
-    prepTime: req.body.prepTime,
-    difficulty: req.body.difficulty
-  })
+    var post = new Post({
+      userId: parseInt(req.headers.userid),
+      title: req.body.title,
+      ingredients: req.body.ingredients,
+      directions: req.body.directions,
+      recipeLink: req.body.recipeLink,
+      images: req.body.images,
+      notes: req.body.notes,
+      rating: req.body.rating,
+      prepTime: req.body.prepTime,
+      difficulty: req.body.difficulty
+    })
 
     // try to store in DB
     post.save().then(function (result) {
@@ -89,20 +89,20 @@ function handleGetPostRequest (req, res) {
   }
   r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(connection, function (err, cursor) {
     if (err) throw err
-    handlerUtil.sendCursor(res, cursor)
+      handlerUtil.sendCursor(res, cursor)
   })
 
- // @panthap2 please confirm that this should be removed, I commented
- // just in case but it was crashing the srver
- // if(!queried){
- //   r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
- //     if (err) throw err;
- //     cursor.toArray(function(err, result) {
- //       if (err) throw err;
- //       res.send(200,JSON.stringify(result, null, 2))
- //     })
- //   })
- // }
+  // @panthap2 please confirm that this should be removed, I commented
+  // just in case but it was crashing the srver
+  // if(!queried){
+  //   r.db(config.rethinkdb.db).table('posts').run(connection, function(err, cursor) {
+  //     if (err) throw err;
+  //     cursor.toArray(function(err, result) {
+  //       if (err) throw err;
+  //       res.send(200,JSON.stringify(result, null, 2))
+  //     })
+  //   })
+  // }
 }
 
 function handleUpdatePostRequest (req, res) {
@@ -153,20 +153,20 @@ function handleDeletePostRequest (req, res) {
 }
 
 function handleGetTrendingRequest(req, res){
-    num_posts = +req.headers.numposts || 3
-    Post.filter(function(post){
-        return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
-    }).getJoin({user: true, favorites: {
-        _apply: function(seq) {return seq.count()},
-        _array: false
-    }}).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function(posts){
-        res.status(200).send(JSON.stringify(posts, null, 2))
-    })
+  num_posts = +req.headers.numposts || 3
+  Post.filter(function(post){
+    return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
+  }).getJoin({user: true, favorites: {
+    _apply: function(seq) {return seq.count()},
+    _array: false
+  }}).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function(posts){
+    res.status(200).send(JSON.stringify(posts, null, 2))
+  })
 }
 
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
-  num_posts = +req.headers.numposts || 10
+    num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
@@ -180,16 +180,16 @@ function handleGetFeedRequest (req, res) {
     }
     friends = r(friends)
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
-    var str = String(searchHistory.toString())
-    var options = {
-      port: 3000,
-      path: '/api/tags/feed/?tagNames='+ str,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'userid': req.headers.userid
+      var str = String(searchHistory.toString())
+      var options = {
+        port: 3000,
+        path: '/api/tags/feed/?tagNames='+ str,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'userid': req.headers.userid
+        }
       }
-    }
       var requ = http.request(options, function (rq) {
         rq.setEncoding('utf8');
         rq.on('data', function (chunk) {
@@ -202,17 +202,17 @@ function handleGetFeedRequest (req, res) {
           console.log("Suggested post ids: "+ suggested_post_ids)
           suggested_post_ids = r (suggested_post_ids)
           r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
-          blocked = r(blocked || [])
-          r.db(config.rethinkdb.db).table('posts').filter(function (post) {
-            return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
-          }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-            if (err) throw err
-            handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
-              var feedPosts = suggested_posts.concat(posts)
-              res.status(200).send(JSON.stringify(feedPosts, null, 2))
+            blocked = r(blocked || [])
+            r.db(config.rethinkdb.db).table('posts').filter(function (post) {
+              return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
+            }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
+              if (err) throw err
+                handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
+                  var feedPosts = suggested_posts.concat(posts)
+                  res.status(200).send(JSON.stringify(feedPosts, null, 2))
+                })
             })
           })
-        })
 
         })
       })

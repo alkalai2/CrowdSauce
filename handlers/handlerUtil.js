@@ -13,9 +13,9 @@ function doCursorWithUser(res, cursor, connection, callback) {
     result.forEach(function(elem, ind, arr){
       r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
         if (err) throw err
-        arr[ind].name = result
+          arr[ind].name = result
         counter++
-        if (counter === arr.length) {
+          if (counter === arr.length) {
           callback(feed_result)
         }
       })
@@ -26,7 +26,7 @@ function doCursorWithUser(res, cursor, connection, callback) {
 function sendCursor(res, cursor) {
   cursor.toArray(function(err, result) {
     if (err) throw err
-    res.status(200).send(JSON.stringify(result, null, 2))
+      res.status(200).send(JSON.stringify(result, null, 2))
   })
 }
 
