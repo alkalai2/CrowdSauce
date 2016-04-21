@@ -62,8 +62,15 @@ function handlePostShoppinglistRequest (req, res) {
 }
 
 function handleDeleteShoppinglistRequest (req, res) {
-  //Shoppinglist.get(parseInt(req.body.userId)).k
-
+  Shoppinglist.filter( {"userId": parseInt(req.headers.userid)} ).run().then(function(list){
+    Shoppinglist.get(list[0].shoppinglistId).then(function(listtodelete){
+      listtodelete.delete().then(function(result){
+        res.status(200).send(JSON.stringify(result))
+      })
+    })
+  }).error(function(err){
+    res.status(500).send({error: err.message})
+  })
 }
 
 module.exports = ShoppinglistHandler
