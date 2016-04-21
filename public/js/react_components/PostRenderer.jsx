@@ -38,39 +38,47 @@ var Input = ReactBootstrap.Input,
 //   "timestamp": "Feb 24, 2016"
 // }
 
+var SingleIngredient = React.createClass({
+  getInitialState : function() {
+    return {added: false, hover: false}
+  },
+
+  onShoppingClick: function() {
+    // if adding to list, make server call
+    this.setState({added: !this.state.added})
+    this.forceUpdate();
+  },
+
+  addIngredientToList: function(name) {
+
+  },
+
+  mouseOver: function () {
+      this.setState({hover: true});
+  },
+  
+  mouseOut: function () {
+      this.setState({hover: false});
+  },
+
+  render: function() {
+    var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
+
+    button = this.state.added ? 
+      <span className="tag label label-success ingr-image-holder"><img className="ingr-ok-icon" src="img/glyphicons/png/glyphicons-207-ok.png"></img></span>:
+      <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>add to shopping list</Button>
+
+      return (
+          <td onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}><span>{this.props.ingrName} {button} </span> </td>
+      );
+  }
+});
+
 var Ingredients = React.createClass({
     // add shopping list buttons
-    getInitialState : function() {
-      return {added: false, hover: false}
-    },
-
-    onShoppingClick: function() {
-      // if adding to list, make server call
-      this.setState({added: !this.state.added})
-      this.forceUpdate();
-    },
-
-    addIngredientToList: function(name) {
-
-    },
-
-    mouseOver: function () {
-        this.setState({hover: true});
-    },
-    
-    mouseOut: function () {
-        this.setState({hover: false});
-    },
 
     render: function() {
-        var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
-
-
-        button = this.state.added ? 
-          <Button style={style} className = "ingr-button" bsStyle="primary" bsSize="xsmall" onClick={this.onShoppingClick}>added!</Button> :
-          <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>add to shopping list</Button>
-
-        var self = this
+        
         return (
           <Table responsive>
             <thead>
@@ -80,8 +88,8 @@ var Ingredients = React.createClass({
             </thead>
 
             <tbody>
-              {(this.props.items).map(function(i) {
-                 return <tr><td onMouseEnter={self.mouseOver} onMouseLeave={self.mouseOut}><span> {i} {button} </span></td> </tr>
+              {(this.props.items).map(function(ingrName) {
+                 return <tr><SingleIngredient ingrName={ingrName}/> </tr>
               })}
             </tbody>
           </Table>
