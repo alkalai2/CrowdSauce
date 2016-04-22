@@ -290,6 +290,79 @@
     "/swagger": {
       "x-swagger-pipe": "swagger_raw"
     },
+    "/api/shoppinglist/items/": {
+      "post": {
+        "operationId": "Create shoppinglist items",
+        "tags": [ "shoppinglist" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "integer",
+            "description": "UserID for the account to create",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "in": "body",
+            "description": "Post data",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Shoppinglist"
+            }
+          }
+        ],
+        "description": "Add items to a shoppinglist without overwriting previous ones"
+      },
+      "x-swagger-router-controller": "hello_world",
+      "delete": {
+        "operationId": "delete shoppinglist items",
+        "tags": [ "shoppinglist" ],
+        "responses": {
+          "default": {"description": "Error"},
+          "200": {"description": "Success"},
+          "401": {"description": "Unauthorized"}
+        },
+        "parameters": [
+          {
+            "required": true,
+            "type": "integer",
+            "description": "UserID for the account to delete",
+            "in": "header",
+            "name": "userid"
+          },
+          {
+            "required": false,
+            "type": "string",
+            "description": "AUTHENTICATION: The facebook accesstoken of the user to be authenticated.",
+            "in": "header",
+            "name": "accesstoken"
+          },
+          {
+            "required": true,
+            "in": "body",
+            "description": "Post data",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Shoppinglist"
+            }
+          }
+        ],
+        "description": "Delete specific items from a shoppinglist"
+      }
+    },
     "/api/shoppinglist/": {
       "get": {
         "operationId": "get shoppinglist",
