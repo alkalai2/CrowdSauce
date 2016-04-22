@@ -92,14 +92,29 @@ function handleGetTagFeedRequest(req, res) {
     temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
     //removing all empty tags from the search tags and removing all repetitions
     var search_tags = []
-    for (z=0; z < temp_search_tags.length; z++){
-      if (temp_search_tags[z] != "" && search_tags.indexOf(temp_search_tags[z]) < 0)
-        search_tags.push(temp_search_tags[z])
+    var rating = 0
+    console.log(temp_search_tags)
+    for (z = 0; z < temp_search_tags.length; z++) {
+      if (temp_search_tags[z] == "") continue
+      var colon = temp_search_tags[z].indexOf(":")
+      if (colon >= 0) {
+        key = temp_search_tags[z].slice(0, colon)
+        value = temp_search_tags[z].slice(colon + 1)
+        switch (key) {
+          case "rating":
+            rating = +value
+            break
+        }
+        continue
+      }
+      if (search_tags.indexOf(temp_search_tags[z]) >= 0) continue
+      search_tags.push(temp_search_tags[z])
     }
 
     console.log("Search tags: "+ search_tags.length)
     //Add searched tags to search history
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function(err, curr_list){
+      if (err) throw err
       for (m = 0; m < search_tags.length; m++){
         //Keeping entries in the searchHistory list unique
         if (curr_list.indexOf(search_tags[m]) < 0)
@@ -130,14 +145,24 @@ function handleGetTagFeedRequest(req, res) {
         }
       }
 
+      rating = r(rating)
       var posts = r(postIds)    //all the posts that have at least one tag that is in the search tags
-      console.log("posts: " + posts)
       r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-        return friends.contains(post('userId')).and(posts.contains(post('postId')))
+        var f = friends.contains(post('userId')).and(post('rating').ge(rating))
+        if (search_tags.length > 0) {
+          f = f.and(posts.contains(post('postId')))
+        }
+        return f
       }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
         if (err) throw err
           cursor.toArray(function(err, result) {
             if (err) throw err;
+
+            if (search_tags.length == 0) {
+              res.status(200).send(JSON.stringify(result, null, 2))
+              return
+            }
+
             var unordered_posts = result
             var unordered_postIds = []
             for (j = 0; j < unordered_posts.length; j++){
