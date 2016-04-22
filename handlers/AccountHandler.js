@@ -7,6 +7,7 @@ var config = require('../config.js')
 var r = require('rethinkdb')
 var auth = require('../auth.js')
 var http = require('http')
+var handlerUtil = require('./handlerUtil.js')
 
 var AccountHandler = function () {
   this.createAccount = handleCreateAccountRequest
@@ -53,28 +54,28 @@ function handleCreateAccountRequest (req, res) {
 function handleGetAccountRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
+  var query_obj = {}
+  console.log("Req.query: "+ JSON.stringify(req.query))
   for (var q in req.query) {
-      console.log(q)
     if (req.query.hasOwnProperty(q)) {
       queried = true
       to_query_db = req.query[q]
       if(!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
-      console.log({[q]: to_query_db})
-      console.log("query is " + q)
-        Account.filter({[q]: to_query_db}).run().then(function(user){
-            res.status(200).send(JSON.stringify(user, null, 2))
-        }).error(function(err){
-                res.status(500).send({error: err.message})
-        })
+      if (q == "notification"){
+        if (to_query_db == "true")
+           to_query_db = true
+         else
+           to_query_db = false
+      }
+
+      query_obj[q] = to_query_db
     }
   }
-  if(!queried){
-      Account.run().then(function(users){
-          console.log(users)
-          res.status(200).send(JSON.stringify(users, null, 2))
-      })
-  }
+  r.db(config.rethinkdb.db).table('users').filter(query_obj).run(connection, function (err, cursor) {
+    if (err) throw err
+    handlerUtil.sendCursor(res, cursor)
+  })
 }
 
 function handleUpdateAccountRequest (req, res) {
