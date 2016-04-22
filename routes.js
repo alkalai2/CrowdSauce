@@ -27,9 +27,14 @@ function setup (app, handlers) {
   app.delete('/api/favorites/', handlers.favorites.deleteFavorites)
 
   // Shopping List
-  app.get('/api/shoppinglist', handlers.shoppinglist.getShoppinglist)
-  app.post('/api/shoppinglist/', handlers.shoppinglist.postItemsToShoppinglist)
-  app.delete('/api/shoppinglist/', handlers.shoppinglist.deleteItemsFromShoppinglist)
+  app.get('/api/shoppinglist/', handlers.shoppinglist.getShoppinglist)
+  app.post('/api/shoppinglist/', handlers.shoppinglist.postToShoppinglist)
+  // Takes in data to add individual ingredients to list
+  app.post('/api/shoppinglist/items/', handlers.shoppinglist.postItemsToShoppinglist)
+  // Takes in data to delete individual shoppinglist items
+  app.delete('/api/shoppinglist/items/', handlers.shoppinglist.deleteItemsFromShoppinglist)
+  // Deletes entire shopping list
+  app.delete('/api/shoppinglist/', handlers.shoppinglist.deleteShoppinglist)
 
   //Add tag to a post
   app.post('/api/tags/', handlers.tag.addTag)
