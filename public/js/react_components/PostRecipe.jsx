@@ -16,7 +16,7 @@ var PostRecipe = React.createClass({
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: [], directions: [],
          imgsrc:[], imgtext: '', imgitems: [], activePage: 1, 
-         difficulty: 'easy', prepTime: '30 min',
+         difficulty: 'Easy', prepTime: '30 Min',
          items: [], tags: [], text: '', showModal: false};
     },
 
@@ -41,6 +41,12 @@ var PostRecipe = React.createClass({
   	},
   	handleDescChange: function(e) {
 	  this.setState({description: e.target.value});
+	},
+	handlePrepChange: function(e) {
+	  this.setState({prepTime: e.target.value});
+	},
+	handleDiffChange: function(e) {
+	  this.setState({difficulty: e.target.value});
 	},
 	handleLinkChange: function(e) {
 	  this.setState({link: e.target.value});
@@ -240,7 +246,22 @@ var PostRecipe = React.createClass({
 			  value={this.state.description}
 			  onChange={this.handleDescChange}
 			/>
-			<h3>Preparation Time:</h3>
+			
+			<Input
+		      type="text"
+		      label="Preparation Time"
+		      labelClassName="col-xs-2"
+		      wrapperClassName="col-xs-15"
+		      value={this.state.prepTime}
+		      onChange={this.handlePrepChange}/>
+		      
+		    <Input
+		      type="text"
+		      label="Difficulty"
+		      labelClassName="col-xs-2"
+		      wrapperClassName="col-xs-15"
+		      value={this.state.difficulty}
+		      onChange={this.handleDiffChange}/>
 			
 			<h3>Rating:</h3>
 			<Pagination
