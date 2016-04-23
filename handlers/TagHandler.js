@@ -95,16 +95,21 @@ function handleGetTagFeedRequest(req, res) {
     //removing all empty tags from the search tags and removing all repetitions
     var search_tags = []
     var rating = 0
+    var sort_by_favorites = false
     for (z = 0; z < temp_search_tags.length; z++) {
       if (temp_search_tags[z] == "") continue
       var colon = temp_search_tags[z].indexOf(":")
       if (colon >= 0) {
-        key = temp_search_tags[z].slice(0, colon)
-        value = temp_search_tags[z].slice(colon + 1)
+        key = temp_search_tags[z].slice(0, colon).trim()
+        value = temp_search_tags[z].slice(colon + 1).trim()
         switch (key) {
           case "rating":
             rating = +value
             break
+          case "sort":
+            if (value == "favorites") {
+              sort_by_favorites = true
+            }
         }
         continue
       }
@@ -123,14 +128,18 @@ function handleGetTagFeedRequest(req, res) {
       }
     })
 
-    Post.getJoin({tags: true}).filter(function (post) {
+    Post.getJoin({tags: true, favorites: true}).filter(function (post) {
       var f = tr(friends).contains(post('userId')).and(post('rating').ge(rating))
       if (search_tags.length > 0) {
         f = f.and(post("tags").getField("tagName").setIntersection(tr(search_tags)).count().gt(0))
       }
       return f
     }).orderBy(tr.desc(function (post) {
-      return post("tags").getField("tagName").setIntersection(tr(search_tags)).count()
+      if (sort_by_favorites) {
+        return post("favorites").count()
+      } else {
+        return post("tags").getField("tagName").setIntersection(tr(search_tags)).count()
+      }
     }), tr.desc('timePosted')).skip(offset).limit(num_posts).run().then(function (result) {
       res.status(200).send(JSON.stringify(result, null, 2))
       return
@@ -139,7 +148,6 @@ function handleGetTagFeedRequest(req, res) {
       console.log("Error: " + error.message)
       res.status(500).send({error: error.message})
     })
-    //})
   })
 }
 
