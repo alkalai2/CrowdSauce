@@ -4,7 +4,9 @@ Input = ReactBootstrap.Input,
 ButtonInput = ReactBootstrap.ButtonInput,
 Pagination = ReactBootstrap.Pagination,
 Modal = ReactBootstrap.Modal,
-Button = ReactBootstrap.Button
+Button = ReactBootstrap.Button,
+FormGroup = ReactBootstrap.FormGroup,
+Radio = ReactBootstrap.Radio
 
 var fbDetails = getFacebookDetails();
 
@@ -13,7 +15,8 @@ var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: [], directions: [],
-         imgsrc:'http://i.imgur.com/SyZyVmN.jpg', activePage: 1, 
+         imgsrc:[], imgtext: '', imgitems: [], activePage: 1, 
+         difficulty: 'easy', prepTime: '<30 min',
          items: [], tags: [], text: '', showModal: false};
     },
 
@@ -35,9 +38,6 @@ var PostRecipe = React.createClass({
   	},    
     handlePanelSelect(activeKey) {
     	this.setState({ activeKey });
-  	},   
-  	changeImgSrc: function(e) {
-      this.setState({imgsrc: e.target.value});
   	},
   	handleDescChange: function(e) {
 	  this.setState({description: e.target.value});
@@ -62,11 +62,20 @@ var PostRecipe = React.createClass({
     onChange: function(e) {
       this.setState({text: e.target.value});
     },
+    onImgChange: function(e) {
+      this.setState({imgtext: e.target.value});
+    },
     addTags: function(e) {
 		e.preventDefault();
 		var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
 		var nextTags = this.state.tags.concat(this.state.text)
 		this.setState({items: nextItems, text: '', tags: nextTags});
+    },
+    addImgs: function(e) {
+		e.preventDefault();
+		var nextItems = this.state.imgitems.concat([{text: this.state.imgtext, id: Date.now()}]);
+		var nextTags = this.state.imgsrc.concat(this.state.imgtext)
+		this.setState({imgitems: nextItems, imgtext: '', imgsrc: nextTags});
     },
     getFBInfo: function() {
       return getFacebookDetails().then(function(d){return d})
@@ -86,9 +95,11 @@ var PostRecipe = React.createClass({
 		var data = {
 		  recipeLink: this.state.link,
 		  title: this.state.title,
-		  images: [this.state.imgsrc.trim()],
+		  images: this.state.imgsrc,
 		  notes: this.state.description,
-		  rating: this.state.activePage
+		  rating: this.state.activePage,
+		  difficulty: this.state.difficulty,
+		  prepTime: this.state.prepTime
 		};
 		
 		var heads = {
@@ -118,9 +129,11 @@ var PostRecipe = React.createClass({
 		  ingredients: this.state.ings,
 		  title: this.state.title,
 		  directions: this.state.directions,
-		  images: [this.state.imgsrc.trim()],
+		  images: this.state.imgsrc,
 		  notes: this.state.description,
-		  rating: this.state.activePage
+		  rating: this.state.activePage,
+		  difficulty: this.state.difficulty,
+		  prepTime: this.state.prepTime
 		};		
 		
 		var heads = {
@@ -204,17 +217,12 @@ var PostRecipe = React.createClass({
 			  onChange={this.handleTitleChange}
 			>
 			</Input>
-			<img src={this.state.imgsrc} alt="Add a picture!"
-	           height='200px' width='200px' className="img-responsive"/>
-			  <Input
-			    type="text"
-			    label="Image URL"
-			    labelClassName="col-xs-2"
-			    wrapperClassName="col-xs-15"
-			    onChange={this.changeImgSrc}
-			    value={this.state.imgsrc}
-			  >
-			  </Input>
+			<h3>Images</h3>
+		    <ul>{this.state.imgitems.map(this.createItem)}</ul>
+		    <input onChange={this.onImgChange} value={this.state.imgtext} />
+		    <button onClick={this.addImgs} >{'Add #' + (this.state.imgsrc.length + 1)}</button>
+		    <ul> </ul>
+		    
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
 			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
@@ -232,6 +240,8 @@ var PostRecipe = React.createClass({
 			  value={this.state.description}
 			  onChange={this.handleDescChange}
 			/>
+			<h3>Difficulty:</h3>
+			
 			<h3>Rating:</h3>
 			<Pagination
 		      bsSize="large"
