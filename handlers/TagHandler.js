@@ -9,6 +9,8 @@ var auth = require('../auth.js')
 var FB = require('fb')
 var async = require('async')
 var handlerUtil = require('./handlerUtil.js')
+var thinky = require('thinky')()
+var tr = thinky.r
 
 var TagHandler = function () {
   this.addTag = handleAddTagRequest
@@ -87,13 +89,12 @@ function handleGetTagFeedRequest(req, res) {
     for (i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
-    friends = r(friends)
+
     // get tags from query, remove whitespace
     temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
     //removing all empty tags from the search tags and removing all repetitions
     var search_tags = []
     var rating = 0
-    console.log(temp_search_tags)
     for (z = 0; z < temp_search_tags.length; z++) {
       if (temp_search_tags[z] == "") continue
       var colon = temp_search_tags[z].indexOf(":")
@@ -122,83 +123,23 @@ function handleGetTagFeedRequest(req, res) {
       }
     })
 
-    //Keep track of all the search tags that a post has
-    post_search_tags = {}
-    Post.getJoin({tags: true}).run().then(function(posts) {
-      var postIds = []
-      for (i = 0; i < posts.length; i++) {
-        var post_tags = posts[i].tags
-        var post_tag_names = []
-        for (j = 0; j < post_tags.length; j++) {
-          var tagName = post_tags[j]['tagName']
-          //check if a tag of a post is in the search tags
-          if (search_tags.indexOf(tagName) >= 0) {
-            if (!(posts[i].postId in post_search_tags)) {
-              post_search_tags[posts[i].postId] = []
-              postIds.push(posts[i].postId)
-            }
-            //For each post, keep track of the tags that it has that are also in the search tags
-            if (post_search_tags[posts[i].postId].indexOf(tagName) < 0) {
-              post_search_tags[posts[i].postId].push(tagName)
-            }
-          }
-        }
+    Post.getJoin({tags: true}).filter(function (post) {
+      var f = tr(friends).contains(post('userId')).and(post('rating').ge(rating))
+      if (search_tags.length > 0) {
+        f = f.and(post("tags").getField("tagName").setIntersection(tr(search_tags)).count().gt(0))
       }
-
-      rating = r(rating)
-      var posts = r(postIds)    //all the posts that have at least one tag that is in the search tags
-      r.db(config.rethinkdb.db).table('posts').filter(function(post) {
-        var f = friends.contains(post('userId')).and(post('rating').ge(rating))
-        if (search_tags.length > 0) {
-          f = f.and(posts.contains(post('postId')))
-        }
-        return f
-      }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
-        if (err) throw err
-          cursor.toArray(function(err, result) {
-            if (err) throw err;
-
-            if (search_tags.length == 0) {
-              res.status(200).send(JSON.stringify(result, null, 2))
-              return
-            }
-
-            var unordered_posts = result
-            var unordered_postIds = []
-            for (j = 0; j < unordered_posts.length; j++){
-              unordered_postIds.push(unordered_posts[j]["postId"])
-            }
-
-            //Posts based on relevance (number of matching search tags)
-            var keep_post_search_tags_list = []
-            for (var postId in post_search_tags){
-              if (post_search_tags.hasOwnProperty(postId)){
-                if (unordered_postIds.indexOf(postId) >= 0)
-                  keep_post_search_tags_list.push({"postId": postId, "matchingTags": post_search_tags[postId].length})
-              }
-            }
-
-            //Order posts based on relevance (number of matching search tags)
-            keep_post_search_tags_list.sort(function(a, b) { return a.matchingTags - b.matchingTags; }).reverse()
-            var ordered_posts = []
-            for (m = 0; m < unordered_posts.length; m++){
-              for (n = 0; n < keep_post_search_tags_list.length; n++) {
-                if (unordered_posts[m]["postId"] == keep_post_search_tags_list[n]["postId"]) {
-                  ordered_posts[n] = unordered_posts[m]
-                  break
-                }
-              }
-            }
-
-            res.status(200).send(JSON.stringify(ordered_posts, null, 2))
-
-          })
-      }).error(function (error) {
-        // something went wrong
-        console.log("Error: "+ error.message)
-        res.status(500).send({error: error.message})
-      })
+      return f
+    }).orderBy(tr.desc(function (post) {
+      return post("tags").getField("tagName").setIntersection(tr(search_tags)).count()
+    }), tr.desc('timePosted')).skip(offset).limit(num_posts).run().then(function (result) {
+      res.status(200).send(JSON.stringify(result, null, 2))
+      return
+    }).error(function (error) {
+      // something went wrong
+      console.log("Error: " + error.message)
+      res.status(500).send({error: error.message})
     })
+    //})
   })
 }
 
