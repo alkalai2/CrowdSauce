@@ -651,6 +651,10 @@ var Post = React.createClass({
           <div className = "post-footer">
             <div>
               <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
+              <ul> </ul>
+              {'Prep Time: ' + this.props.data.prepTime}
+              <ul> </ul>
+              {'                 Difficulty: ' + this.props.data.difficulty}
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>

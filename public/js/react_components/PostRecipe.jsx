@@ -16,7 +16,7 @@ var PostRecipe = React.createClass({
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: [], directions: [],
          imgsrc:[], imgtext: '', imgitems: [], activePage: 1, 
-         difficulty: 'easy', prepTime: '<30 min',
+         difficulty: 'easy', prepTime: '30 min',
          items: [], tags: [], text: '', showModal: false};
     },
 
@@ -240,7 +240,7 @@ var PostRecipe = React.createClass({
 			  value={this.state.description}
 			  onChange={this.handleDescChange}
 			/>
-			<h3>Difficulty:</h3>
+			<h3>Preparation Time:</h3>
 			
 			<h3>Rating:</h3>
 			<Pagination
@@ -252,7 +252,7 @@ var PostRecipe = React.createClass({
 		    <ul>{this.state.items.map(this.createItem)}</ul>
 		    <input onChange={this.onChange} value={this.state.text} />
 		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
-
+		
        		</Modal.Body>
 
        		<Modal.Footer>
