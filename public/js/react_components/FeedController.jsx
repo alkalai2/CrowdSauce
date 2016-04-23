@@ -24,6 +24,32 @@ var FeedController = React.createClass({
 			});
 		},
 		
+		componentWillMount:function() {
+			var trendArray = 
+			jQuery.ajax({
+			url:  "http://localhost:3000/api/posts/trending/",
+			type: 'GET',
+			headers: {
+				'Accept': 'text/html',
+				'userid': fbDetails['fbUserID'],
+				'accesstoken': fbDetails['fbAccessToken'],
+				'numposts': '5'
+			},
+			dataType: 'json',
+			timeout : 100000,
+			success: function(data) {
+				console.log("data trending ... ")
+				console.log(data)
+				if(data.length) { 
+				this.setState({trends: data});
+				}
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error('data trending', status, err.toString());
+			}.bind(this)
+			}); 		
+		},
+		
 		// get facebook details, facebook friends
 		componentDidMount: function() {
 			var self = this
@@ -109,6 +135,8 @@ var FeedController = React.createClass({
     render : function() {
     	console.log("rendering Feed Controller")
     	console.log(this.state.displayType)
+		
+
 
     	/* Set the Main Display */
 
@@ -178,6 +206,8 @@ var FeedController = React.createClass({
     			</div>
     			
     			<div className="col-md-3">
+    				<TrendsList 
+    					data={this.state.trends} />				
     			</div>
     	  </div>
           <div> <PostRecipe/></div>
