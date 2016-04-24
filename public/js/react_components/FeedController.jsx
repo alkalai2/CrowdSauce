@@ -75,7 +75,7 @@ var FeedController = React.createClass({
 						friendsID.map(function (id) {	
 
 							// query database for each friends profile picture
-							var url =
+														var url =
 							jQuery.ajax({
 								url:  'http://localhost:3000/api/accounts/',
 								type: 'GET',
@@ -91,15 +91,29 @@ var FeedController = React.createClass({
 								timeout : 100000,
 								success: function(data) {
 									console.log("saving friends picture ... ")
-									console.log(data[0].picture)
-									friendsProfileURL[id] = data[0].picture
-									self.setState({profileurls: friendsProfileURL})
+									console.log(data[0])
+									if(data[0] === undefined) {
+										FB.api("/" + id + "/picture", function (response) {
+ 											if (response && !response.error) {
+ 												console.log("friend id ", id, " friends url", JSON.stringify(response["data"]["url"]))
+ 												friendsProfileURL[id] = response["data"]["url"]
+ 												self.setState({profileurls: friendsProfileURL})
+ 												console.log("friends url", JSON.stringify(friendsProfileURL))
+ 											}
+ 										});
+									}
+									else {
+										friendsProfileURL[id] = data[0].picture
+										self.setState({profileurls: friendsProfileURL})
+									}
 								}.bind(this),
 								error: function(xhr, status, err) {
 								console.error('http://localhost:3000/api/accounts/', status, err.toString());
 								}.bind(this)
-							}); 											
-					})
+							}); 	
+							
+							
+						})
 				}
 			});
 				
