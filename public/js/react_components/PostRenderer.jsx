@@ -658,6 +658,10 @@ var Post = React.createClass({
             </h3>
           </div>
           <ImageThumbnail imageLinks={this.props.data.images}/>
+          <div className="prep-difficulty">
+            <span className="prepTime"> <i> prep time: </i>{this.props.data.prepTime}</span>
+            <span className="difficulty"> <i> difficulty: </i> {this.props.data.difficulty}</span>
+          </div>
           <div>
             <blockquote className = "recipe-notes">
               {this.state.notes}
