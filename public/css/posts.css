@@ -244,3 +244,36 @@ background: #ECECEC;
 	width: 55%;
 }
 
+.trend-title {
+display: inline-block;
+float:left;
+}
+
+.trend-favorites {
+display: inline-block;
+float: right;
+padding: 0 5px;
+}
+
+.trend-favorite-image {
+display: inline-block;
+float:right;
+width: 24px;
+height: 24px;
+margin: 0 auto;
+}
+
+.trend-badge {
+background-color: #60D9F0;
+}
+
+.trend-header {
+margin:0 auto;
+}
+
+.trend-icon-image {
+margin:0 auto;
+float:left;
+padding: 0 10px;
+
+}
