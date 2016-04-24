@@ -243,7 +243,6 @@ background: #ECECEC;
 .ingr-ok-icon {
 	width: 55%;
 }
-
 .trend-title {
 display: inline-block;
 float:left;
@@ -277,3 +276,16 @@ float:left;
 padding: 0 10px;
 
 }
+.prepTime {
+	padding-right: 3%;
+}
+
+.difficulty {
+	padding-left: 3%; 
+}
+
+.prep-difficulty {
+	color: #676767;
+	text-align: center;
+}
+
