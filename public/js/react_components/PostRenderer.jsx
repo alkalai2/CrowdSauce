@@ -44,13 +44,30 @@ var SingleIngredient = React.createClass({
   },
 
   onShoppingClick: function() {
+
     // if adding to list, make server call
-    this.setState({added: !this.state.added})
-    this.forceUpdate();
-  },
-
-  addIngredientToList: function(name) {
-
+    var url = 'http://localhost:3000/api/shoppinglist/items'
+    jQuery.ajax({
+      url:  url,
+      type: 'POST',
+      headers: {
+        'accessToken': fbAccessToken,
+        'userId': fbUserID
+      },
+      dataType: 'json',
+      data: {
+        'ingredients': [this.props.ingrName]
+      },
+      success: function(data) {
+        console.log("added " + this.props.ingrName + " to shopping list")
+        this.setState({added: !this.state.added})
+        this.forceUpdate();
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(status, err.toString());
+      }.bind(this)
+    });
+    
   },
 
   mouseOver: function () {
@@ -651,10 +668,6 @@ var Post = React.createClass({
           <div className = "post-footer">
             <div>
               <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
-              <ul> </ul>
-              {'Prep Time: ' + this.props.data.prepTime}
-              <ul> </ul>
-              {'                 Difficulty: ' + this.props.data.difficulty}
               {favoriteHeart}
             </div>
             <Comment id={this.props.data.postId}/>
