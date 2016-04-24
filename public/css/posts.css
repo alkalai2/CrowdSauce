@@ -246,7 +246,7 @@ background: #ECECEC;
 .trend-title {
 display: inline-block;
 float:left;
-width: 150px;
+width: 60%;
 margin: 0 auto;
 overflow: hidden;
 }
