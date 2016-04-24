@@ -297,4 +297,11 @@ height:50px;
 	color: #676767;
 	text-align: center;
 }
+.postrecipe-images {
+	max-height:250px;
+	max-width: 250px;
+	margin: 3px auto;
+	border: 3px solid grey;
+	border-radius:5px;
+}
 
