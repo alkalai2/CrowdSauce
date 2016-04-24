@@ -58,4 +58,4 @@ var ShoppingList = React.createClass({
     }
 });
 
-ReactDOM.render(<ShoppingList source={"http://localhost:3000/api/shoppinglist/"}/>, shoppingList);
+//ReactDOM.render(<ShoppingList source={"http://localhost:3000/api/shoppinglist/"}/>, shoppingList);
