@@ -246,12 +246,16 @@ background: #ECECEC;
 .trend-title {
 display: inline-block;
 float:left;
+width: 150px;
+margin: 0 auto;
+overflow: hidden;
 }
 
 .trend-favorites {
 display: inline-block;
 float: right;
 padding: 0 5px;
+margin: 0 auto;
 }
 
 .trend-favorite-image {
@@ -276,6 +280,11 @@ float:left;
 padding: 0 10px;
 
 }
+.trend-list-group-item {
+overflow:hidden;
+height:50px;
+}
+
 .prepTime {
 	padding-right: 3%;
 }

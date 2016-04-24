@@ -46,7 +46,7 @@ var TrendsList = React.createClass({
 					<Image className="trend-icon-image" src="../img/trend.png"/>
 					<h2 className="trend-header">Trends</h2>
 				</span>
-				<ListGroup> {toDisplay} </ListGroup>
+				<ListGroup componentClass="div"> {toDisplay} </ListGroup>
 			</div>
 	    );
     }
@@ -56,7 +56,7 @@ var OneTrend = React.createClass({
     render: function() {
         return (
 			<div>
-				<ListGroupItem> 
+				<ListGroupItem className="trend-list-group-item"> 
 					<Image className="profile-image" src = {this.props.url} />
 					<span className="trend-title">
 						  {this.props.data.title}
