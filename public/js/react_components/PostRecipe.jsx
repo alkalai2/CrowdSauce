@@ -63,7 +63,7 @@ var PostRecipe = React.createClass({
       });
     }, 
     createItem: function(item) {
-      return <li key={item.id}>{item.text}</li>;
+      return <span><img className="postrecipe-images"src={item.text}> </img></span>;
     },
     onChange: function(e) {
       this.setState({text: e.target.value});
@@ -226,7 +226,7 @@ var PostRecipe = React.createClass({
 			<h3>Images</h3>
 		    <ul>{this.state.imgitems.map(this.createItem)}</ul>
 		    <input onChange={this.onImgChange} value={this.state.imgtext} />
-		    <button onClick={this.addImgs} >{'Add #' + (this.state.imgsrc.length + 1)}</button>
+		    <button onClick={this.addImgs} >{'Add'}</button>
 		    <ul> </ul>
 		    
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
