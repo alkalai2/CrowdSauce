@@ -106,6 +106,9 @@ var Profile = React.createClass({
               errorMsg={"Could not find any posts :( "}
             />
           } 
+          <div>
+            {<ShoppingList />}
+          </div>
 	    	</div>
 	    );
     }
