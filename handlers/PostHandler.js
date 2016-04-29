@@ -135,6 +135,9 @@ function handleDeletePostRequest (req, res) {
   })
 }
 
+// called when GET request sent to /api/posts/trending
+// returns a list of Post objects of size numposts (passed as part of the header)
+// the posts returned are all posted within 1 week of the request and are sorted by favorites desecending
 function handleGetTrendingRequest(req, res){
   num_posts = +req.headers.numposts || 3
   Post.filter(function(post){

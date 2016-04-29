@@ -133,6 +133,8 @@ function handleRemoveBlockRequest(req, res) {
   })
 }
 
+// called when a DELETE request is sent to /api/accounts
+// deletes corresponding account and all associated information (posts, favorites, tags)
 function handleDeleteAccountRequest (req, res) {
   if (!auth.assertHasUser(req)) return
 
