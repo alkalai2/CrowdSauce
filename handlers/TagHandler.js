@@ -100,24 +100,24 @@ function handleGetTagFeedRequest(req, res) {
 
     // get tags from query, remove whitespace
     temp_search_tags = req.query['tagNames'].split(",").map(function(s){return s.trim()})
-    //removing all empty tags from the search tags and removing all repetitions
+
+    // remove all empty tags, repetitions and sorting tags
     var search_tags = []
     var rating = 0
-    var sort_by_favorites = false
+    var sort_by = null
     for (z = 0; z < temp_search_tags.length; z++) {
       if (temp_search_tags[z] == "") continue
       var colon = temp_search_tags[z].indexOf(":")
       if (colon >= 0) {
-        key = temp_search_tags[z].slice(0, colon).trim()
-        value = temp_search_tags[z].slice(colon + 1).trim()
+        var key   = temp_search_tags[z].slice(0, colon).trim()
+        var value = temp_search_tags[z].slice(colon + 1).trim()
         switch (key) {
           case "rating":
             rating = +value
             break
           case "sort":
-            if (value == "favorites") {
-              sort_by_favorites = true
-            }
+            sort_by = value
+            break
         }
         continue
       }
@@ -143,8 +143,11 @@ function handleGetTagFeedRequest(req, res) {
       }
       return f
     }).orderBy(tr.desc(function (post) {
-      if (sort_by_favorites) {
+      // sort by favorites, rating or number of matching tags depending on sort:whatever
+      if (sort_by == "favorites") {
         return post("favorites").count()
+      } else if (sort_by == "rating") {
+        return post("rating")
       } else {
         return post("tags").getField("tagName").setIntersection(tr(search_tags)).count()
       }

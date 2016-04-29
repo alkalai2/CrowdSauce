@@ -193,25 +193,25 @@ function handleGetFeedRequest (req, res) {
           }
           console.log("Suggested post ids: "+ suggested_post_ids)
           suggested_post_ids = r (suggested_post_ids)
-          
+
           // get all blocked userIds
           r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
             blocked = r(blocked || [])
+            // generate feed
             r.db(config.rethinkdb.db).table('posts').filter(function (post) {
               return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
             }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
               if (err) throw err
-                handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
-                  var feedPosts = suggested_posts.concat(posts)
-                  res.status(200).send(JSON.stringify(feedPosts, null, 2))
-                })
+              handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {
+                var feedPosts = suggested_posts.concat(posts)
+                res.status(200).send(JSON.stringify(feedPosts, null, 2))
+              })
             })
           })
 
         })
       })
       requ.end()
-
     })
   })
 }

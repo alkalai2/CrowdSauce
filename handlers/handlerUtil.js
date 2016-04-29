@@ -1,17 +1,18 @@
 var config = require('../config.js')
 var r = require('rethinkdb')
 
+// converts the cursor to an array of posts then adds the username to each post
 function doCursorWithUser(res, cursor, connection, callback) {
   cursor.toArray(function(err, result) {
     if (err) throw err;
-    feed_result = result
+    var feed_result = result
     if (feed_result.length == 0) {
       callback(feed_result)
       return
     }
-    counter = 0
+    var counter = 0
     result.forEach(function(elem, ind, arr){
-      r.db(config.rethinkdb.db).table('users').get( elem['userId']).getField('name').run(connection, function (err, result){
+      r.db(config.rethinkdb.db).table('users').get(elem['userId']).getField('name').run(connection, function (err, result) {
         if (err) throw err
           arr[ind].name = result
         counter++
@@ -23,6 +24,7 @@ function doCursorWithUser(res, cursor, connection, callback) {
   })
 }
 
+// converts cursor to array and sends it
 function sendCursor(res, cursor) {
   cursor.toArray(function(err, result) {
     if (err) throw err

@@ -100,36 +100,43 @@ function handleUpdateAccountRequest (req, res) {
   })
 }
 
+// called when a POST request is sent to /api/accounts/block
+// adds the user to the list of blocked users for the given account
+// posts from these users will no longer show up on their feed
 function handleAddBlockRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-    user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
-  user('blocked').append(req.body.userid).run(connection, function(err, result) {
+  user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
+  user('blocked').append(req.body.userid).run(connection, function (err, result) {
     if (err) throw err
-      user.update({blocked: result}).run(connection, function(err, r) {
-        if (err) throw err
-          res.status(200).send(JSON.stringify(result))
-      })
+    user.update({blocked: result}).run(connection, function (err, r) {
+      if (err) throw err
+      res.status(200).send(JSON.stringify(result))
+    })
   })
 }
+
+// called when a DELETE request is sent to /api/accounts/block
+// removes a user from the list of blocked users for the given account
 function handleRemoveBlockRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-    user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
-  user('blocked').run(connection, function(err, cursor) {
+  user = r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))
+  user('blocked').run(connection, function (err, cursor) {
     if (err) throw err
-      cursor.toArray(function(err, result) {
-        if (err) throw err
-          for (i = 0; i < result.length; i++) {
-            if (result[i] == req.body.userid) {
-              user('blocked').deleteAt(i).run(connection, function(err, result) {
-                user.update({blocked: result}).run(connection, function(err, r) {
-                  if (err) throw err
-                    res.status(200).send(JSON.stringify(result))
-                })
-              })
-              break
-            }
-          }
-      })
+    // the blocked user array essentially as to be copied, searched, modified and re-inserted
+    cursor.toArray(function (err, result) {
+      if (err) throw err
+      for (i = 0; i < result.length; i++) {
+        if (result[i] == req.body.userid) {
+          user('blocked').deleteAt(i).run(connection, function (err, result) {
+            user.update({blocked: result}).run(connection, function (err, r) {
+              if (err) throw err
+              res.status(200).send(JSON.stringify(result))
+            })
+          })
+          break
+        }
+      }
+    })
   })
 }
 
