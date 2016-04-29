@@ -10,6 +10,8 @@ var Tag = thinky.createModel("tags", {
     tagName: type.string()
 }, {pk: "tagName"});
 
+// A tag can be added to many posts
+// All posts with a given tagName will be in the taggedPosts field that can be used when querying the db
 Tag.hasMany(TagHistory, "taggedPosts", "tagName", "tagName")
 
 module.exports = Tag

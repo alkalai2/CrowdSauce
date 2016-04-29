@@ -51,6 +51,9 @@ function handleCreateAccountRequest (req, res) {
     })
 }
 
+// called when a GET request is sent to /api/accounts
+// returns list of Account objects that match the query
+// supports multiple queries
 function handleGetAccountRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
@@ -77,8 +80,12 @@ function handleGetAccountRequest (req, res) {
   })
 }
 
+// called when a POST request is sent to /api/accounts
+// specify all the fields that need to be changed with new values in body
 function handleUpdateAccountRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
+
+  //current fix for boolean values becoming strings in request body
   if(req.body.notification === "true") {
     req.body.notification = true;
   }

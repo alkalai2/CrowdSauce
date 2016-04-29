@@ -73,10 +73,14 @@ function handleCreateFavoritesRequest (req, res) {
 
 }
 
+// called when a GET request is sent to the /api/favorites/user endpoint
+// returns a feed of all the posts a user favorited
 function handleGetUserFavoritesRequest(req,res) {
   if (!auth.assertHasUser(req)) return
     num_posts = +req.headers.numposts || 10
   offset    = +req.headers.offset   || 0
+
+  // get all the postIds of the posts the user favorited
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function(account) {
     var postIds = account.favorites.map(function(a) {return a.postId})
     if (postIds.length === 0) {
@@ -84,6 +88,8 @@ function handleGetUserFavoritesRequest(req,res) {
       return
     }
     console.log(postIds)
+
+    // get all the Post objects that correspond to the postIds retrieved above
     r.db(config.rethinkdb.db).table('posts').getAll(r.args(postIds)).orderBy(r.desc('timePosted')).skip(offset).
       limit(num_posts).run(connection, function (err, cursor) {
       if (err) throw err
@@ -98,6 +104,8 @@ function handleGetUserFavoritesRequest(req,res) {
   })
 }
 
+// called when a GET request is sent to /api/favorites/post endpoint
+// returns the userIds of all the users who favorited a given post
 function handleGetPostFavoritesRequest(req,res) {
   //Pass in postId in URL query
   Post.get(req.query["postId"]).getJoin({favorites: true}).run().then(function(post) {
@@ -108,6 +116,8 @@ function handleGetPostFavoritesRequest(req,res) {
   })
 }
 
+// called when a GET request is sent to /api/favorites endpoint
+// returns Favorite objects
 function handleGetFavoritesRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
@@ -130,6 +140,9 @@ function handleGetFavoritesRequest (req, res) {
   }
 }
 
+// called when a PUT request is sent to /api/favorites
+// updates every Favorite object of the user
+// not currently used anywhere
 function handleUpdateFavoritesRequest (req, res) {
   console.log('handleUpdateAccountRequest called with ' + JSON.stringify(req.route))
   if (req.query.hasOwnProperty("userId")){  r.db(config.rethinkdb.db).table("favorites").filter({"userId": req.headers.userid}).update(req.body).run(
@@ -143,6 +156,12 @@ function handleUpdateFavoritesRequest (req, res) {
   }
 
 }
+
+// called when a DELETE request is sent to /api/favorites
+// could do one of three things:
+    // if the userId and postId are specified, then it is equivalent to the user "unfavoriting" a post
+    // if only the userId is specified, all of the user's favorites are removed
+    // if only the postId is specified, all of the favorites on a given post are removed
 function handleDeleteFavoritesRequest (req, res) {
   queryObj = false
   userId = req.body.userId

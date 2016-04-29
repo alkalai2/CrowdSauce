@@ -28,6 +28,8 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
   connection = conn
 })
 
+// called when a POST request sent to /api/tags endpoint
+// adds a tag to a post
 function handleAddTagRequest (req, res) {
   r.db(config.rethinkdb.db).table('tagHistory').filter({tagName: req.body.tagName, postId: req.body.postId}).run(
     connection, function (err, cursor) {
@@ -61,6 +63,8 @@ function handleAddTagRequest (req, res) {
   })
 }
 
+// called when a GET request sent to /api/tags/post
+// returns all TagHistory objects corresponding to a given post
 function handleGetPostTagsRequest(req,res) {
   //Pass in postId to query
   Post.get(req.query["postId"]).getJoin({tags: true}).run().then(function(post) {
@@ -74,6 +78,10 @@ function handleGetPostTagsRequest(req,res) {
 
 var search_tags = []
 var post_search_tags = {}
+
+// called when a GET request is sent to /api/tags/feed
+// returns all Post objects with one or more of the specified tags
+// Post objects ordered based on the number of search tags the post has (in descending order) 
 function handleGetTagFeedRequest(req, res) {
 
   //Pass in tagName in URL query
@@ -151,6 +159,8 @@ function handleGetTagFeedRequest(req, res) {
   })
 }
 
+// called when a GET request is sent to /api/tags
+// returns all Tag objects stored in the database
 function handleGetTagsRequest (req, res) {
   r.db(config.rethinkdb.db).table('tags').run(connection, function (err, cursor) {
     if (err) throw err
@@ -158,11 +168,13 @@ function handleGetTagsRequest (req, res) {
   })
 }
 
+// Is not implemented because you either add a tag or remove a tag from a post - not update a tag
 function handleUpdateTagsRequest (req, res) {
   console.log('handleUpdateTagsRequest called with ' + JSON.stringify(req.route))
 
 }
 
+// called when a DELETE request is sent to /api/tags/name
 function handleDeleteTagRequest (req, res) {
   //Pass in only postId to body to delete all tags from that post in db
   //Pass in both tagName and postId to body to delete tag from given post in db
@@ -202,6 +214,10 @@ function handleDeleteTagRequest (req, res) {
   })
 }
 
+// called when a DELETE request is sent to /api/tags
+// completely wipes the database of a given tag
+// removes given tag from all posts that have it
+// currently only used for testing
 function handleDeleteTagNameRequest(req,res){
   console.log('handleDeleteTagNameRequest called with ' + JSON.stringify(req.route))
   r.db(config.rethinkdb.db).table('tags').filter(req.body).delete().run(

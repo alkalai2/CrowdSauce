@@ -28,6 +28,7 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 
 
 // called when a user is creating a new post
+// called when a POST request is sent to /api/posts
 // use request body to populate Post model, insert into DB using thinky
 function handleCreatePostRequest (req, res) {
   if (!auth.assertHasUser(req)) return
@@ -48,6 +49,7 @@ function handleCreatePostRequest (req, res) {
     post.save().then(function (result) {
       res.status(200).send(JSON.stringify(result))
 
+      //Send email notification to user
       Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
         email.sendToFriends(req.headers.userid,
                             user[0].name + " posted a new post!",
@@ -62,6 +64,9 @@ function handleCreatePostRequest (req, res) {
     })
 }
 
+// called when a GET request is sent to /api/posts
+// returns a list of Post objects that match the query specified in the URL
+// supports multiple queries
 function handleGetPostRequest (req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
@@ -82,6 +87,7 @@ function handleGetPostRequest (req, res) {
   })
 }
 
+// called when a PUT request is sent to /api/posts
 function handleUpdatePostRequest (req, res) {
 
   //Specify the postId of the post that needs to be updated in url query.
@@ -101,6 +107,8 @@ function handleUpdatePostRequest (req, res) {
   }
 }
 
+// called when a DELETE request sent to /api/posts
+// deletes corresponding favorites and tags for a post
 function handleDeletePostRequest (req, res) {
   Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
     post.deleteAll({favorites: true}).then(function(result){
@@ -139,6 +147,10 @@ function handleGetTrendingRequest(req, res){
   })
 }
 
+// called when GET request sent to /api/posts/feed
+// returns a list of Post objects
+// the first Post objects correspond to posts with tags from user's search history
+// the remaining Post objects are ordered from most recent to least recent
 function handleGetFeedRequest (req, res) {
   if (!auth.assertHasUser(req)) return
     num_posts = +req.headers.numposts || 10
@@ -154,6 +166,8 @@ function handleGetFeedRequest (req, res) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
+
+    // Get all the posts that have tags from the user's search history
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
       var str = String(searchHistory.toString())
       var options = {
@@ -176,6 +190,8 @@ function handleGetFeedRequest (req, res) {
           }
           console.log("Suggested post ids: "+ suggested_post_ids)
           suggested_post_ids = r (suggested_post_ids)
+          
+          // get all blocked userIds
           r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
             blocked = r(blocked || [])
             r.db(config.rethinkdb.db).table('posts').filter(function (post) {
