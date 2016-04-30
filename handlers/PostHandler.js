@@ -199,7 +199,10 @@ function handleGetFeedRequest (req, res) {
             blocked = r(blocked || [])
             // generate feed
             r.db(config.rethinkdb.db).table('posts').filter(function (post) {
-              return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
+
+              // ALKALAI FIX - the line below had an error with the 'freinds.contains' call 
+              // return friends.contains(post('userId')).and(blocked.contains(post('userId')).not()).and(suggested_post_ids.contains(post('postId')).not())
+              return blocked.contains(post('userId')).not().and(suggested_post_ids.contains(post('postId')).not())
             }).orderBy(r.desc('timePosted')).skip(offset).limit(num_posts).run(connection, function (err, cursor) {
               if (err) throw err
               handlerUtil.doCursorWithUser(res, cursor, connection, function (posts) {

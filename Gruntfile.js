@@ -95,6 +95,13 @@ module.exports = function(grunt) {
             'public/js/react_components/About.jsx'
           ]
         }
+      },
+      build_shopping: {
+        files: {
+          'public/js/react_build/shoppinglist.build.js': [
+            'public/js/react_components/ShoppingList.jsx'
+          ]
+        }
       }
     },
 

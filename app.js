@@ -133,6 +133,10 @@ function init() {
     res.sendFile(path.join(__dirname + '/public/views/quickview.html'))
   })
 
+  app.get('/shopping', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/shoppinglist.html'))
+  })
+
   // Generic error handling middleware.
   app.use(handleError)
 

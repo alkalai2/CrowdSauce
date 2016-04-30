@@ -21,6 +21,9 @@ var Navbar = React.createClass ({
             <a className="nav-link" href="/profile">My Profile</a>
           </li>
           <li className="nav-item">
+            <a className="nav-link" href="/shopping">Shopping List</a>
+          </li>
+          <li className="nav-item">
             <a className="nav-link" href="/settings">Settings</a>
           </li>
         </ul>
