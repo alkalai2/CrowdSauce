@@ -40,7 +40,6 @@ module.exports = function(grunt) {
         files: {
           'public/js/react_build/myprofile.build.js': [
             'public/js/react_components/Comments.jsx',
-			'public/js/react_components/ShoppingList.jsx',
             'public/js/react_components/PostRenderer.jsx' ,
             'public/js/react_components/Profile.jsx',
 			      'public/js/react_components/Friends.jsx',
