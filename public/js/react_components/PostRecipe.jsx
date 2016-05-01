@@ -23,7 +23,7 @@ var PostRecipe = React.createClass({
         return {activeKey: 1, title:'', link: ' ',
          description: '', ings: [], directions: [],
          imgsrc:[], imgtext: '', imgitems: [], activePage: 1, 
-         difficulty: 'Easy', prepTime: '30 Min',
+         difficulty: 'easy', prepTime: '30 Min',
          items: [], tags: [], text: '', showModal: false};
     },
 
