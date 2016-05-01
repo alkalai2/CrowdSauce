@@ -1,6 +1,11 @@
 
 var Nav = ReactBootstrap.Navbar
 
+/*
+* Navbar:
+* React Class to replace duplicate navbars in html files as
+* part of refactoring our code.
+*/
 var Navbar = React.createClass ({
 
   render:function(){
