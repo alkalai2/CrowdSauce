@@ -5,20 +5,27 @@ var ListGroup = ReactBootstrap.ListGroup,
 	ListGroupItem = ReactBootstrap.ListGroupItem,
 	Image = ReactBootstrap.Image
 
+// This is the display (message) that is returned if the user has no friends
 var NoFriendsDisplay = React.createClass({
   render: function() {
      return (<div>
-	 <b>Invite Friends Image</b>
+	 <b>Invite Your Friends!</b>
 	 </div>);
 	 
   }
 })
 	
+// This class would display the list of friends for the user	
+// It also includes a textbox for searching through your friends
 var FriendsList = React.createClass({
 
+	// initial data for friends list
     getInitialState: function() {
       return {data: {data: []}, profileurls: "notloaded"}
     },
+	
+	// changes the list to the list of friends that have the searched term
+	// this is case sensitive
 	onChange: function(event) {
 		search = event.target.value;
 		this.forceUpdate();
@@ -66,6 +73,8 @@ var FriendsList = React.createClass({
     }
 });	
 
+// This represents one friend of the user
+// It will return a picture and a name that links to that users post
 var OneFriend = React.createClass({
     render: function() {
         return (
@@ -87,4 +96,3 @@ var OneFriend = React.createClass({
     },
 });
 
-//ReactDOM.render(<FriendsList />, friends);

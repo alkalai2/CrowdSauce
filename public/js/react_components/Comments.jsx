@@ -1,4 +1,4 @@
-
+// Displays comments interface from the facebook API
 
 var Comment = React.createClass({
   	render : function() {
