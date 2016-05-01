@@ -81,8 +81,8 @@ function handleCreateFavoritesRequest(req, res) {
 // returns a feed of all the posts a user favorited
 function handleGetUserFavoritesRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-  num_posts = +req.headers.numposts || 10
-  offset = +req.headers.offset || 0
+  var num_posts = +req.headers.numposts || 10
+  var offset = +req.headers.offset || 0
 
   // get all the postIds of the posts the user favorited
   Account.get(parseInt(req.headers.userid)).getJoin({favorites: true}).run().then(function (account) {
@@ -169,9 +169,9 @@ function handleUpdateFavoritesRequest(req, res) {
 // if only the userId is specified, all of the user's favorites are removed
 // if only the postId is specified, all of the favorites on a given post are removed
 function handleDeleteFavoritesRequest(req, res) {
-  queryObj = false
-  userId = req.body.userId
-  postId = req.body.postId
+  var queryObj = false
+  var userId = req.body.userId
+  var postId = req.body.postId
 
   if (userId && postId)
     queryObj = {"userId": parseInt(userId), "postId": postId}

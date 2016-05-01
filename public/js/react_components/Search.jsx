@@ -2,6 +2,9 @@
 var Input = ReactBootstrap.Input,
   Button = ReactBootstrap.Button
 
+// class to handle a Search from the main page
+// display Search Bar
+// handle a Search event, use API to get posts related to query 
 var SearchBar = React.createClass({
 	getInitialState: function() {
 		return {value: ''}
@@ -11,12 +14,11 @@ var SearchBar = React.createClass({
       this.setState({value: e.target.value});
   	},  
 
+  	// handle in FeedController
+  	// use parent function to have displays change when a query is made
 	handleSubmit: function(e) {
 		e.preventDefault()
 		var query = this.state.value.toLowerCase(this.state.value)
-		//this.setState({value: ''})
-
-		// handle in FeedController
 		this.props.handleSearch(query)
 	},
 
@@ -37,7 +39,8 @@ var SearchBar = React.createClass({
 });
 
 
-	// props : query
+	// class to represent the Search Results of a given query
+	// load posts related to query
 	var SearchResults = React.createClass({
 		getInitialState: function() {
 			return {data: []}
@@ -50,6 +53,8 @@ var SearchBar = React.createClass({
 			})
 		},
 
+		// get the posts related to the inputed search query
+		// verify OK from API, set state with data received
 		loadSearchResults: function(fbDetails) {
 
 			// get search terms, remove whitespace, combine with ','  (how backend expects)
@@ -86,7 +91,6 @@ var SearchBar = React.createClass({
 
 		render: function() {
 
-			// Jank - necessary to get data from FeedController
 			var fbDetails = this.props.fbDetails
 		      if(this.props.fbDetails && !this.state.data.length) {
 		        this.loadSearchResults(this.props.fbDetails)

@@ -6,14 +6,18 @@
  var ListGroupItem = ReactBootstrap.ListGroupItem;
  Button = ReactBootstrap.Button;
 
+// class to represent a single ingredient in a shopping list
+// ingredients will control their own hover displays
+// ingredients will handle their own 'remove ingredient' event
  var SingleShoppingItem = React.createClass({
   getInitialState : function() {
     return {added: false, hover: false, checked: false}
   },
 
+  // make call to delete ingredient from shopping list
+  // verify OK from server, rerender list of ingredients to display change
   onShoppingClick: function() {
 
-    // TO DO - change this query to the correct 'DELETE' request
     var url = 'http://localhost:3000/api/shoppinglist/items'
     jQuery.ajax({
       url:  url,
@@ -49,8 +53,6 @@
       this.setState({checked: !this.state.checked});
     }
     
-    
-    
   },
 
   mouseOver: function () {
@@ -71,8 +73,8 @@
     return (
       <ListGroupItem onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}> 
       <span>
-      <input type="checkbox"  onClick={this.onCheckboxClick} />
-      {this.props.ingrName} 
+      <input type="checkbox" className="ingredient-checkbox"  onClick={this.onCheckboxClick} />
+      <span className="shopping-ingredient"> {this.props.ingrName} </span>
       <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>remove</Button>
       </span> 
       </ListGroupItem>
@@ -80,6 +82,8 @@
   }
 });
 
+// class to represent the Shopping List (list of ingredients)
+// class will handle loading of all ingredients, setting display of ingredients
 var ShoppingList = React.createClass({
 
   getInitialState: function() {
@@ -111,6 +115,7 @@ var ShoppingList = React.createClass({
 
   },
 
+  // delete all ingredients that have been checked for deletion
   deleteCheckedItems: function(){
     var url = 'http://localhost:3000/api/shoppinglist/items'
     var newIngrList = [];
@@ -167,6 +172,8 @@ var ShoppingList = React.createClass({
     })
   },
 
+  // load the shopping list from the server
+  // call api/shoppinglist/ endpoint to get data
   loadShoppingListFromServer : function(fbDetails) {
 
     console.log("getting the shopping list from server..."); 
@@ -203,7 +210,7 @@ var ShoppingList = React.createClass({
         return <SingleShoppingItem ingrName={listValue} reloadWithoutIngredient={self.reloadWithoutIngredient} onCheck={self.onCheck} onUnCheck={self.onUnCheck}/>;
       })}
       </ListGroup>
-      <Button  className="button" bsSize="medium" onClick={this.deleteCheckedItems}>Remove Checked Items</Button>
+      <Button  className="button remove-checked" bsSize="medium" onClick={this.deleteCheckedItems}>Remove Checked Items</Button>
       </div>
       );
   }

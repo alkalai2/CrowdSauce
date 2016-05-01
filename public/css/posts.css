@@ -308,3 +308,15 @@ height:50px;
 .shopping-list-container {
 	margin-top: 20px
 }
+
+.ingredient-checkbox {
+	margin-right: .5em;
+}
+
+.remove-checked {
+	float: right;
+}
+
+.shopping-ingredient {
+	margin-left: 5px;
+}
