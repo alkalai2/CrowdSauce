@@ -6,8 +6,8 @@ var type = thinky.type;
 
 // This should model the schema we want in our RethinkDB
 var TagHistory = thinky.createModel("tagHistory", {
-    tagName: type.string(),
-    postId: type.string()
-});
+  tagName: type.string(),
+  postId: type.string()
+})
 
 module.exports = TagHistory

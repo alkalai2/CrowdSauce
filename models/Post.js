@@ -20,8 +20,7 @@ var Post = thinky.createModel('posts', {
   rating: type.number().default(0),
   prepTime: type.number().default(0),
   difficulty: type.string().enum(["easy", "medium", "hard"]).default("easy")
-}, {pk: "postId"}
-)
+}, {pk: "postId"})
 
 module.exports = Post
 

@@ -8,7 +8,6 @@ var type = thinky.type;
 var Shoppinglist = thinky.createModel("shoppinglist", {
   userId: type.number().default(0),
   ingredients: type.array().default([])
-}, {pk: "shoppinglistId"} );
+}, {pk: "shoppinglistId"})
 
 module.exports = Shoppinglist
-
