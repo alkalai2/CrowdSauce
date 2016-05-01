@@ -2,13 +2,13 @@
  * @jsx React.DOM
  */
 
-var ListGroup = ReactBootstrap.ListGroup;
-var ListGroupItem = ReactBootstrap.ListGroupItem;
-Button = ReactBootstrap.Button;
+ var ListGroup = ReactBootstrap.ListGroup;
+ var ListGroupItem = ReactBootstrap.ListGroupItem;
+ Button = ReactBootstrap.Button;
 
-var SingleShoppingItem = React.createClass({
+ var SingleShoppingItem = React.createClass({
   getInitialState : function() {
-    return {added: false, hover: false}
+    return {added: false, hover: false, checked: false}
   },
 
   onShoppingClick: function() {
@@ -39,94 +39,174 @@ var SingleShoppingItem = React.createClass({
     
   },
 
+  onCheckboxClick: function() {
+    if(this.state.checked){
+      this.props.onUnCheck(this.props.ingrName);
+      this.setState({checked: !this.state.checked});
+    }
+    if(!this.state.checked){
+      this.props.onCheck(this.props.ingrName);
+      this.setState({checked: !this.state.checked});
+    }
+    
+    
+    
+  },
+
   mouseOver: function () {
-      this.setState({hover: true});
+    this.setState({hover: true});
   },
   
   mouseOut: function () {
-      this.setState({hover: false});
+    this.setState({hover: false});
   },
 
   render: function() {
     var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
 
     button = this.state.added ? 
-      <span className="tag label label-success ingr-image-holder"><img className="ingr-ok-icon" src="img/glyphicons/png/glyphicons-207-ok.png"></img></span>:
-      <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>remove</Button>
+    <span className="tag label label-success ingr-image-holder"><img className="ingr-ok-icon" src="img/glyphicons/png/glyphicons-207-ok.png"></img></span>:
+    <Button style={style} className="ingr-button" bsSize="xsmall" onChange={this.onShoppingClick}>remove</Button>
 
-      return (
-          <ListGroupItem onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}> 
-            <span>
-              {this.props.ingrName} 
-              <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>remove</Button>
-            </span> 
-          </ListGroupItem>
+    return (
+      <ListGroupItem onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}> 
+      <span>
+      <input type="checkbox"  onClick={this.onCheckboxClick} />
+      {this.props.ingrName} 
+      <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>remove</Button>
+      </span> 
+      </ListGroupItem>
       );
   }
 });
 
 var ShoppingList = React.createClass({
-    
-    getInitialState: function() {
-      return {data: []}
-    },
-    getFBInfo: function() {
-      return getFacebookDetails().then(function(d){return d})
-    },
-    reloadWithoutIngredient: function(ingrName) {
-      data = this.state.data.filter(function(e){return e!==ingrName})
-      this.setState({data: data})
-      this.forceUpdate()
-    },
-    componentDidMount: function() {
-      var self = this
-      getFacebookDetails().then(function(fbDetails) {
-        console.log("Getting facebook details : " + fbDetails)
-        self.loadShoppingListFromServer(fbDetails)
-      }, function(error) {
-        console.log("Error : " + error)
-      })
-    },
 
-    loadShoppingListFromServer : function(fbDetails) {
+  getInitialState: function() {
+    return {data: [], checkedIngrs: []}
+  },
+  getFBInfo: function() {
+    return getFacebookDetails().then(function(d){return d})
+  },
 
-        console.log("getting the shopping list from server..."); 
-        jQuery.ajax({
-          url:  this.props.source,
-          type: 'GET',
-          headers: {
-            'Accept': 'text/html',
-            'userid': fbDetails['fbUserID'],
-            'accesstoken': fbDetails['fbAccessToken'],
-          },
-          dataType: 'json',
-          timeout : 10000,
-          success: function(response) {
-            console.log(response)
-            data = response[0].ingredients
-            console.log(data)
-            if(data.length) { 
-              this.setState({data: data});
-            }
-          }.bind(this),
-          error: function(xhr, status, err) {
-            console.error(this.props.source, status, err.toString());
-          }.bind(this)
-        }); 
-    },
+  onCheck: function(ingrName){
 
-    render: function() {
-      var self = this
-   		return (
-	    	<div>             
-            <ListGroup className="shopping-list-container" componentClass="div"> 
-              {this.state.data.map(function(listValue){
-                return <SingleShoppingItem ingrName={listValue} reloadWithoutIngredient={self.reloadWithoutIngredient}/>;
-              })}
-            </ListGroup>
-	    	</div>
-	    );
+    var newCheckedList = this.state.checkedIngrs.slice();
+    newCheckedList.push(ingrName);
+    this.setState({checkedIngrs: newCheckedList},function(){console.log(this.state.checkedIngrs);});
+
+  },
+
+  onUnCheck: function(ingrName){
+    var newCheckedList = this.state.checkedIngrs.slice();
+
+    for (var i=newCheckedList.length-1; i>=0; i--) {
+      if (newCheckedList[i] === ingrName) {
+        newCheckedList.splice(i, 1);
+      }
     }
+
+    this.setState({checkedIngrs: newCheckedList},function(){console.log(this.state.checkedIngrs);});
+
+
+  },
+
+  deleteCheckedItems: function(){
+    var url = 'http://localhost:3000/api/shoppinglist/items'
+    var newIngrList = [];
+    var checkList = this.state.checkedIngrs;
+    var j = 0;
+    var i = 0;
+    for(j = this.state.data.length-1; j>=0; j--){
+      var addToList = true;
+      for (i = checkList.length-1; i>=0; i--) {
+            if (checkList[i] === this.state.data[j]) {
+              addToList = false;
+            }
+      }
+      if(addToList){
+        newIngrList.push(this.state.data[j])
+      }
+    }
+    jQuery.ajax({
+      url:  url,
+      type: 'DELETE',
+      headers: {
+        'accessToken': fbAccessToken,
+        'userId': fbUserID
+      },
+      dataType: 'json',
+      data: {
+        'ingredients': this.state.checkedIngrs
+      },
+      success: function(data) {
+        console.log("removing " + this.state.checkedIngrs + " from shopping list")
+        this.setState({data: newIngrList},function(){console.log(this.state.data)})
+        this.forceUpdate();
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(status, err.toString());
+      }.bind(this)
+    });
+
+  },
+
+  reloadWithoutIngredient: function(ingrName) {
+    data = this.state.data.filter(function(e){return e!==ingrName})
+    this.setState({data: data})
+    this.forceUpdate()
+  },
+
+  componentDidMount: function() {
+    var self = this
+    getFacebookDetails().then(function(fbDetails) {
+      console.log("Getting facebook details : " + fbDetails)
+      self.loadShoppingListFromServer(fbDetails)
+    }, function(error) {
+      console.log("Error : " + error)
+    })
+  },
+
+  loadShoppingListFromServer : function(fbDetails) {
+
+    console.log("getting the shopping list from server..."); 
+    jQuery.ajax({
+      url:  this.props.source,
+      type: 'GET',
+      headers: {
+        'Accept': 'text/html',
+        'userid': fbDetails['fbUserID'],
+        'accesstoken': fbDetails['fbAccessToken'],
+      },
+      dataType: 'json',
+      timeout : 10000,
+      success: function(response) {
+        console.log(response)
+        data = response[0].ingredients
+        console.log(data)
+        if(data.length) { 
+          this.setState({data: data});
+        }
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.source, status, err.toString());
+      }.bind(this)
+    }); 
+  },
+
+  render: function() {
+    var self = this
+    return (
+      <div>             
+      <ListGroup className="shopping-list-container" componentClass="div"> 
+      {this.state.data.map(function(listValue){
+        return <SingleShoppingItem ingrName={listValue} reloadWithoutIngredient={self.reloadWithoutIngredient} onCheck={self.onCheck} onUnCheck={self.onUnCheck}/>;
+      })}
+      </ListGroup>
+      <Button  className="button" bsSize="medium" onClick={this.deleteCheckedItems}>Remove Checked Items</Button>
+      </div>
+      );
+  }
 });
 
 ReactDOM.render(<ShoppingList source={"http://localhost:3000/api/shoppinglist/"}/>, shoppinglist);
