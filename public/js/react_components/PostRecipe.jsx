@@ -221,8 +221,6 @@ var PostRecipe = React.createClass({
     render: function() {
         return (  
         <div>
-        // The little floating button that shows up on the feed to open 
-        // up this modal
   		<button className="post_fab" onClick={this.open}> 
   			+
         </button>
@@ -232,7 +230,6 @@ var PostRecipe = React.createClass({
 	      	<Modal.Title>Add a Recipe</Modal.Title>
 	      </Modal.Header>
 	      <Modal.Body>
-			// The title of the recipe
 	        <Input
 			  type="text"
 			  label="Title"
@@ -244,14 +241,11 @@ var PostRecipe = React.createClass({
 			  onChange={this.handleTitleChange}
 			>
 			</Input>
-			// An expandable list of images to be added to the post
 			<h3>Images</h3>
 		    <ul>{this.state.imgitems.map(this.createItem)}</ul>
 		    <input onChange={this.onImgChange} value={this.state.imgtext} />
 		    <button onClick={this.addImgs} >{'Add'}</button>
 		    <ul> </ul>
-		    // An accordian that allows users choice between subitting a link to another
-		    // website or submit a custom recipe
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
 			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
@@ -260,10 +254,7 @@ var PostRecipe = React.createClass({
 			    	<RecipeCustomForm onDirectionsChange={this.onDirectionsChange}
 			    	                  onIngredientsChange={this.onIngredientsChange}/>
 		    	</Panel>
-		    </PanelGroup>
-		    
-		    // A bunch of text fields for the form:
-		    
+		    </PanelGroup>		    
 		    <Input
 			  type="textarea"
 			  label="Add a Description"
@@ -292,16 +283,12 @@ var PostRecipe = React.createClass({
 		      items={5}
 		      activePage={this.state.activePage}
 		      onSelect={this.handleRatingSelect} />
-		      
-		    // todo list pattern.  Add tags and have them 
-		    // show up dynamically in <ul>
 		    <h3>Tags</h3>
 		    <ul>{this.state.items.map(this.createItem)}</ul>
 		    <input onChange={this.onChange} value={this.state.text} />
 		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
 		
        		</Modal.Body>
-			// End of the modal.  Display a submit button to submit post
        		<Modal.Footer>
        			<ButtonInput onClick={this.handleSubmit} type="submit" value="Post" bsStyle="success" bsSize="large" />
        		</Modal.Footer>

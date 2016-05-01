@@ -6,9 +6,15 @@ var Image = ReactBootstrap.Image
 var Thumbnail = ReactBootstrap.Thumbnail
 var fbDetails = getFacebookDetails();
 
-
+/* 
+* Settings:
+* This class represents the entire settings page of CrowdSauce.
+* It allows changing of user information such as profile pictures,
+* names and emails. It also allows changing of the email 
+* notification setting
+*/
 var Settings = React.createClass ({
-
+	// Initial state has blank forms with nothing changed yet
 	getInitialState() {
 		return{
 			username: '',
@@ -18,26 +24,23 @@ var Settings = React.createClass ({
 		};
 	},
 
-
-
+	// handles submitting changes via ajax requests with the Save button
 	handleSave(){
 		var img = this.state.imgsrc.trim();
 		var name = this.state.username.trim();
 		var email = this.state.email.trim();
-
 		var data = {
 		  img: img,
 		  email: email,
 		  name: name,
 		  notification: this.state.notification
 		};
-		
 		var heads = {
             'userid': fbDetails['fbUserID'],
             'accesstoken': fbDetails['fbAccessToken']
 		};
-		
 		var url = 'http://localhost:3000/api/accounts/';
+
 		jQuery.ajax({
 		  url: url,
 		  dataType: 'json',
@@ -56,7 +59,7 @@ var Settings = React.createClass ({
 		});		
 	},
 
-
+	// Various setter functions for the settings
   	changeImgSrc: function(e) {
       this.setState({imgsrc: e.target.value});
   	},
@@ -69,14 +72,14 @@ var Settings = React.createClass ({
   	changeNotification: function(e) {
       this.setState({notification: e.target.checked});
   	},
-    render: function() {
 
+    render: function() {
     	var imgStyle = {
     		float: 'right',
 		    display: 'inline-block'
     	}
+    // Renders the HTML with all the forms 
     	return (
-
     		<div>
 		      <Thumbnail className="settingsThumb" src={this.state.imgsrc} alt="Enter a valid Picture link">
 		      <form>
@@ -103,7 +106,6 @@ var Settings = React.createClass ({
 				value={this.state.username}
 	          />
 	          </form>
-
 		      <span className="setting_label">Allow email notifications?</span> 
 	          <label className="switch">
 	            <input className="switch-input" type="checkbox" checked={this.state.notification} onChange={this.changeNotification} />
@@ -117,16 +119,5 @@ var Settings = React.createClass ({
     		);
     },
 })
-
-var MySettings = React.createClass({
-	render: function() {
-		return (
-		<Settings/>
-		);
-	},
-});
-
-
-
 
 ReactDOM.render(<Settings/>, settings);
