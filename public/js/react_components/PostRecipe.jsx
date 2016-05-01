@@ -1,3 +1,5 @@
+// React Bootstrap components used in the 
+// below code
 var Panel = ReactBootstrap.Panel,
 PanelGroup = ReactBootstrap.PanelGroup,
 Input = ReactBootstrap.Input,
@@ -8,9 +10,14 @@ Button = ReactBootstrap.Button,
 FormGroup = ReactBootstrap.FormGroup,
 Radio = ReactBootstrap.Radio
 
+// A solution to the race condition of needing fbDetails in the post
+// functions.  Just call it at first and the user is unlikely to outrun 
+// JS in pressing Post.
 var fbDetails = getFacebookDetails();
 
 
+// A class to hold the pop-up modal for posting recipes
+// from the feed page
 var PostRecipe = React.createClass({
     getInitialState: function(){
         return {activeKey: 1, title:'', link: ' ',
@@ -20,19 +27,18 @@ var PostRecipe = React.createClass({
          items: [], tags: [], text: '', showModal: false};
     },
 
-
+	// Methods to open and close the modal
 	close() {
 	this.setState({ showModal: false });
 	},
-
 	open() {
 	this.setState({ showModal: true });
 	},
-
 	hide: function() {
 	this.setState({ showModal: false });
 	},
-
+	// A bunch of callback calls to handle all the state
+	// changes that the user may cause by editing the form
     handleTitleChange: function(e){
       this.setState({title: e.target.value});
   	},    
@@ -62,6 +68,7 @@ var PostRecipe = React.createClass({
         activePage: sel.eventKey
       });
     }, 
+    // Creates a new image preview to be shown in the modal when called
     createItem: function(item) {
       return <span><img className="postrecipe-images"src={item.text}> </img></span>;
     },
@@ -71,6 +78,9 @@ var PostRecipe = React.createClass({
     onImgChange: function(e) {
       this.setState({imgtext: e.target.value});
     },
+    // These two maintain state for the appendable lists of tags and images.
+    // Specifically required since these two follow the Todo pattern from the
+    // React website
     addTags: function(e) {
 		e.preventDefault();
 		var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
@@ -83,9 +93,13 @@ var PostRecipe = React.createClass({
 		var nextTags = this.state.imgsrc.concat(this.state.imgtext)
 		this.setState({imgitems: nextItems, imgtext: '', imgsrc: nextTags});
     },
+    // Utility function to get user's facebook 
+    // user id and such
     getFBInfo: function() {
       return getFacebookDetails().then(function(d){return d})
     },
+    // A router that decides what to submit
+    // based on the active key of the accordian
     handleSubmit: function(){
 		if(this.state.activeKey == 1){
 			this.handleLinkSubmit();
@@ -95,9 +109,13 @@ var PostRecipe = React.createClass({
 		    this.close();
 		}
     },
+    // If we're submitting a link, send only the link
+    // and not also the empty directions and ingredients 
+    // lists
 	handleLinkSubmit: function() {
-		console.log("LINK SUBMIT")
 		var link = this.state.link.trim();
+		// Prepare data fields for Post components.  Include
+		// only recipe link and not ingredients and directions.
 		var data = {
 		  recipeLink: this.state.link,
 		  title: this.state.title,
@@ -107,12 +125,12 @@ var PostRecipe = React.createClass({
 		  difficulty: this.state.difficulty,
 		  prepTime: this.state.prepTime
 		};
-		
+		// User authentication fields
 		var heads = {
             'userid': fbDetails['fbUserID'],
             'accesstoken': fbDetails['fbAccessToken']
 		};
-		
+		// Run an AJAX post
 		var url = 'http://localhost:3000/api/posts/';
 		jQuery.ajax({
 		  url: url,
@@ -121,16 +139,16 @@ var PostRecipe = React.createClass({
 		  data: data,
 		  headers: heads,
 		  success: function(responsedata) {
-		    console.log(responsedata)
+		    // On success, associate post to its tags
 		    this.associatePostToTags(responsedata['postId'])
 		  }.bind(this),
 		  error: function(xhr, status, err) {
-		    console.log(err.toString());
 		  }.bind(this)
 		});
 	  },
 	handlePostSubmit: function() {
-		console.log("POST SUBMIT")
+		// Prepare data fields for Post components.  Include
+		// ingredients and directions.
 		var data = {
 		  ingredients: this.state.ings,
 		  title: this.state.title,
@@ -141,12 +159,12 @@ var PostRecipe = React.createClass({
 		  difficulty: this.state.difficulty,
 		  prepTime: this.state.prepTime
 		};		
-		
+		// User authentication fields
 		var heads = {
             'userid': fbDetails['fbUserID'],
             'accesstoken': fbDetails['fbAccessToken']
 		};
-		
+		// Run AJAX posts
 		var url = 'http://localhost:3000/api/posts/';
 		jQuery.ajax({
 		  url: url,
@@ -155,34 +173,32 @@ var PostRecipe = React.createClass({
 		  data: data,
 		  headers: heads,
 		  success: function(responsedata) {
-		    console.log(responsedata)
+		    // On success, associate post to its tags
 		    this.associatePostToTags(responsedata.postId)
 		  }.bind(this),
 		  error: function(xhr, status, err) {
-		    console.log(err.toString());
 		  }.bind(this)
 		});
 	  },
+	// Once a post is created, due to quirks of backend implementation,
+	// adding tags to that post has to be done per tag
 	associatePostToTags: function(postId) {
-		console.log("TODO" + postId)
-		console.log(this.state.items)
 		for (t in this.state.items){
 			tagName = this.state.items[t].text
 			if (tagName) {
-				console.log(tagName)
 				// make tag names lower case
 				tagName = tagName.toLowerCase(tagName)
-				
+				// User authentication details
 				var heads = {
 		            'userid': fbDetails['fbUserID'],
 		            'accesstoken': fbDetails['fbAccessToken']
 				};
-				
+				// Just the post ID and the tag to associate it with
 				var data = {
 					postId: postId,
 					tagName: tagName
 				};
-				
+				// Run AJAX!  RUN LIKE THE WIND!
 				jQuery.ajax({
 				  url: 'http://localhost:3000/api/tags',
 				  dataType: 'json',
@@ -199,9 +215,14 @@ var PostRecipe = React.createClass({
 			}
 		}
 	},
+	// a monstrous function that should be broken up but it 
+	// it ends up being a lot more code to propagate all the different
+	// form values back to this class for the handleXSubmit functions
     render: function() {
         return (  
         <div>
+        // The little floating button that shows up on the feed to open 
+        // up this modal
   		<button className="post_fab" onClick={this.open}> 
   			+
         </button>
@@ -211,7 +232,7 @@ var PostRecipe = React.createClass({
 	      	<Modal.Title>Add a Recipe</Modal.Title>
 	      </Modal.Header>
 	      <Modal.Body>
-
+			// The title of the recipe
 	        <Input
 			  type="text"
 			  label="Title"
@@ -223,12 +244,14 @@ var PostRecipe = React.createClass({
 			  onChange={this.handleTitleChange}
 			>
 			</Input>
+			// An expandable list of images to be added to the post
 			<h3>Images</h3>
 		    <ul>{this.state.imgitems.map(this.createItem)}</ul>
 		    <input onChange={this.onImgChange} value={this.state.imgtext} />
 		    <button onClick={this.addImgs} >{'Add'}</button>
 		    <ul> </ul>
-		    
+		    // An accordian that allows users choice between subitting a link to another
+		    // website or submit a custom recipe
 			<PanelGroup activeKey={this.state.activeKey} onSelect={this.handlePanelSelect} accordion>
 			    <Panel eventKey="1" header="Link to Recipe">
 			    	<RecipeLinkForm handleLinkChange={this.handleLinkChange} />
@@ -238,6 +261,9 @@ var PostRecipe = React.createClass({
 			    	                  onIngredientsChange={this.onIngredientsChange}/>
 		    	</Panel>
 		    </PanelGroup>
+		    
+		    // A bunch of text fields for the form:
+		    
 		    <Input
 			  type="textarea"
 			  label="Add a Description"
@@ -246,36 +272,36 @@ var PostRecipe = React.createClass({
 			  value={this.state.description}
 			  onChange={this.handleDescChange}
 			/>
-			
 			<Input
 		      type="text"
 		      label="Preparation Time"
 		      labelClassName="col-xs-2"
 		      wrapperClassName="col-xs-15"
 		      value={this.state.prepTime}
-		      onChange={this.handlePrepChange}/>
-		      
+		      onChange={this.handlePrepChange}/>		      
 		    <Input
 		      type="text"
 		      label="Difficulty"
 		      labelClassName="col-xs-2"
 		      wrapperClassName="col-xs-15"
 		      value={this.state.difficulty}
-		      onChange={this.handleDiffChange}/>
-			
+		      onChange={this.handleDiffChange}/>			
 			<h3>Rating:</h3>
 			<Pagination
 		      bsSize="large"
 		      items={5}
 		      activePage={this.state.activePage}
 		      onSelect={this.handleRatingSelect} />
+		      
+		    // todo list pattern.  Add tags and have them 
+		    // show up dynamically in <ul>
 		    <h3>Tags</h3>
 		    <ul>{this.state.items.map(this.createItem)}</ul>
 		    <input onChange={this.onChange} value={this.state.text} />
 		    <button onClick={this.addTags} >{'Add #' + (this.state.items.length + 1)}</button>
 		
        		</Modal.Body>
-
+			// End of the modal.  Display a submit button to submit post
        		<Modal.Footer>
        			<ButtonInput onClick={this.handleSubmit} type="submit" value="Post" bsStyle="success" bsSize="large" />
        		</Modal.Footer>
@@ -284,6 +310,8 @@ var PostRecipe = React.createClass({
     }
 });
 
+// A React component that encapsulates the custom recipe form in the 
+// link state of the above accordian
 var RecipeCustomForm = React.createClass({
   getInitialState: function() {
     return {ings: [], dirs: [], ingstext: '', dirstext: ''};
@@ -297,6 +325,8 @@ var RecipeCustomForm = React.createClass({
   onDirsChange: function(e) {
       this.setState({dirstext: e.target.value});
   },
+  // These keep state of the Custom Form and then propogates
+  // back to PostRecipe class.
   addIngs: function(e) {
 		e.preventDefault();
 		var nextItems = this.state.ings.concat([{text: this.state.ingstext, id: Date.now()}]);
@@ -325,6 +355,8 @@ var RecipeCustomForm = React.createClass({
   }
 });
 
+// A React component that encapsulates the link form in the 
+// link state of the above accordian
 var RecipeLinkForm = React.createClass({
   getInitialState: function() {
     return {link: ''};
