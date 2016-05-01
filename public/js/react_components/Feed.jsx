@@ -2,6 +2,8 @@
  * @jsx React.DOM
  */
 
+// React class to build a users' feed
+// specifies a PostList.jsx object with specific Feed fields set
 var Feed = React.createClass({
     
     getInitialState: function() {
@@ -10,7 +12,6 @@ var Feed = React.createClass({
       }
     },
 	componentDidMount : function() {
-	
 	
   	window.fbAsyncInit = function() {
   	FB.init({
@@ -43,10 +44,11 @@ var Feed = React.createClass({
       FB.XFBML.parse();
   	},
 
+    // use api/posts/feed/ endpoint to get a users' feed
+    // with posts data, set state to rerender
     loadPostsFromServer : function(fbDetails) {
 
         console.log("getting posts from server..."); 
-        var url = 
         jQuery.ajax({
           url:  this.props.source,
           type: 'GET',
@@ -74,7 +76,6 @@ var Feed = React.createClass({
 	
 	render: function() {
 
-      // Jank - necessary to get data from FeedController
       var fbDetails = this.props.fbDetails
       if(this.props.fbDetails && !this.state.data.length) {
         this.loadPostsFromServer(this.props.fbDetails)

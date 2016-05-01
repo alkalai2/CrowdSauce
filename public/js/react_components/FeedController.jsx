@@ -1,6 +1,8 @@
-// Master Controller for feed. Handles changing of displays, data on /feed page. 
-
-
+// Master Controller for the main page (/feed) of CrowdSauce
+// Handles changing of three displays:
+// 		Feed 		(list of all freinds' post objects)
+// 		Search 		(list of search results from a main-page query)
+// 		Profile 	(list of posts made by one individual)
 var FeedController = React.createClass({
 		getInitialState: function() {
 			return {
@@ -121,7 +123,7 @@ var FeedController = React.createClass({
 		},
 
 		// a Search has come in
-		// pass query onto Search to load results
+		// pass query onto Search.jsx to load results
 		// change display to show search results
 		handleSearchQuery: function(query) {
 			if(query) {
@@ -134,10 +136,12 @@ var FeedController = React.createClass({
 			}
 		},
 
+		// set display back to main feed back ('back to feed' button)
 		handleBackToFeed: function() {
 			this.setState({displayType: 'feed'})
 		},
 
+		// set display to view a single users' posts
 		handleProfileNavigation: function(userId, userName) {
 			this.setState({
 					displayType: 'profile',
