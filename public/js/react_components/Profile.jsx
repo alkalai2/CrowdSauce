@@ -2,6 +2,9 @@
  * @jsx React.DOM
  */
 
+// react class to represent a user's name on CrowdSauce
+// the profile link will be clickable
+// allow for navigation from a user's name to his/her posts
 var ProfileLink = React.createClass({
   goToProfile: function() {
     this.props.profileNavigation(this.props.userId, this.props.userName)
@@ -18,6 +21,9 @@ var ProfileLink = React.createClass({
   }
 })
 
+
+// class to represent the viewing of a single users' posts
+// used after clicking a users' name, or viewing your own post history
 var Profile = React.createClass({
     
     getInitialState: function() {
@@ -34,6 +40,9 @@ var Profile = React.createClass({
       })
     },
 
+    // use api/posts/ to get posts by a single user
+    // if viewing the logged-in users posts (via My Profile), do not need userId provided
+    // verify an OK from the server, then set state with post data received
     loadPostsFromServer : function(fbDetails) {
         userId = this.props.userId
         if (this.props.myprofile) {
@@ -75,7 +84,7 @@ var Profile = React.createClass({
 
     render: function() {
 
-      // Jank - necessary to get data from FeedController
+      // 
       var fbDetails = this.props.fbDetails
       if(this.props.fbDetails && !this.state.data.length) {
         this.loadPostsFromServer(this.props.fbDetails)

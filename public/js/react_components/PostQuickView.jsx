@@ -1,5 +1,7 @@
 
-
+// react class to display a single Post on the main page
+// used from Email notifications, or clicking a single post title
+// not navigable from the main page, simplay a post-viewing option
 var PostQuickView = React.createClass({
 	  getInitialState: function() {
       return {post_data: {}}
@@ -15,6 +17,8 @@ var PostQuickView = React.createClass({
       })
     },
   	
+    // load the full post data given it's post id
+    // use /api/posts with postId spec to get full data
   	loadPostFromServer: function(fbDetails) {
       post_data = []  
       console.log("getting post data to quickview ...")
