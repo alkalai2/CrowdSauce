@@ -366,6 +366,3 @@ var RecipeLinkForm = React.createClass({
     );
   }
 });
-
-// render postrecipe in FeedController
-// ReactDOM.render(<PostRecipe/>, content);

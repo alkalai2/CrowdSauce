@@ -22,7 +22,7 @@ var Input = ReactBootstrap.Input,
     Carousel = ReactBootstrap.Carousel,
     CarouselItem = ReactBootstrap.CarouselItem
 
-// Example data to simulate what we will get from API
+// Example of data that we will get from API
 // will be used to display a post on the site
 // var data = {
 
@@ -38,13 +38,14 @@ var Input = ReactBootstrap.Input,
 //   "timestamp": "Feb 24, 2016"
 // }
 
+// Handles the hover over each ingredient and allows for self addition 
+// or deletion from the shopping list.  Makes its own calls.
 var SingleIngredient = React.createClass({
   getInitialState : function() {
     return {added: false, hover: false}
   },
 
   onShoppingClick: function() {
-
     // if adding to list, make server call
     var url = 'http://localhost:3000/api/shoppinglist/items'
     jQuery.ajax({
@@ -59,43 +60,38 @@ var SingleIngredient = React.createClass({
         'ingredients': [this.props.ingrName]
       },
       success: function(data) {
-        console.log("added " + this.props.ingrName + " to shopping list")
         this.setState({added: !this.state.added})
         this.forceUpdate();
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(status, err.toString());
       }.bind(this)
     });
     
   },
-
+  // Interaction with mouse events.  Just update state and let
+  // render deal with the rest
   mouseOver: function () {
       this.setState({hover: true});
-  },
-  
+  }, 
   mouseOut: function () {
       this.setState({hover: false});
   },
 
   render: function() {
     var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
-
     button = this.state.added ? 
       <span className="tag label label-success ingr-image-holder"><img className="ingr-ok-icon" src="img/glyphicons/png/glyphicons-207-ok.png"></img></span>:
       <Button style={style} className="ingr-button" bsSize="xsmall" onClick={this.onShoppingClick}>add to shopping list</Button>
-
       return (
           <td onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}><span>{this.props.ingrName} {button} </span> </td>
       );
   }
 });
 
+// Simple thread/list of ingredients
 var Ingredients = React.createClass({
     // add shopping list buttons
-
     render: function() {
-        
         return (
           <Table responsive>
             <thead>
@@ -114,6 +110,7 @@ var Ingredients = React.createClass({
     },
 });
 
+// Simple thread of Directions to be rendered.
 var Directions = React.createClass({
     render: function() {
         return (
@@ -149,27 +146,25 @@ var CustomRecipe = React.createClass({
   }
 });
 
-
+// A custom React component that renders 
 var RecipeLink = React.createClass({
   getInitialState: function() {
     return {
       showModal: false
     };
   }, 
-
   openModal: function() {
     this.setState({showModal: true})
   },
-
   closeModal: function() {
     this.setState({showModal: false})
   }, 
-
   navigateToPage: function() {
     var win = window.open(this.props.url, '_blank');
     win.focus();
   },
-
+  // Renders modal of link webpage as a preview of the 
+  // link
   render: function() {
     var Iframe = 'Iframe'
     var url = this.props.url
@@ -192,12 +187,15 @@ var RecipeLink = React.createClass({
 });
 
 
-
+// Renders a carousel of images in the middle of the post
+// that represents the user's experience of making this 
+// recipe.
 var ImageThumbnail = React.createClass({
-
   render: function() {
     imageLinks = this.props.imageLinks
-
+	// If there is only one image, just display it with an Image
+	// otherwise go through the trouble of creating a Carousel map 
+	// the render function over the imageLinks property.
     if (imageLinks.length == 1) {
       return <Image className = "recipeImage" src={imageLinks[0]} rounded />
     }
@@ -215,11 +213,13 @@ var ImageThumbnail = React.createClass({
   }
 });
 
+// A class that shows rating stars in the top right corner of the 
+// post.
 var RatingStars = React.createClass ({
   render: function() {
     var stars;
     var rating = this.props.rating;
-    
+    // Parses the rating value and renders correct number of stars.
     if(rating===1) 
       stars = (<img src={"img/1star.png"} className="rating-star"/>)
     if(rating===2) 
@@ -230,11 +230,9 @@ var RatingStars = React.createClass ({
       stars = (<img src={"img/4stars.png"} className="rating-star"/>)  
     if(rating===5) 
       stars = (<img src={"img/5stars.png"} className="rating-star"/>)
-
+	// Mostly a CSS based solution in terms of rendering.
     return (
-      <span className = "rating-stars">
-      {stars}
-      </span>
+      <span className = "rating-stars"> {stars} </span>
     );
   }
 });
@@ -247,9 +245,9 @@ var Tags = React.createClass ({
   componentDidMount: function() {
     this.loadTagsFromServer()
   },
-
+  // Again, different method from post retreival for 
+  // tag retreival
   loadTagsFromServer: function() {
-    console.log('getting tags for ' + this.props.postId)
     var url = 'http://localhost:3000/api/tags/post'
     jQuery.ajax({
       url:  url,
@@ -262,6 +260,7 @@ var Tags = React.createClass ({
       data: {
         'postId': this.props.postId
       },
+      // Upon success, add to the tags string
       success: function(data) {
         var tags = this.state.tags
         for(d in data) {
@@ -273,20 +272,21 @@ var Tags = React.createClass ({
         this.setState({tags: tags})
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.source, status, err.toString());
       }.bind(this)
     });
   },
 
+	// When a tag is clicked, it should put the text of the tag
+	// in the search bar and search automatically.
   hangleClick : function(e) {
     tagName = e.target.text
     
     if (this.props.handleSearch) {
-      console.log("Tag click. Navigating to posts with " + tagName)
       this.props.handleSearch(tagName)
     }
   },
-
+  // Tags are just a smal list of horizontal blue boxes in the bottom
+  // left corner
   render: function() {
     var self = this
     if(!this.state.tags) {
@@ -303,15 +303,17 @@ var Tags = React.createClass ({
   }
 });
 
+// A Component that transforms a post into an editable post by
+// converting all controls in the text fields.
 var EditButtons = React.createClass({
-
   render: function() {
     toDisplay = 
       <button 
         className="btn btn-primary btn-xs edit-buttons" 
         type="button" 
         onClick={this.props.startEditing}> Edit </button>;
-
+	// When in edit mode, all the controls are essentially editable text 
+	// fields.
     if(this.props.editing) {
       toDisplay = 
         <span> 
@@ -334,18 +336,18 @@ var EditButtons = React.createClass({
   }  
 })
 
+// Same deal as tags but with favorites.  Different endpoint
+// same code.
 var FavoriteStar = React.createClass ({
   getInitialState: function() {
     return {favorited: false};
   },
-
 
   componentDidMount: function() {
     this.getFavorites();
   },
 
   getFavorites: function() {
-    console.log("getting favorites from server..."); 
     var headers = {
       Accept: 'text/html',
       accessToken: fbAccessToken,
@@ -358,12 +360,9 @@ var FavoriteStar = React.createClass ({
       dataType: 'json',
       timeout : 10000,
       success: function(data) {
-        console.log(data);
         this.checkFavorites(data);
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("ERROR GET FAVORITES")
-        console.error(this.props.source, status, err.toString());
       }.bind(this)
     }); 
   },
@@ -371,10 +370,6 @@ var FavoriteStar = React.createClass ({
   checkFavorites: function(data) {
     for(d in data) {
       postId = data[d]['postId'];
-      console.log("this's data")
-      console.log(this.props.data);
-      console.log("this's postid")
-      console.log(this.props.data.postId);
       if(postId === this.props.data.postId) {
           this.setState({favorited: true});
       }
@@ -383,7 +378,6 @@ var FavoriteStar = React.createClass ({
 
 
   addFavorite: function() {
-    console.log("favoriting post..."); 
     this.setState({favorited: true});
     var headers = {
       accessToken: fbAccessToken,
@@ -408,7 +402,6 @@ var FavoriteStar = React.createClass ({
   },
 
   removeFavorite: function() {
-    console.log("unfavoriting post..."); 
     this.setState({favorited: false});
     var headers = {
       accessToken: fbAccessToken,
@@ -423,17 +416,13 @@ var FavoriteStar = React.createClass ({
       dataType: 'json',
       data:data,
       success: function(data) {
-        console.log("successfully unfavorited")
-        console.log(data);
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.source, status, err.toString());
       }.bind(this)
     }); 
   },
   // toggle state
   handleClick: function() {
-    //this.setState({favorited: !this.state.favorited});
     this.state.favorited ? this.removeFavorite() : this.addFavorite();
   }, 
 
@@ -441,7 +430,6 @@ var FavoriteStar = React.createClass ({
     var image_src = this.state.favorited ? "img/heart-filled.png" : "img/heart-empty.png";
     var tooltip_txt = this.state.favorited ? "Favorited" : "Add to Favorites";
     var tooltip = <Tooltip>{tooltip_txt}</Tooltip>;
-
     return (
       <div className="favorite-div">
       <OverlayTrigger placement="top" overlay={tooltip} delay={.3} trigger={['hover']}>
@@ -455,6 +443,8 @@ var FavoriteStar = React.createClass ({
   }
 });
 
+// A stand in for new users or users with no friends that we show
+// if there were no posts to show.
 var NoPostsDisplay = React.createClass({
   render: function() {
      return <span className="no-posts-display"> 
@@ -469,46 +459,42 @@ var NoPostsDisplay = React.createClass({
   }
 })
 
-
+// The post class combines all above controls into one cohesive
+// editable, favoritable, post.
 var Post = React.createClass({
-
   getInitialState: function() {
     return {
   		editing: false,
   		title: this.props.data.title,
   		notes: this.props.data.notes,
-      images : this.props.data.images,
-
+        images : this.props.data.images,
   		currenttitle: this.props.data.title,
   		currentnotes: this.props.data.notes,
       currentImages: this.props.data.images
   	}
   },
-  
+  // Callbacks to handle Post editing.
   handleTitleChange: function(event) {
     this.setState({currenttitle: event.target.value});
   },
-  
   handleNotesChange: function(event) {
     this.setState({currentnotes: event.target.value});
   },
-
   handleImagesChange: function(event) {
     this.setState({currentimages: event.target.value});
   },  
-
+  // Same but to start or stop editing.
   startEditing: function() {
     this.setState({editing: true})
     this.forceUpdate();
   },
-
   cancelEditing: function() {
     this.setState({editing: false})
     this.forceUpdate();
   },
-
+  // This is a function that first saves all data and then sends it to the 
+  // backend API
   saveEditions: function() {
-
     // check that we actually need to update
     if (this.state.currenttitle != this.state.title || 
         this.state.currentnotes != this.state.notes ||
@@ -537,12 +523,8 @@ var Post = React.createClass({
         dataType: 'json',
         timeout : 10000,
         success: function(data) {
-          console.log("updated post " + this.props.data.postId)
-          console.log(data);
         }.bind(this),
         error: function(xhr, status, err) {
-           console.log("failed updating post " + this.props.data.postId)
-          console.error(this.props.source, status, err.toString());
         }.bind(this)
       });
 
@@ -550,10 +532,9 @@ var Post = React.createClass({
       this.setState({title: newTitle})
       this.setState({notes: newNotes})
       this.setState({images: newImages})
-    } else {
-      console.log("Nothing to save. No updating needed")
-    }
-
+    } 
+	// Refresh the UI to update and show new 
+	// changes.
     this.setState({editing: false})
     this.forceUpdate();
   },
@@ -586,8 +567,12 @@ var Post = React.createClass({
         </span>
       : <span> &nbsp; </span>;
 
-    
+    // wholly different rendering to be done if 
+    // in a state of editing.
 	if (this.state.editing) {
+	// All the components of a post but in editable mode.  Mostly
+	// this means transforming everything into an editable version of 
+	// the current bootstrap component.
 		return(
       <div className="post-full">
         <Panel className="post-panel">
@@ -635,14 +620,16 @@ var Post = React.createClass({
             <Comment id={this.props.data.postId}/>
           </div>
         </Panel>
-      </div>		
-		
-		
+      </div>
 		);
-	
 	}
 	else {
-	
+	// Puts the prep time and difficulty below the image and then 
+	// recipe experience notes underneath.
+	// First the Ratings stars in the top right and then the post 
+    // title to the left of that.  
+    // The formatting we want is best represented by the block quote
+    // Finally, At the bottom of the post, put the tags
 	return (
       <div className="post-full">
         <Panel className="post-panel">
@@ -651,6 +638,7 @@ var Post = React.createClass({
               {addNames}
               {editable}
             </span>
+           
             <RatingStars rating={this.props.data.rating}/>
             <hr></hr>   
             <h3 className = "post-title">
@@ -668,7 +656,6 @@ var Post = React.createClass({
             </blockquote>
           </div>
             {recipe}
-
           <div className = "post-footer">
             <div>
               <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
@@ -684,6 +671,8 @@ var Post = React.createClass({
   },
 });
 
+// The final parent class of all above controls that finally
+// renders all posts as a list of posts as a feed/profile/whatver
 var PostList = React.createClass({
   render: function() {
     var favoriteAble = this.props.favoriteAble
@@ -691,21 +680,12 @@ var PostList = React.createClass({
     var handleSearch=this.props.handleSearch
     var editable=this.props.editable
     var addNames=this.props.addNames
-
-    
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
-
     // add search bar 
-    // var searchBar = this.props.searchBar ? 
-    //   <SearchBar handleSearch={this.props.handleSearch}/> : ""
-
     if (this.props.data && this.props.data.length > 0) {
       toDisplay = 
         <div>
-          <div>
-            
-          </div>
           {
             (this.props.data).map(function(post_data) {
              return (
@@ -721,7 +701,7 @@ var PostList = React.createClass({
           }
         </div>
     }
-
+	// The full feed in one component
     return (
       <div className="post-list"> 
         {toDisplay}
@@ -729,14 +709,4 @@ var PostList = React.createClass({
     )
   }
 })
-
-
-// add rendered post to element with id = 'posts'
-//ReactDOM.render(<Post data = {data}/>, posts);
-
-
-
-
-
-
 
