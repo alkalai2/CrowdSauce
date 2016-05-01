@@ -76,7 +76,7 @@ var SingleIngredient = React.createClass({
   mouseOut: function () {
       this.setState({hover: false});
   },
-
+  // If not already added to shopping list, render add button, otherwise, render Added .png
   render: function() {
     var style = this.state.hover ? {visibility: 'inherit'} : {visibility: 'hidden'}
     button = this.state.added ? 
