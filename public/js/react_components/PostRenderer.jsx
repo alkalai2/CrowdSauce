@@ -473,6 +473,19 @@ var Post = React.createClass({
       currentImages: this.props.data.images
   	}
   },
+  //called when postlist reacts to changes in its data
+  //sets state values to new properties
+  componentWillReceiveProps: function(nextProps){
+    if(nextProps){
+      this.setState({
+        title: nextProps.data.title,
+        notes: nextProps.data.notes,
+        images: nextProps.data.images,
+        currenttitle: nextProps.data.title,
+        currentnotes: nextProps.data.notes,
+        currentImages: nextProps.data.images
+      });}
+   },
   // Callbacks to handle Post editing.
   handleTitleChange: function(event) {
     this.setState({currenttitle: event.target.value});
@@ -547,6 +560,13 @@ var Post = React.createClass({
             directions={this.props.data.directions}/>
     }
   },
+
+  deletePost: function(){
+     this.setState({editing: false})
+    var postIdToDelete = this.props.data.postId;
+    this.props.handleDeletion(postIdToDelete);
+  },
+
   render : function() {
     var recipe = this.checkForLink(this.state.editing);
     var favoriteHeart = !this.props.favoriteAble ? "" : <FavoriteStar data={this.props.data} />;
@@ -617,6 +637,9 @@ var Post = React.createClass({
               <Tags className = "tagset" handleSearch={this.props.handleSearch} postId={this.props.data.postId}/>
               {favoriteHeart}
             </div>
+            <div>
+                <Button className="delete-button" bsSize="small" onClick={this.deletePost}>Delete Post</Button>
+            </div>
             <Comment id={this.props.data.postId}/>
           </div>
         </Panel>
@@ -674,20 +697,59 @@ var Post = React.createClass({
 // The final parent class of all above controls that finally
 // renders all posts as a list of posts as a feed/profile/whatver
 var PostList = React.createClass({
+  getInitialState : function() {
+    return { data : []};
+  },
+
+  //deletion of a post, carried out by calling the API and updating local state
+   handlePostDeletion : function(postId) {
+      var postIdToDelete = postId;
+      console.log("goop" + postIdToDelete);
+      var url = 'http://localhost:3000/api/posts'
+      jQuery.ajax({
+        url:  url,
+        type: 'DELETE',
+        headers: {
+          'accessToken': fbAccessToken,
+          'userId': fbUserID
+        },
+        dataType: 'json',
+        data: {
+          'postId': postIdToDelete
+        },
+        success: function(data) {
+          console.log("removing " + postIdToDelete + " from post list")
+          data = this.state.data.filter(function(e){return e.postId!==postIdToDelete})
+          console.log(this.state.data)
+          this.setState({data: data},function(){console.log(this.state.data)});
+          this.forceUpdate()
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(status, err.toString());
+        }.bind(this)
+      });
+    },
+
+    //needed because data comes in late due to server loading time
+   componentWillReceiveProps: function(nextProps){
+      this.setState({data:nextProps.data});
+   },
+
   render: function() {
     var favoriteAble = this.props.favoriteAble
     var profileNavigation=this.props.profileNavigation
     var handleSearch=this.props.handleSearch
     var editable=this.props.editable
     var addNames=this.props.addNames
+    var self = this
     // if no posts, display a 'no posts image'
     var toDisplay = <NoPostsDisplay errorMsg={this.props.errorMsg}/>
     // add search bar 
-    if (this.props.data && this.props.data.length > 0) {
+    if (this.state.data && this.state.data.length > 0) {
       toDisplay = 
         <div>
           {
-            (this.props.data).map(function(post_data) {
+            (this.state.data).map(function(post_data) {
              return (
                 <Post 
                   data={post_data} 
@@ -695,7 +757,8 @@ var PostList = React.createClass({
                   editable={editable}
                   addNames={addNames}
                   handleSearch={handleSearch}
-                  profileNavigation={profileNavigation}/>
+                  profileNavigation={profileNavigation}
+                  handleDeletion={self.handlePostDeletion}/>
               )
             })
           }
