@@ -31,7 +31,7 @@ function send(address, subject, message, post, userId) {
       throw err
     }
     Account.filter({"userId": parseInt(userId)}).run().then(function (user) {
-      emailString = String(htmlemail)
+      var emailString = String(htmlemail)
       emailString = format(emailString, post, user[0], message)
       var mailOptions = {
         from: 'sandbox7f347118c7b442168631b62f2b9c82b2.mailgun.org',
@@ -72,7 +72,7 @@ function sendToFriends(user, subject, message, post) {
       console.log(response.error)
       return
     }
-    for (i = 0; i < response.data.length; i++) {
+    for (var i = 0; i < response.data.length; i++) {
       if (!response.data[i].email) continue
       var userId = response.data[i].id
       r.db(config.rethinkdb.db).table('users').get(parseInt(response.data[i].id)).run(connection, function (err, result) {

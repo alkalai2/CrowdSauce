@@ -62,7 +62,7 @@ function handleGetAccountRequest(req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      to_query_db = req.query[q]
+      var to_query_db = req.query[q]
       if (!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
       if (q == "notification") {
@@ -125,7 +125,7 @@ function handleRemoveBlockRequest(req, res) {
     // the blocked user array essentially as to be copied, searched, modified and re-inserted
     cursor.toArray(function (err, result) {
       if (err) throw err
-      for (i = 0; i < result.length; i++) {
+      for (var i = 0; i < result.length; i++) {
         if (result[i] == req.body.userid) {
           user('blocked').deleteAt(i).run(connection, function (err, result) {
             user.update({blocked: result}).run(connection, function (err, r) {

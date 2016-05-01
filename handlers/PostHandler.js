@@ -75,7 +75,7 @@ function handleGetPostRequest(req, res) {
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
-      to_query_db = req.query[q]
+      var to_query_db = req.query[q]
       if (!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
       query_obj[q] = to_query_db
@@ -139,7 +139,7 @@ function handleDeletePostRequest(req, res) {
 // returns a list of Post objects of size numposts (passed as part of the header)
 // the posts returned are all posted within 1 week of the request and are sorted by favorites desecending
 function handleGetTrendingRequest(req, res) {
-  num_posts = +req.headers.numposts || 3
+  var num_posts = +req.headers.numposts || 3
   Post.filter(function (post) {
     return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
   }).getJoin({
@@ -160,16 +160,16 @@ function handleGetTrendingRequest(req, res) {
 // the remaining Post objects are ordered from most recent to least recent
 function handleGetFeedRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-  num_posts = +req.headers.numposts || 10
-  offset = +req.headers.offset || 0
+  var num_posts = +req.headers.numposts || 10
+  var offset = +req.headers.offset || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
     if (!response || response.error) {
       throw response.error
     }
-    friends = [+req.headers.userid]
-    for (i = 0; i < response.data.length; i++) {
+    var friends = [+req.headers.userid]
+    for (var i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
     friends = r(friends)
@@ -191,7 +191,7 @@ function handleGetFeedRequest(req, res) {
         rq.on('data', function (chunk) {
           var suggested_posts = JSON.parse(chunk)
           var suggested_post_ids = []
-          for (n = 0; n < suggested_posts.length; n++) {
+          for (var n = 0; n < suggested_posts.length; n++) {
             var p = suggested_posts[n]
             suggested_post_ids.push(p['postId'])
           }

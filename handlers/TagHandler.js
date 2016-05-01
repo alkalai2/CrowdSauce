@@ -86,21 +86,21 @@ var post_search_tags = {}
 function handleGetTagFeedRequest(req, res) {
 
   //Pass in tagName in URL query
-  num_posts = +req.headers.numposts || 10
-  offset = +req.headers.offset || 0
+  var num_posts = +req.headers.numposts || 10
+  var offset = +req.headers.offset || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
     if (!response || response.error) {
       throw response.error
     }
-    friends = [+req.headers.userid]
-    for (i = 0; i < response.data.length; i++) {
+    var friends = [+req.headers.userid]
+    for (var i = 0; i < response.data.length; i++) {
       friends.push(+response.data[i].id)
     }
 
     // get tags from query, remove whitespace
-    temp_search_tags = req.query['tagNames'].split(",").map(function (s) {
+    var temp_search_tags = req.query['tagNames'].split(",").map(function (s) {
       return s.trim()
     })
 
@@ -108,7 +108,7 @@ function handleGetTagFeedRequest(req, res) {
     var search_tags = []
     var rating = 0
     var sort_by = null
-    for (z = 0; z < temp_search_tags.length; z++) {
+    for (var z = 0; z < temp_search_tags.length; z++) {
       if (temp_search_tags[z] == "") continue
       var colon = temp_search_tags[z].indexOf(":")
       if (colon >= 0) {
@@ -132,7 +132,7 @@ function handleGetTagFeedRequest(req, res) {
     //Add searched tags to search history
     r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, curr_list) {
       if (err) throw err
-      for (m = 0; m < search_tags.length; m++) {
+      for (var m = 0; m < search_tags.length; m++) {
         //Keeping entries in the searchHistory list unique
         if (curr_list.indexOf(search_tags[m]) < 0)
           r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).update({searchHistory: r.row('searchHistory').append(search_tags[m])}).run(connection)
@@ -156,7 +156,6 @@ function handleGetTagFeedRequest(req, res) {
       }
     }), tr.desc('timePosted')).skip(offset).limit(num_posts).run().then(function (result) {
       res.status(200).send(JSON.stringify(result, null, 2))
-      return
     }).error(function (error) {
       // something went wrong
       console.log("Error: " + error.message)
