@@ -129,11 +129,11 @@ function init() {
     res.sendFile(path.join(__dirname + '/public/views/settings.html'))
   })
 
-  app.get('/qview', function(req, res) {
+  app.get('/qview', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/quickview.html'))
   })
 
-  app.get('/shopping', function(req, res) {
+  app.get('/shopping', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/views/shoppinglist.html'))
   })
 
@@ -161,34 +161,34 @@ function init() {
   }
 
 // ============================== Start Server ================================
-/*
- * Connect to rethinkdb, create the needed tables/indexes and then start express.
- * Create tables/indexes then start express
- * Partial Code taken from RethinkDB + Express guide
- * https://rethinkdb.com/docs/examples/node-todo/
- */
-async.waterfall([
-  function connect (callback) {
-    rethink.connect(config.rethinkdb, callback)
-  },
-  function createDatabase (connection, callback) {
-    // Create the database if needed.
-    rethink.dbList().contains(config.rethinkdb.db).do(function (containsDb) {
-      return rethink.branch(
-        containsDb,
-        {created: 0},
-        rethink.dbCreate(config.rethinkdb.db)
-      )
-    }).run(connection, function (err) {
-      callback(err, connection)
-    })
-  }
-], function (err, connection) {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-    return
-  }
+  /*
+   * Connect to rethinkdb, create the needed tables/indexes and then start express.
+   * Create tables/indexes then start express
+   * Partial Code taken from RethinkDB + Express guide
+   * https://rethinkdb.com/docs/examples/node-todo/
+   */
+  async.waterfall([
+    function connect(callback) {
+      rethink.connect(config.rethinkdb, callback)
+    },
+    function createDatabase(connection, callback) {
+      // Create the database if needed.
+      rethink.dbList().contains(config.rethinkdb.db).do(function (containsDb) {
+        return rethink.branch(
+          containsDb,
+          {created: 0},
+          rethink.dbCreate(config.rethinkdb.db)
+        )
+      }).run(connection, function (err) {
+        callback(err, connection)
+      })
+    }
+  ], function (err, connection) {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+      return
+    }
 
     startExpress(connection)
   })
