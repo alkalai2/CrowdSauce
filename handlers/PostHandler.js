@@ -12,16 +12,16 @@ var Account = require('../models/Account.js')
 var handlerUtil = require('./handlerUtil.js')
 
 var PostHandler = function () {
-  this.createPost  = handleCreatePostRequest
-  this.getPost     = handleGetPostRequest
-  this.updatePost  = handleUpdatePostRequest
-  this.deletePost  = handleDeletePostRequest
-  this.getFeed     = handleGetFeedRequest
+  this.createPost = handleCreatePostRequest
+  this.getPost = handleGetPostRequest
+  this.updatePost = handleUpdatePostRequest
+  this.deletePost = handleDeletePostRequest
+  this.getFeed = handleGetFeedRequest
   this.getTrending = handleGetTrendingRequest
 }
 
 var connection = null;
-r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(err, conn) {
+r.connect({host: config.rethinkdb.host, port: config.rethinkdb.port}, function (err, conn) {
   if (err) throw err;
   connection = conn
 })
@@ -30,88 +30,88 @@ r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port}, function(
 // called when a user is creating a new post
 // called when a POST request is sent to /api/posts
 // use request body to populate Post model, insert into DB using thinky
-function handleCreatePostRequest (req, res) {
+function handleCreatePostRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-    // create Post object
-    var post = new Post({
-      userId: parseInt(req.headers.userid),
-      title: req.body.title,
-      ingredients: req.body.ingredients,
-      directions: req.body.directions,
-      recipeLink: req.body.recipeLink,
-      images: req.body.images,
-      notes: req.body.notes,
-      rating: req.body.rating,
-      prepTime: req.body.prepTime,
-      difficulty: req.body.difficulty
-    })
-    // try to store in DB
-    post.save().then(function (result) {
-      res.status(200).send(JSON.stringify(result))
+  // create Post object
+  var post = new Post({
+    userId: parseInt(req.headers.userid),
+    title: req.body.title,
+    ingredients: req.body.ingredients,
+    directions: req.body.directions,
+    recipeLink: req.body.recipeLink,
+    images: req.body.images,
+    notes: req.body.notes,
+    rating: req.body.rating,
+    prepTime: req.body.prepTime,
+    difficulty: req.body.difficulty
+  })
+  // try to store in DB
+  post.save().then(function (result) {
+    res.status(200).send(JSON.stringify(result))
 
-      //Send email notification to user
-      Account.filter({"userId":parseInt(req.headers.userid)}).run().then(function(user){
-        email.sendToFriends(req.headers.userid,
-                            user[0].name + " posted a new post!",
-                            "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
-      }).error(function(err){
-        console.log(err)
-        throw(err)
-      })
-    }).error(function (error) {
-      console.log(error.message)
-      res.status(500).send({error: error.message})
+    //Send email notification to user
+    Account.filter({"userId": parseInt(req.headers.userid)}).run().then(function (user) {
+      email.sendToFriends(req.headers.userid,
+        user[0].name + " posted a new post!",
+        "Your friend " + user[0].name + " posted a new post " + result.title + "!", result)
+    }).error(function (err) {
+      console.log(err)
+      throw(err)
     })
+  }).error(function (error) {
+    console.log(error.message)
+    res.status(500).send({error: error.message})
+  })
 }
 
 // called when a GET request is sent to /api/posts
 // returns a list of Post objects that match the query specified in the URL
 // supports multiple queries
-function handleGetPostRequest (req, res) {
+function handleGetPostRequest(req, res) {
   // Check if there is a query string passed in, slightly primitive implementation right now
   var queried = false
   var query_obj = {}
-  console.log("Req.query: "+ JSON.stringify(req.query))
+  console.log("Req.query: " + JSON.stringify(req.query))
   for (var q in req.query) {
     if (req.query.hasOwnProperty(q)) {
       queried = true
       to_query_db = req.query[q]
-      if(!isNaN(to_query_db))
+      if (!isNaN(to_query_db))
         to_query_db = parseInt(to_query_db)
       query_obj[q] = to_query_db
     }
   }
   r.db(config.rethinkdb.db).table('posts').filter(query_obj).run(connection, function (err, cursor) {
     if (err) throw err
-      handlerUtil.sendCursor(res, cursor)
+    handlerUtil.sendCursor(res, cursor)
   })
 }
 
 // called when a PUT request is sent to /api/posts
-function handleUpdatePostRequest (req, res) {
+function handleUpdatePostRequest(req, res) {
 
   //Specify the postId of the post that needs to be updated in url query.
   //Specify fields that need to be updated and corresponding values in request body (ex: {field1: value1, field2: value2,...})
-  if (req.body.hasOwnProperty("postId")){
+  if (req.body.hasOwnProperty("postId")) {
     r.db(config.rethinkdb.db).table('posts').filter({"postId": req.body.postId}).update(req.body).run(
-      connection, function(err, cursor){
-      if (err) throw err
-    }).then(function(result) {
+      connection, function (err, cursor) {
+        if (err) throw err
+      }).then(function (result) {
       res.json({
         result: result
       })
     })
   }
-  else{
-    res.send(200,"Need to specify postId in query")
+  else {
+    res.send(200, "Need to specify postId in query")
   }
 }
 
 // called when a DELETE request sent to /api/posts
 // deletes corresponding favorites and tags for a post
-function handleDeletePostRequest (req, res) {
-  Post.get(req.body.postId).getJoin({favorites: true}).run().then(function(post){
-    post.deleteAll({favorites: true}).then(function(result){
+function handleDeletePostRequest(req, res) {
+  Post.get(req.body.postId).getJoin({favorites: true}).run().then(function (post) {
+    post.deleteAll({favorites: true}).then(function (result) {
       var data = JSON.stringify({postId: post.postId})
       var options = {
         port: 3000,
@@ -138,14 +138,18 @@ function handleDeletePostRequest (req, res) {
 // called when GET request sent to /api/posts/trending
 // returns a list of Post objects of size numposts (passed as part of the header)
 // the posts returned are all posted within 1 week of the request and are sorted by favorites desecending
-function handleGetTrendingRequest(req, res){
+function handleGetTrendingRequest(req, res) {
   num_posts = +req.headers.numposts || 3
-  Post.filter(function(post){
+  Post.filter(function (post) {
     return post("timePosted").toEpochTime().ge(rt.now().toEpochTime().sub(604800))
-  }).getJoin({user: true, favorites: {
-    _apply: function(seq) {return seq.count()},
-    _array: false
-  }}).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function(posts){
+  }).getJoin({
+    user: true, favorites: {
+      _apply: function (seq) {
+        return seq.count()
+      },
+      _array: false
+    }
+  }).orderBy(rt.desc("favorites")).limit(num_posts).run().then(function (posts) {
     res.status(200).send(JSON.stringify(posts, null, 2))
   })
 }
@@ -154,10 +158,10 @@ function handleGetTrendingRequest(req, res){
 // returns a list of Post objects
 // the first Post objects correspond to posts with tags from user's search history
 // the remaining Post objects are ordered from most recent to least recent
-function handleGetFeedRequest (req, res) {
+function handleGetFeedRequest(req, res) {
   if (!auth.assertHasUser(req)) return
-    num_posts = +req.headers.numposts || 10
-  offset    = +req.headers.offset   || 0
+  num_posts = +req.headers.numposts || 10
+  offset = +req.headers.offset || 0
   FB.api('/' + req.headers.userid + '/friends', 'get', {
     access_token: fbAppAccessToken
   }, function (response) {
@@ -171,11 +175,11 @@ function handleGetFeedRequest (req, res) {
     friends = r(friends)
 
     // Get all the posts that have tags from the user's search history
-    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory){
+    r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid)).getField('searchHistory').run(connection, function (err, searchHistory) {
       var str = String(searchHistory.toString())
       var options = {
         port: 3000,
-        path: '/api/tags/feed/?tagNames='+ str,
+        path: '/api/tags/feed/?tagNames=' + str,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -187,12 +191,12 @@ function handleGetFeedRequest (req, res) {
         rq.on('data', function (chunk) {
           var suggested_posts = JSON.parse(chunk)
           var suggested_post_ids = []
-          for (n = 0; n < suggested_posts.length; n++){
+          for (n = 0; n < suggested_posts.length; n++) {
             var p = suggested_posts[n]
             suggested_post_ids.push(p['postId'])
           }
-          console.log("Suggested post ids: "+ suggested_post_ids)
-          suggested_post_ids = r (suggested_post_ids)
+          console.log("Suggested post ids: " + suggested_post_ids)
+          suggested_post_ids = r(suggested_post_ids)
 
           // get all blocked userIds
           r.db(config.rethinkdb.db).table('users').get(parseInt(req.headers.userid))('blocked').run(connection, function (err, blocked) {
