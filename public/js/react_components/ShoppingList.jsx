@@ -78,26 +78,34 @@ var ShoppingList = React.createClass({
       this.setState({data: data})
       this.forceUpdate()
     },
+    reloadWithIngredient: function(ingrName) {
+      if(this.state.data.indexOf(ingrName) < 0) {
+        this.setState({data: data.push(ingrName)})
+        this.forceUpdate()
+      }    
+    },
     componentDidMount: function() {
+      // var self = this
+      // getFacebookDetails().then(function(fbDetails) {
+      //   console.log("Getting facebook details : " + fbDetails)
+      //   self.loadShoppingListFromServer(fbDetails)
+      // }, function(error) {
+      //   console.log("Error : " + error)
+      // })
       var self = this
-      getFacebookDetails().then(function(fbDetails) {
-        console.log("Getting facebook details : " + fbDetails)
-        self.loadShoppingListFromServer(fbDetails)
-      }, function(error) {
-        console.log("Error : " + error)
-      })
+      setTimeout(function(){ self.loadShoppingListFromServer()}, 3000);
+      
     },
 
-    loadShoppingListFromServer : function(fbDetails) {
+    loadShoppingListFromServer : function() {
 
         console.log("getting the shopping list from server..."); 
         jQuery.ajax({
           url:  this.props.source,
           type: 'GET',
           headers: {
-            'Accept': 'text/html',
-            'userid': fbDetails['fbUserID'],
-            'accesstoken': fbDetails['fbAccessToken'],
+            'accessToken': fbAccessToken,
+            'userId': fbUserID
           },
           dataType: 'json',
           timeout : 10000,
@@ -118,7 +126,8 @@ var ShoppingList = React.createClass({
     render: function() {
       var self = this
    		return (
-	    	<div>             
+	    	<div>
+            <span><h2> Shopping List </h2> </span>             
             <ListGroup className="shopping-list-container" componentClass="div"> 
               {this.state.data.map(function(listValue){
                 return <SingleShoppingItem ingrName={listValue} reloadWithoutIngredient={self.reloadWithoutIngredient}/>;
@@ -129,4 +138,4 @@ var ShoppingList = React.createClass({
     }
 });
 
-ReactDOM.render(<ShoppingList source={"http://localhost:3000/api/shoppinglist/"}/>, shoppinglist);
+// ReactDOM.render(<ShoppingList source={"http://localhost:3000/api/shoppinglist/"}/>, shoppinglist);

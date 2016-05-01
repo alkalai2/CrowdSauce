@@ -60,6 +60,10 @@ var SingleIngredient = React.createClass({
       },
       success: function(data) {
         console.log("added " + this.props.ingrName + " to shopping list")
+        if(this.props.shoppingtListAddition) {
+          this.props.shoppingtListAddition(this.props.ingrName)
+          console.log("shopping list should re-render")
+        }
         this.setState({added: !this.state.added})
         this.forceUpdate();
       }.bind(this),
@@ -95,7 +99,7 @@ var Ingredients = React.createClass({
     // add shopping list buttons
 
     render: function() {
-        
+        var self = this
         return (
           <Table responsive>
             <thead>
@@ -106,7 +110,7 @@ var Ingredients = React.createClass({
 
             <tbody>
               {(this.props.items).map(function(ingrName) {
-                 return <tr><SingleIngredient ingrName={ingrName}/> </tr>
+                 return <tr><SingleIngredient shoppingtListAddition={self.props.shoppingtListAddition} ingrName={ingrName}/> </tr>
               })}
             </tbody>
           </Table>
@@ -141,7 +145,7 @@ var CustomRecipe = React.createClass({
     return (
       <PanelGroup defaultActiveKey="2" accordion>
         <Panel header="See Recipe" eventKey="1">
-          <Ingredients items={this.props.ingredients}/>
+          <Ingredients shoppingtListAddition={this.props.shoppingtListAddition} items={this.props.ingredients}/>
           <Directions items={this.props.directions}/>
         </Panel>
       </PanelGroup>
@@ -562,8 +566,10 @@ var Post = React.createClass({
     if(this.props.data.ingredients.length === 0){
       return <RecipeLink url={this.props.data.recipeLink} />
     } else {
-      return <CustomRecipe ingredients={this.props.data.ingredients}
-            directions={this.props.data.directions}/>
+      return <CustomRecipe 
+                ingredients={this.props.data.ingredients}
+                directions={this.props.data.directions}
+                shoppingtListAddition={this.props.shoppingtListAddition}/>
     }
   },
   render : function() {
@@ -691,6 +697,7 @@ var PostList = React.createClass({
     var handleSearch=this.props.handleSearch
     var editable=this.props.editable
     var addNames=this.props.addNames
+    var shoppingtListAddition=this.props.shoppingtListAddition
 
     
     // if no posts, display a 'no posts image'
@@ -715,7 +722,8 @@ var PostList = React.createClass({
                   editable={editable}
                   addNames={addNames}
                   handleSearch={handleSearch}
-                  profileNavigation={profileNavigation}/>
+                  profileNavigation={profileNavigation}
+                  shoppingtListAddition={shoppingtListAddition}/>
               )
             })
           }

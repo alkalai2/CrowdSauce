@@ -146,6 +146,10 @@ var FeedController = React.createClass({
 				})
 		},
 
+		handleShoppingListAddition: function(ingrName) {
+			this.refs['shoppinglist'].reloadWithIngredient(ingrName)
+		},
+
     render : function() {
     	console.log("rendering Feed Controller")
     	console.log(this.state.displayType)
@@ -168,7 +172,8 @@ var FeedController = React.createClass({
             					fbDetails = {this.state.fbDetails}
         	    				source={"http://localhost:3000/api/posts/feed/"}
         	    				handleSearch = {this.handleSearchQuery}
-        	    				profileNavigation={this.handleProfileNavigation}/>
+        	    				profileNavigation={this.handleProfileNavigation}
+        	    				handleShoppingListAddition = {this.handleShoppingListAddition}/>
                         </div>
                     </div>
 
@@ -220,8 +225,13 @@ var FeedController = React.createClass({
     			</div>
     			
     			<div className="col-md-3">
-    				<TrendsList 
-    					data={this.state.trends} />				
+    				<div>
+    					<TrendsList 
+    						data={this.state.trends} />	
+    				</div>
+    				<div>	
+    					<ShoppingList ref="shoppinglist" source={"http://localhost:3000/api/shoppinglist/"}/>	
+    				</div>		
     			</div>
     	  </div>
           <div> <PostRecipe/></div>

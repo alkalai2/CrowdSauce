@@ -92,6 +92,7 @@ var Feed = React.createClass({
             editable={false}
             handleSearch={this.props.handleSearch}
             profileNavigation={this.props.profileNavigation}
+            shoppingListAddition={this.props.handleShoppingListAddition}
             errorMsg={"Oops! Your friends have not posted anything "}/>
   			</div>
 	    );

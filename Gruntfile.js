@@ -32,6 +32,7 @@ module.exports = function(grunt) {
             'public/js/react_components/Search.jsx',
             'public/js/react_components/Profile.jsx',
             'public/js/react_components/PostRecipe.jsx',
+            'public/js/react_components/ShoppingList.jsx',
             'public/js/react_components/FeedController.jsx',
           ]
         }
