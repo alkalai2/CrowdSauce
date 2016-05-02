@@ -4,8 +4,10 @@ var assert = require('assert')
     testUserId = '112186842507184'
     testAccessToken = 'CAAIAH9y5RLgBAKtjhOYDJwpJNcglmjXExqn7MtnaE4vZAHH3Q80AyoEOp71aKZBdxRPGjALstG2vRDhnZAvtXJIpyU4CafM0heYflHIFNK6ZBEt3wJdMZBNKNJMRAKuVSvPZCCh9pkwUjCtwKF5p3jHFDAnHYJXkYJUYG7ThjXm33SCql0lMTUZCy3kgMC6zgEWJLZBlEUt5HwZDZD';
 
+//Tests endpoints in FavoritesHandler
 describe('Favorite Endpoint Tests', function() {
   
+  //Only runs in debug mode because access token is not updated
   process.env.CRS_DEBUG = 1
 
   it('post, get, update, delete requests', function (done) {
@@ -16,6 +18,7 @@ describe('Favorite Endpoint Tests', function() {
       'accesstoken' : testAccessToken
     }
   }
+      //make an account
       request.post(accountOptions, function (err, res, body) {
         var postId = 0
         var postBody = {
@@ -34,6 +37,7 @@ describe('Favorite Endpoint Tests', function() {
 
           body: JSON.stringify(postBody)
         }
+        //make a post
           request.post(postOptions, function (err, res, body) {
             var result = JSON.parse(res.body)
             postId = result.postId
@@ -49,7 +53,7 @@ describe('Favorite Endpoint Tests', function() {
 
               body: JSON.stringify(favPostBody)
             }
-
+            //favorite the post
             request.post(favPostOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var result = JSON.parse(res.body)
@@ -65,6 +69,7 @@ describe('Favorite Endpoint Tests', function() {
             }
 
           }
+            //check if that post is in the user's favorites
             request.get(getUserFavsOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var result = JSON.parse(res.body)
@@ -88,11 +93,13 @@ describe('Favorite Endpoint Tests', function() {
               body: JSON.stringify(deleteBody)
 
             }
+            //unfavorite post
             request.del(deleteOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var val = JSON.parse(res.body)
               assert.equal("1", val.deleted)
 
+              //delete the test user's account
               request.del(accountOptions, function (err, res, body) {
               done()
       

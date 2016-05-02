@@ -4,8 +4,10 @@ app = require('../app')
 testUserId = '112186842507184'
 testAccessToken = 'CAAIAH9y5RLgBAKtjhOYDJwpJNcglmjXExqn7MtnaE4vZAHH3Q80AyoEOp71aKZBdxRPGjALstG2vRDhnZAvtXJIpyU4CafM0heYflHIFNK6ZBEt3wJdMZBNKNJMRAKuVSvPZCCh9pkwUjCtwKF5p3jHFDAnHYJXkYJUYG7ThjXm33SCql0lMTUZCy3kgMC6zgEWJLZBlEUt5HwZDZD';
 
+//Tests endpoints in PostHandler
 describe('Post Endpoint Tests', function() {
 
+  //tests only run in debug mode because access token not updated
   process.env.CRS_DEBUG = 1
 
   it('post, get, update, delete requests', function (done) {
@@ -16,6 +18,7 @@ describe('Post Endpoint Tests', function() {
         'accesstoken' : testAccessToken
       }
     }
+    //create account for test user
     request.post(postOptions, function (err, res, body) {
       var postId = 0
       var postBody = {
@@ -34,6 +37,7 @@ describe('Post Endpoint Tests', function() {
 
         body: JSON.stringify(postBody)
       }
+      //create a new post and make sure all the fields are correct
       request.post(postOptions, function (err, res, body) {
         assert.equal(200, res.statusCode, "response was not a 200")
         result = JSON.parse(res.body)
@@ -78,6 +82,8 @@ describe('Post Endpoint Tests', function() {
             body: JSON.stringify(updateBody)
 
           }
+
+          //update post
           request.put(updateOptions, function (err, res, body) {
             assert.equal(200, res.statusCode, "response was not a 200")
             var val = JSON.parse(res.body)
@@ -96,6 +102,7 @@ describe('Post Endpoint Tests', function() {
               body: JSON.stringify(deleteBody)
 
             }
+            //delete test user's post
             request.del(deleteOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               var val = JSON.parse(res.body)
@@ -109,6 +116,7 @@ describe('Post Endpoint Tests', function() {
                 }
 
               }
+              //delete test user's account
               request.del(deleteOptions, function (err, res, body) {
                 assert.equal(200, res.statusCode, "response was not a 200")
                 var val = JSON.parse(res.body)

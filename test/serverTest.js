@@ -2,6 +2,7 @@ var assert = require('assert')
     request = require('request')
     app = require('../app');
 
+//Basic tests to ensure server is running correctly
 describe('Basic Server Tests', function() {
 
   it('site url should return 200', function (done) {

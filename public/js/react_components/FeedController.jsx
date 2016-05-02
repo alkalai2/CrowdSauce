@@ -18,14 +18,8 @@ var FeedController = React.createClass({
 			}
 		},
 		
-		idToProfilePic: function (id) {
-			FB.api("/" + id + "/picture", function (response) {
-				if (response && !response.error) {
-					return (response["data"]["url"])
-				}
-			});
-		},
-		
+		// calls the database to retrieve the trends
+		// save the trends as a state for later use
 		componentWillMount:function() {
 			var trendArray = 
 			jQuery.ajax({
@@ -77,7 +71,7 @@ var FeedController = React.createClass({
 						friendsID.map(function (id) {	
 
 							// query database for each friends profile picture
-														var url =
+							var url =
 							jQuery.ajax({
 								url:  'http://localhost:3000/api/accounts/',
 								type: 'GET',
@@ -92,8 +86,8 @@ var FeedController = React.createClass({
 								},
 								timeout : 100000,
 								success: function(data) {
-									console.log("saving friends picture ... ")
-									console.log(data[0])
+									// if friends profile pic is not in the database
+									// fetch from facebook
 									if(data[0] === undefined) {
 										FB.api("/" + id + "/picture", function (response) {
  											if (response && !response.error) {
