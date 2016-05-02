@@ -41,6 +41,7 @@ var trendingOptions = {
     },
 }
 
+// test for correctly posting a post
 it("Posting a post", function(done){
     request.post(postOptions, function(err, res, body){
         body = JSON.parse(body)
@@ -50,6 +51,7 @@ it("Posting a post", function(done){
     })
 })
 
+// test for correctly retrieving trending posts
 it("Getting trending posts", function(done){
     request.get(trendingOptions, function(err, res, body){
         body = JSON.parse(body)
