@@ -4,8 +4,10 @@ var assert = require('assert')
     testUserId = '112186842507184'
     testAccessToken = 'CAAIAH9y5RLgBAKtjhOYDJwpJNcglmjXExqn7MtnaE4vZAHH3Q80AyoEOp71aKZBdxRPGjALstG2vRDhnZAvtXJIpyU4CafM0heYflHIFNK6ZBEt3wJdMZBNKNJMRAKuVSvPZCCh9pkwUjCtwKF5p3jHFDAnHYJXkYJUYG7ThjXm33SCql0lMTUZCy3kgMC6zgEWJLZBlEUt5HwZDZD';
 
+//tests endpoints in TagHandler
 describe('Tag Endpoint Tests', function () {
 
+  //tests only run in debug mode because access token not updated
   process.env.CRS_DEBUG = 1
 
   it('post, get, delete requests', function (done) {
@@ -16,6 +18,7 @@ describe('Tag Endpoint Tests', function () {
         'accesstoken': testAccessToken
       }
     }
+    //create an account for test user
     request.post(postOptions, function (err, res, body) {
       var postId = 0
       var postBody = {
@@ -33,6 +36,7 @@ describe('Tag Endpoint Tests', function () {
 
         body: JSON.stringify(postBody)
       }
+      //have test user make a post
       request.post(postOptions, function (err, res, body) {
         var result = JSON.parse(res.body)
         postId = result.postId
@@ -46,7 +50,7 @@ describe('Tag Endpoint Tests', function () {
           },
           body: JSON.stringify(tagBody)
         }
-
+        //have test user add a tag to that post
         request.post(tagOptions, function (err, res, body) {
           assert.equal(200, res.statusCode, "response was not a 200")
           var result = JSON.parse(res.body)
@@ -60,6 +64,7 @@ describe('Tag Endpoint Tests', function () {
               'accesstoken': testAccessToken
             }
           }
+          //check if that tag is added to our database of tag names
           request.get(getTagsOptions, function (err, res, body) {
             assert.equal(200, res.statusCode, "response was not a 200")
             var result = JSON.parse(res.body)
@@ -81,7 +86,7 @@ describe('Tag Endpoint Tests', function () {
               'accesstoken': testAccessToken
             }
           }
-
+          //check if that tag is added to the post
           request.get(getPostTagsOptions, function (err, res, body) {
             assert.equal(200, res.statusCode, "response was not a 200")
             var result = JSON.parse(res.body)
@@ -106,6 +111,7 @@ describe('Tag Endpoint Tests', function () {
             body: JSON.stringify(deleteTagBody)
 
           }
+          //remove tag from post
           request.del(deleteTagOptions, function (err, res, body) {
             assert.equal(200, res.statusCode, "response was not a 200")
             var val = JSON.parse(res.body)
@@ -119,6 +125,7 @@ describe('Tag Endpoint Tests', function () {
               }
 
             }
+            //delete test user's account, which should also delete post
             request.del(deleteOptions, function (err, res, body) {
               assert.equal(200, res.statusCode, "response was not a 200")
               done()

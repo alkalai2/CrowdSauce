@@ -4,6 +4,8 @@ var assert = require('assert')
     testUserId = '112186842507184'
     testAccessToken = 'CAAIAH9y5RLgBAKtjhOYDJwpJNcglmjXExqn7MtnaE4vZAHH3Q80AyoEOp71aKZBdxRPGjALstG2vRDhnZAvtXJIpyU4CafM0heYflHIFNK6ZBEt3wJdMZBNKNJMRAKuVSvPZCCh9pkwUjCtwKF5p3jHFDAnHYJXkYJUYG7ThjXm33SCql0lMTUZCy3kgMC6zgEWJLZBlEUt5HwZDZD';
 
+//Collectively, the following tests hit all the endpoints in AccountHandler for a testUser
+//Will only pass in debug mode because access token is not updated
 describe('Account Endpoint Tests', function() {
   it('post, get, delete request', function (done) {
     process.env.CRS_DEBUG = 1
@@ -15,7 +17,7 @@ describe('Account Endpoint Tests', function() {
         'accesstoken' : testAccessToken
       }
     }
-
+    //create an account
     request.post(postOptions, function (err, res, body) {
       assert.equal(200, res.statusCode, "response was not a 200")
       var result = JSON.parse(res.body)
@@ -31,6 +33,7 @@ describe('Account Endpoint Tests', function() {
       request.get(getOptions, function (err, res, body) {
         assert.equal(200, res.statusCode, "response was not a 200")
         var result = JSON.parse(res.body)
+        //make sure a single account was created for the test user
         assert.equal(1, result.length)
         assert.equal(testUserId, result[0].userId)
           
@@ -42,9 +45,11 @@ describe('Account Endpoint Tests', function() {
             'accesstoken' : testAccessToken
           }
         }
+        //deletes the account
         request.del(deleteOptions, function (err, res, body) {
           assert.equal(200, res.statusCode, "response was not a 200")
           var val = JSON.parse(res.body)
+          //makes sure the correct account is deleted
           assert.equal(testUserId, val.userId)
           done()
         })

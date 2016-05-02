@@ -36,6 +36,10 @@ var assert = require('assert')
 	      body: JSON.stringify(postBody)
 	}
 
+	//These are five parametric tests
+	//Each test object is in the form {"testName": _, "fields":[_], "input": {_}}
+	//The fields consists of all the fields that will be updated, the input is the body that is being passed
+	//into the update request
     var changesList = []
 	var changeTitle = {"testName": "Change Post Title Only", "fields": ["title"], "input": {"title": "New Name"}}
 	var changeRatingNotes = {"testName": "Change Post Rating and Notes", "fields": ["rating", "notes"], "input": {"rating": 3, "notes": "new note"}}
@@ -52,9 +56,11 @@ var assert = require('assert')
 
 		changesList.forEach(function (change) {
 		    describe("Test " + change['testName'], function () {
+		    	//postId should not be updated because that is the primary key in our Post model
 		    	var shouldReplace = change['fields'].indexOf("postId") < 0
 		    	var postId
 		        it("Modified Post", function (done) {
+		        	//create an account for test user
 		        	request.post(accountOptions, function (err, res, body) {
         			assert.equal(200, res.statusCode, "response was not a 200")
         			request.post(postOptions, function(err, res, body){
@@ -73,7 +79,7 @@ var assert = require('assert')
 				            body: JSON.stringify(updateBody)   
 
 		          		}
-
+		          		//update the user's post
 	          			request.put(updateOptions, function (err, res, body) {
 	          				console.log("Error: "+ err)
 		            		assert.equal(200, res.statusCode, "response was not a 200")
@@ -90,6 +96,7 @@ var assert = require('assert')
 					          	'accesstoken' : testAccessToken
 					        	}
 					     	}
+					     	//check if the correct fields have been replaced
 				        	request.get(getOptions, function (err, res, body) {
 	          					var result = JSON.parse(res.body)
 	          					if (shouldReplace){
@@ -108,6 +115,8 @@ var assert = require('assert')
 					        		}   
 
 		          				}
+
+		          				//delete the test user's account which should also delete the post
 				          		request.del(deleteOptions, function (err, res, body) {
 				            		assert.equal(200, res.statusCode, "response was not a 200")
 				            		done()
