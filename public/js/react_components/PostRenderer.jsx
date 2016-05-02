@@ -557,7 +557,7 @@ var Post = React.createClass({
         saveEditions={this.saveEditions}
         editing={this.state.editing}/> 
       : "";
-    var addNames = this.props.addNames ?
+    var addNames = (this.props.addNames && this.props.data.name) ?
         <span>
           <ProfileLink 
             profileNavigation={this.props.profileNavigation}
