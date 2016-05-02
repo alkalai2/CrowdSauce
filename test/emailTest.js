@@ -36,6 +36,7 @@ mailListener.on("server:disconnected", function(){
 });
 
 describe('Email Functionality Tests', function() {
+  // Define tests for all endpoints that send out emails
   it('post_account, post_post, post_favorite, assert_email_sent, del_account', function (done) {
     process.env.CRS_DEBUG = 1
     // Post a new account to use to posta post then favorite it
@@ -56,6 +57,7 @@ describe('Email Functionality Tests', function() {
           'accesstoken' : testAccessToken
         }
       }
+      // Now send a post and verify it sends out emails to friends of the user.
       var postId = 0
       var postBody = {
         "ingredients": ["salt", "pepper"],
@@ -73,6 +75,7 @@ describe('Email Functionality Tests', function() {
 
         body: JSON.stringify(postBody)
       }
+      // Now assert we have send out this email and it is sent to our emailmailer.
       request.post(postOptions, function (err, res, body) {
         assert.equal(crowdsaucetestuser, "crowdsaucetestuser")
         var favPostBody = {"postId": postId}
@@ -88,6 +91,7 @@ describe('Email Functionality Tests', function() {
           body: JSON.stringify(favPostBody)
         }
 
+        // Now post a favorite on that post and verify it sent email to emailmailer.
         request.post(favPostOptions, function (err, res, body) {
           assert.equal(true, mail.indexOf("Favorite") > 0)
           console.log("emailParsed", mail);
