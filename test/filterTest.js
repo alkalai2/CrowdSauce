@@ -3,6 +3,8 @@ request = require('request')
 app = require('../app')
 
 describe('filter tests', function () {
+
+  // creates the accounts with the given userids
   function createAccounts(accounts, callback) {
     if (accounts.length == 0) {
       callback()
@@ -18,6 +20,7 @@ describe('filter tests', function () {
     })
   }
 
+  // adds the given tags to the given post
   function addTags(post, tags, callback) {
     if (tags.length == 0) {
       callback()
@@ -35,6 +38,7 @@ describe('filter tests', function () {
     })
   }
 
+  // adds the given favorites to the given post
   function addFavorites(post, favorites, callback) {
     if (favorites.length == 0) {
       callback()
@@ -54,6 +58,7 @@ describe('filter tests', function () {
     })
   }
 
+  // creates posts under the given account with the given tags, ratings and favorites
   function createPosts(account, titles, tags, ratings, favorites, callback) {
     if (titles.length == 0) {
       callback()
@@ -78,6 +83,7 @@ describe('filter tests', function () {
     })
   }
 
+  // asserts that the tag feed with the given tags equals the given feed
   function assertFeed(account, tags, feed, callback) {
     request.get({
       url: "http://localhost:3000/api/tags/feed/?tagNames=" + tags,

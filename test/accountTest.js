@@ -57,6 +57,7 @@ describe('Account Endpoint Tests', function() {
     })
   })
 
+  // creates accounts with the given userids
   function createAccounts(accounts, callback) {
     if (accounts.length == 0) {
       callback()
@@ -71,6 +72,8 @@ describe('Account Endpoint Tests', function() {
       createAccounts(accounts, callback)
     })
   }
+
+  // creates posts under the given accounts with the given titles
   function createPosts(accounts, posts, callback) {
     if (accounts.length == 0) {
       callback()
@@ -87,6 +90,8 @@ describe('Account Endpoint Tests', function() {
       createPosts(accounts, posts, callback)
     })
   }
+
+  // returns the feed
   function getFeed(account, callback) {
     request.get({
       url: "http://localhost:3000/api/posts/",
@@ -96,6 +101,8 @@ describe('Account Endpoint Tests', function() {
       callback(JSON.parse(res.body))
     })
   }
+
+  // test blocking by creating some accounts and posts and have one block another and check the feed etc.
   var adam = 100463527019300
   var brad = 107662552963871
   var greg = 153655315025677
